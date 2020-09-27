@@ -5,13 +5,15 @@ VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoanManager.Domain", "LoanManager.Domain\LoanManager.Domain.csproj", "{AC3CEABB-46A4-4765-8869-959F6FE8FF2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadManager.Application", "LoadManager.Application\LoadManager.Application.csproj", "{EF76456A-3DDF-471C-A6C9-C653802790BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoadManager.Application", "LoadManager.Application\LoadManager.Application.csproj", "{EF76456A-3DDF-471C-A6C9-C653802790BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoanManager.Infrastructure", "LoanManager.Infrastructure\LoanManager.Infrastructure.csproj", "{E5351241-294F-45A9-87B4-3A9BFD95A8A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoanManager.Infrastructure", "LoanManager.Infrastructure\LoanManager.Infrastructure.csproj", "{E5351241-294F-45A9-87B4-3A9BFD95A8A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoanManager.Services", "LoanManager.Services\LoanManager.Services.csproj", "{CA6216FF-D611-46B7-A50D-CF919AA8A3C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoanManager.Services", "LoanManager.Services\LoanManager.Services.csproj", "{CA6216FF-D611-46B7-A50D-CF919AA8A3C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoanManager.Api", "LoanManager.Api\LoanManager.Api.csproj", "{3C53516C-F96A-4817-8B54-40FAB26C0784}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoanManager.Api", "LoanManager.Api\LoanManager.Api.csproj", "{3C53516C-F96A-4817-8B54-40FAB26C0784}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoanManager.Tests", "LoanManager.Tests\LoanManager.Tests.csproj", "{86B32261-91F2-4727-965B-299BD1EF1216}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{3C53516C-F96A-4817-8B54-40FAB26C0784}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C53516C-F96A-4817-8B54-40FAB26C0784}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C53516C-F96A-4817-8B54-40FAB26C0784}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86B32261-91F2-4727-965B-299BD1EF1216}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86B32261-91F2-4727-965B-299BD1EF1216}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86B32261-91F2-4727-965B-299BD1EF1216}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86B32261-91F2-4727-965B-299BD1EF1216}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
