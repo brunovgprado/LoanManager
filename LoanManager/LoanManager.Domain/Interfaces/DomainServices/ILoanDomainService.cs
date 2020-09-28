@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LoanManager.Domain.Interfaces.DomainServices
 {
-    public interface ILoanDomainService : IService<Guid, Loan>
+    public interface ILoanDomainService : IGenericService<Guid, Loan>
     {
         void EndLoan(Guid id);
         Task<Loan> ReadLoanByFriendNameAsync(string name);

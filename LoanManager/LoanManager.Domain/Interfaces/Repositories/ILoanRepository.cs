@@ -3,7 +3,7 @@ using System;
 
 namespace LoanManager.Domain.Interfaces.Repositories
 {
-    public interface ILoanRepository : IRepository<Guid, Loan>
+    public interface ILoanRepository : IGenericRepository<Guid, Loan>
     {
     }
 }

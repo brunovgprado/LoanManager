@@ -3,7 +3,7 @@ using System;
 
 namespace LoanManager.Domain.Interfaces.Repositories
 {
-    public interface IGameRepository : IRepository<Guid, Game>
+    public interface IGameRepository : IGenericRepository<Guid, Game>
     {
     }
 }

@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using LoanManager.Domain.Entities;
+using LoanManager.Domain.Properties;
 using System;
 
 namespace LoanManager.Domain.Validators.LoanValidators
@@ -11,12 +12,12 @@ namespace LoanManager.Domain.Validators.LoanValidators
             RuleFor(x => x.GameId)
                 .NotNull()
                 .NotEmpty()
-                .WithMessage("Game id can't be empty");
+                .WithMessage(Resources.GameIsMandatory);
 
             RuleFor(x => x.FriendId)
                 .NotNull()
                 .NotEmpty()
-                .WithMessage("Friend id can't be empty");
+                .WithMessage(Resources.FriendIsMandatory);
 
         }
     }

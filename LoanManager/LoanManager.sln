@@ -7,9 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoanManager.Domain", "LoanM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoadManager.Application", "LoadManager.Application\LoadManager.Application.csproj", "{EF76456A-3DDF-471C-A6C9-C653802790BD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoanManager.Infrastructure", "LoanManager.Infrastructure\LoanManager.Infrastructure.csproj", "{E5351241-294F-45A9-87B4-3A9BFD95A8A0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoanManager.Services", "LoanManager.Services\LoanManager.Services.csproj", "{CA6216FF-D611-46B7-A50D-CF919AA8A3C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoanManager.Infrastructure.DataAccess", "LoanManager.Infrastructure\LoanManager.Infrastructure.DataAccess.csproj", "{E5351241-294F-45A9-87B4-3A9BFD95A8A0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoanManager.Api", "LoanManager.Api\LoanManager.Api.csproj", "{3C53516C-F96A-4817-8B54-40FAB26C0784}"
 EndProject
@@ -33,10 +31,6 @@ Global
 		{E5351241-294F-45A9-87B4-3A9BFD95A8A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5351241-294F-45A9-87B4-3A9BFD95A8A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5351241-294F-45A9-87B4-3A9BFD95A8A0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CA6216FF-D611-46B7-A50D-CF919AA8A3C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CA6216FF-D611-46B7-A50D-CF919AA8A3C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CA6216FF-D611-46B7-A50D-CF919AA8A3C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CA6216FF-D611-46B7-A50D-CF919AA8A3C0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3C53516C-F96A-4817-8B54-40FAB26C0784}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3C53516C-F96A-4817-8B54-40FAB26C0784}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C53516C-F96A-4817-8B54-40FAB26C0784}.Release|Any CPU.ActiveCfg = Release|Any CPU
