@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LoanManager.Domain.Interfaces.DomainServices
 {
-    public interface IGameDomainService : IService<Guid, Game>
+    public interface IGameDomainService : IGenericService<Guid, Game>
     {
     }
 }

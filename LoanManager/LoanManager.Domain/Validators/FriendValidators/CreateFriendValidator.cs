@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using LoanManager.Domain.Entities;
+using LoanManager.Domain.Properties;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,7 +15,7 @@ namespace LoanManager.Domain.Validators.FriendValidators
                 .NotEmpty()
                 .Must(x => 
                     !String.IsNullOrWhiteSpace(x))
-                .WithMessage("Friend name can't be empty");
+                .WithMessage(Resources.FriendNameIsMandatory);
         }
     }
 }

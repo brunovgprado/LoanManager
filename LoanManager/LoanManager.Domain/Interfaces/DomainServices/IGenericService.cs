@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LoanManager.Domain.Interfaces.Services
 {
-    public interface IService<TKey, T> : IBasicService<TKey, T>
+    public interface IGenericService<TKey, T> : IBasicGenericService<TKey, T>
     {
         Task<T> ReadAsync(TKey id);
         void Update(T entity);

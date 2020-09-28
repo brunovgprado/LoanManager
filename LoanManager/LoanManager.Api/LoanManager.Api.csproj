@@ -8,4 +8,8 @@
     <Folder Include="Controller\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LoanManager.Domain\LoanManager.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

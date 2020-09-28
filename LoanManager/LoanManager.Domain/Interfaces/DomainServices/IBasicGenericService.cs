@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LoanManager.Domain.Interfaces.Repositories
+namespace LoanManager.Domain.Interfaces.DomainServices
 {
-    public interface IBasicRepository<TKey, T>
+    public interface IBasicGenericService<TKey, T>
     {
         Task CreateAsync(T entity);
         Task<IEnumerable<T>> ReadAllAsync(int offset, int limit);
         Task DeleteAsync(TKey id);
-        Task<int> SaveChangesAsync();
     }
 }

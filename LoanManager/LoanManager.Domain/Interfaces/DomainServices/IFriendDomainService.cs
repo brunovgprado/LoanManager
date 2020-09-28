@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LoanManager.Domain.Interfaces.DomainServices
 {
-    public interface IFriendDomainService : IService<Guid, Friend>
+    public interface IFriendDomainService : IGenericService<Guid, Friend>
     {
     }
 }
