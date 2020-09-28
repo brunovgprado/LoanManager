@@ -1,15 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Configurations\" />
     <Folder Include="Controller\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LoanManager.Domain\LoanManager.Domain.csproj" />
+    <ProjectReference Include="..\LoadManager.Application\LoadManager.Application.csproj" />
   </ItemGroup>
 
 </Project>
