@@ -1,8 +1,5 @@
 ﻿using LoadManager.Domain.Interfaces;
 using LoanManager.Domain.Interfaces.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LoanManager.Infrastructure.DataAccess.Repositories
 {

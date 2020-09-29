@@ -18,9 +18,11 @@ namespace LoanManager.Domain.DomainServices
             _unityOfWork = unityOfWork;
         }
 
-        public async Task CreateAsync(Game entity)
+        public async Task<Guid> CreateAsync(Game entity)
         {
-           await _unityOfWork.Games.CreateAsync(entity);
+            entity.Id = Guid.NewGuid();
+            await _unityOfWork.Games.CreateAsync(entity);
+            return entity.Id;
         }
 
         public Task DeleteAsync(Guid id)
