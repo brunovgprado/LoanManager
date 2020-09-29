@@ -21,16 +21,14 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
         }
 
         public async Task CreateAsync(Game entity)
-        {
-            entity.Id = Guid.NewGuid();
-
+        {            
             var command = @"INSERT INTO Games (Id, Title, Description, Genre, Platform)
                              VALUES (@Id, @Title, @Description, @Genre, @Platform)";
             
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
-                await connection.ExecuteAsync(command, entity);
+                var afftectedRows = await connection.ExecuteAsync(command, entity);               
             }
         }
         public async Task<IEnumerable<Game>> ReadAllAsync(int offset, int limit)
