@@ -11,9 +11,9 @@ namespace LoanManager.Domain.DomainServices
 {
     public class GameDomainService : IGameDomainService
     {
-        private readonly IUnityOfWork _unityOfWork;
+        private readonly IUnitOfWork _unityOfWork;
 
-        public GameDomainService(IUnityOfWork unityOfWork)
+        public GameDomainService(IUnitOfWork unityOfWork)
         {
             _unityOfWork = unityOfWork;
         }

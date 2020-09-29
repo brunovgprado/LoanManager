@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LoadManager.Domain.Interfaces
 {
-    public interface IUnityOfWork
+    public interface IUnitOfWork
     {
         IGameRepository Games { get; }
         IFriendRepository Friends { get; }
