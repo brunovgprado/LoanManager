@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using LoanManager.Application.DependencyInjection;
+using LoanManager.IoC;
+using LoanManager.Application.Configurations;
+using LoanManager.IoC.DataAccessConfiguration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using LoanManager.IoC.DomainConfigurations;
 
 namespace LoanManager.Api
 {
@@ -18,6 +16,9 @@ namespace LoanManager.Api
         public void ConfigureServices(IServiceCollection services)
         {
             ValidatorConfiguration.ConfigureServices(services);
+            AppConfiguration.ConfigureServices(services);
+            DomainServicesConfiguration.ConfigureServices(services);
+            RepositoryConfiguration.ConfigureServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

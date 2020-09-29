@@ -11,7 +11,7 @@ namespace LoanManager.Infrastructure.DataAccess.DependencyInjections
     {
         public static IServiceCollection ConfigureDataAccess(this IServiceCollection services)
         {
-            services.AddTransient<IUnityOfWork, IUnityOfWork>();
+            services.AddTransient<IUnitOfWork, IUnitOfWork>();
             services.AddScoped<IGameRepository, GameRepository>();
             return services;
         }

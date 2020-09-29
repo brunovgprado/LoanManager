@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LoanManager.Infrastructure.DataAccess.Repositories
 {
-    public class UnitOfWork : IUnityOfWork
+    public class UnitOfWork : IUnitOfWork
     {
         public UnitOfWork(
             IGameRepository gameRepository,
