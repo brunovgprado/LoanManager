@@ -24,7 +24,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
         {
             entity.Id = Guid.NewGuid();
 
-            var command = @"INSERT INTO Game (Id, Title, Description, Genre, Platform)
+            var command = @"INSERT INTO Games (Id, Title, Description, Genre, Platform)
                              VALUES (@Id, @Title, @Description, @Genre, @Platform)";
             
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
@@ -35,7 +35,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
         }
         public async Task<IEnumerable<Game>> ReadAllAsync(int offset, int limit)
         {
-            var query = "SELECT * FROM Game WHERE Id= @Id";
+            var query = "SELECT * FROM Games WHERE Id= @Id";
 
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
@@ -47,7 +47,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 
         public async Task<Game> ReadAsync(Guid id)
         {
-            var query = @"SELECT * FROM Game WHERE Id= @Id";
+            var query = @"SELECT * FROM Games WHERE Id= @Id";
 
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
@@ -59,7 +59,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 
         public async Task DeleteAsync(Guid id)
         {
-            var command = @"DELETE FROM Game WHERE Id= @Id";
+            var command = @"DELETE FROM Games WHERE Id= @Id";
 
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
@@ -69,7 +69,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
         }
         public async void Update(Game entity)
         {
-            var command = @"UPDATE Game 
+            var command = @"UPDATE Games 
                                 SET Title = @Title, 
                                     Description = @Description, 
                                     Genre = @Genre, 

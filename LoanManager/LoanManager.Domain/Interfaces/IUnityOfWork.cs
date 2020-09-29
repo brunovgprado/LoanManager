@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LoadManager.Application.Interfaces
+namespace LoadManager.Domain.Interfaces
 {
     public interface IUnityOfWork
     {

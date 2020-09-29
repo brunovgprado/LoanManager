@@ -1,4 +1,4 @@
-﻿using LoadManager.Application.Interfaces;
+﻿using LoadManager.Domain.Interfaces;
 using LoanManager.Domain.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
