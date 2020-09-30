@@ -61,11 +61,74 @@ namespace LoanManager.Application.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Erro inexperado ao criar jogo.
+        ///   Looks up a localized string similar to Unexpected error while creating game.
         /// </summary>
-        internal static string UnexpectedErrorCreatingGame {
+        internal static string UnexpectedErrorWhileCreatingGame {
             get {
-                return ResourceManager.GetString("UnexpectedErrorCreatingGame", resourceCulture);
+                return ResourceManager.GetString("UnexpectedErrorWhileCreatingGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected error while deleting game.
+        /// </summary>
+        internal static string UnexpectedErrorWhileDeletingGame {
+            get {
+                return ResourceManager.GetString("UnexpectedErrorWhileDeletingGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected error while deleting loan.
+        /// </summary>
+        internal static string UnexpectedErrorWhileDeletingLoan {
+            get {
+                return ResourceManager.GetString("UnexpectedErrorWhileDeletingLoan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected error while generating loan.
+        /// </summary>
+        internal static string UnexpectedErrorWhileGeneratingLoan {
+            get {
+                return ResourceManager.GetString("UnexpectedErrorWhileGeneratingLoan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected error while getting game.
+        /// </summary>
+        internal static string UnexpectedErrorWhileGettingGame {
+            get {
+                return ResourceManager.GetString("UnexpectedErrorWhileGettingGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected error while getting loan.
+        /// </summary>
+        internal static string UnexpectedErrorWhileGettingLoan {
+            get {
+                return ResourceManager.GetString("UnexpectedErrorWhileGettingLoan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected error while updating game.
+        /// </summary>
+        internal static string UnexpectedErrorWhileUpdatingGame {
+            get {
+                return ResourceManager.GetString("UnexpectedErrorWhileUpdatingGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected error while updating loan.
+        /// </summary>
+        internal static string UnexpectedErrorWhileUpdatingLoan {
+            get {
+                return ResourceManager.GetString("UnexpectedErrorWhileUpdatingLoan", resourceCulture);
             }
         }
     }

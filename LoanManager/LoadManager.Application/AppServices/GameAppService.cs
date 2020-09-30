@@ -48,23 +48,10 @@ namespace LoanManager.Application.AppServices
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
-                return response.SetInternalServerError(Resources.UnexpectedErrorCreatingGame);
+                return response.SetInternalServerError(Resources.UnexpectedErrorWhileCreatingGame);
             }
         }
 
-        public async Task<Response<bool>> Delete(Guid id)
-        {
-            var response = new Response<bool>();
-            try
-            {
-                await _gameDomainService.DeleteAsync(id);
-                return response.SetResult(true);
-            }catch(Exception ex)
-            {
-                Console.Write(ex.Message);
-                return response.SetInternalServerError(Resources.UnexpectedErrorCreatingGame);
-            }
-        }
 
         public async Task<Response<GameDto>> Get(Guid id)
         {
@@ -77,7 +64,7 @@ namespace LoanManager.Application.AppServices
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
-                return response.SetInternalServerError(Resources.UnexpectedErrorCreatingGame);
+                return response.SetInternalServerError(Resources.UnexpectedErrorWhileGettingGame);
             }
         }
 
@@ -92,7 +79,7 @@ namespace LoanManager.Application.AppServices
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
-                return response.SetInternalServerError(Resources.UnexpectedErrorCreatingGame);
+                return response.SetInternalServerError(Resources.UnexpectedErrorWhileGettingGame);
             }
         }
 
@@ -108,7 +95,20 @@ namespace LoanManager.Application.AppServices
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
-                return response.SetInternalServerError(Resources.UnexpectedErrorCreatingGame);
+                return response.SetInternalServerError(Resources.UnexpectedErrorWhileUpdatingGame);
+            }
+        }
+        public async Task<Response<bool>> Delete(Guid id)
+        {
+            var response = new Response<bool>();
+            try
+            {
+                await _gameDomainService.DeleteAsync(id);
+                return response.SetResult(true);
+            }catch(Exception ex)
+            {
+                Console.Write(ex.Message);
+                return response.SetInternalServerError(Resources.UnexpectedErrorWhileDeletingGame);
             }
         }
     }

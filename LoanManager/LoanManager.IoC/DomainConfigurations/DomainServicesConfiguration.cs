@@ -13,6 +13,7 @@ namespace LoanManager.IoC.DomainConfigurations
         {
             services.AddSingleton<IGameDomainService, GameDomainService>();
             services.AddSingleton<IFriendDomainService, FriendDomainService>();
+            services.AddSingleton<ILoanDomainService, LoanDomainService>();
         }
     }
 }
