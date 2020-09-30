@@ -69,14 +69,18 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 
         public async Task DeleteAsync(Guid id)
         {
-            var command = @"DELETE FROM Games WHERE Id= @Id";
+            var command = @"DELETE FROM Friends WHERE Id= @Id";
+
+            var param = new DynamicParameters();
+            param.Add("@Id", id, DbType.Guid);
 
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
-                await connection.ExecuteAsync(command, new {Id = id});
+                await connection.ExecuteAsync(command, param);
             }
         }
+
         public async void Update(Game entity)
         {
             var command = @"UPDATE Games 
@@ -92,11 +96,5 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
                 await connection.ExecuteAsync(command, entity);
             }
         }
-
-        public Task<int> SaveChangesAsync()
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }
