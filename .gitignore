@@ -337,4 +337,4 @@ ASALocalRun/
 .localhistory/
 
 # BeatPulse healthcheck temp database
-healthchecksdb
+healthchecksdbLoanManager/LoanManager.Api/appsettings.Local.json
