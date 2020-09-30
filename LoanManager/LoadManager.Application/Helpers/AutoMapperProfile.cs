@@ -16,6 +16,9 @@ namespace LoanManager.Application.Helpers
 
             CreateMap<FriendDto, Friend>();
             CreateMap<Friend, FriendDto>();
+
+            CreateMap<LoanDto, Loan>();
+            CreateMap<Loan, LoanDto>();
         }
     }
 }
