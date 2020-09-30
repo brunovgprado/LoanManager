@@ -1,7 +1,7 @@
 ﻿
 namespace LoanManager.Application.Shared
 {
-    public enum UseCaseResponseKind
+    public enum ResponseKind
     {
         InternalServerError = 500,
         BadRequest = 400,
@@ -9,6 +9,7 @@ namespace LoanManager.Application.Shared
         Unauthorized = 401,
         Processing = 102,
         Forbidden = 403,
-        UnprocessableEntity = 422
+        UnprocessableEntity = 422,
+        Created = 201
     }
 }

@@ -31,15 +31,15 @@ namespace LoanManager.Application.AppServices
             _mapper = mapper;
         }
 
-        public async Task<Response<Guid>> Create(GameDto game)
+        public async Task<Response<Object>> Create(GameDto game)
         {
-            var response = new Response<Guid>();
+            var response = new Response<Object>();
             try
             {
                 var gameEntity = _mapper.Map<Game>(game);
                 await _createGameValidator.ValidateAndThrowAsync(gameEntity);
                 var result = await _gameDomainService.CreateAsync(gameEntity);
-                return response.SetResult(result);
+                return response.SetResult(new { Id = result});
             }
             catch (ValidationException ex)
             {
@@ -52,19 +52,66 @@ namespace LoanManager.Application.AppServices
             }
         }
 
-        public void Delete(Guid id)
+        public async Task<Response<bool>> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            var response = new Response<bool>();
+            try
+            {
+                await _gameDomainService.DeleteAsync(id);
+                return response.SetResult(true);
+            }catch(Exception ex)
+            {
+                Console.Write(ex.Message);
+                return response.SetInternalServerError(Resources.UnexpectedErrorCreatingGame);
+            }
         }
 
-        public GameDto Get(Guid id)
+        public async Task<Response<GameDto>> Get(Guid id)
         {
-            throw new NotImplementedException();
+            var response = new Response<GameDto>();
+            try
+            {
+              var result = await  _gameDomainService.ReadAsync(id);
+              return response.SetResult( _mapper.Map<GameDto>(result));
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                return response.SetInternalServerError(Resources.UnexpectedErrorCreatingGame);
+            }
         }
 
-        public IEnumerable<GameDto> GetAll()
+        public async Task<Response<IEnumerable<GameDto>>> GetAll(int offset, int limit)
         {
-            throw new NotImplementedException();
+            var response = new Response<IEnumerable<GameDto>>();
+            try
+            {
+                var result = await _gameDomainService.ReadAllAsync(offset, limit);
+                return response.SetResult(_mapper.Map<IEnumerable<GameDto>>(result));
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                return response.SetInternalServerError(Resources.UnexpectedErrorCreatingGame);
+            }
+        }
+
+        public async Task<Response<bool>> Update(GameDto game)
+        {
+            
+            var response = new Response<bool>();
+            try
+            {
+                var gameEntity = _mapper.Map<Game>(game);
+                _gameDomainService.Update(gameEntity);
+                return response.SetResult(true);
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                return response.SetInternalServerError(Resources.UnexpectedErrorCreatingGame);
+            }
+
         }
     }
 }
