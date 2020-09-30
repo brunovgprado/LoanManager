@@ -10,6 +10,5 @@ namespace LoanManager.Domain.Interfaces.Repositories
         Task CreateAsync(T entity);
         Task<IEnumerable<T>> ReadAllAsync(int offset, int limit);
         Task DeleteAsync(TKey id);
-        Task<int> SaveChangesAsync();
     }
 }

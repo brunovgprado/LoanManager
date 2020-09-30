@@ -14,6 +14,7 @@ namespace LoanManager.Application.Configurations
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSingleton<IGameAppService, GameAppService>();
+            services.AddSingleton<IFriendAppService, FriendAppService>();
             return services;
         }
     }
