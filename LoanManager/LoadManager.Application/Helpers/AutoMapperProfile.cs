@@ -13,6 +13,12 @@ namespace LoanManager.Application.Helpers
         {
             CreateMap<GameDto, Game>();
             CreateMap<Game, GameDto>();
+
+            CreateMap<FriendDto, Friend>();
+            CreateMap<Friend, FriendDto>();
+
+            CreateMap<LoanDto, Loan>();
+            CreateMap<Loan, LoanDto>();
         }
     }
 }
