@@ -48,7 +48,7 @@ namespace LoanManager.Application.AppServices
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
-                return response.SetInternalServerError(Resources.UnexpectedErrorCreatingGame);
+                return response.SetInternalServerError(Resources.UnexpectedErrorWhileGeneratingLoan);
             }
         }
 
@@ -63,7 +63,7 @@ namespace LoanManager.Application.AppServices
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
-                return response.SetInternalServerError(Resources.UnexpectedErrorCreatingGame);
+                return response.SetInternalServerError(Resources.UnexpectedErrorWhileGeneratingLoan);
             }
         }
 
@@ -78,7 +78,7 @@ namespace LoanManager.Application.AppServices
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
-                return response.SetInternalServerError(Resources.UnexpectedErrorCreatingGame);
+                return response.SetInternalServerError(Resources.UnexpectedErrorWhileGeneratingLoan);
             }
         }
 
@@ -93,7 +93,7 @@ namespace LoanManager.Application.AppServices
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
-                return response.SetInternalServerError(Resources.UnexpectedErrorCreatingGame);
+                return response.SetInternalServerError(Resources.UnexpectedErrorWhileGeneratingLoan);
             }
         }
 
@@ -109,7 +109,7 @@ namespace LoanManager.Application.AppServices
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
-                return response.SetInternalServerError(Resources.UnexpectedErrorCreatingGame);
+                return response.SetInternalServerError(Resources.UnexpectedErrorWhileGeneratingLoan);
             }
         }
     }

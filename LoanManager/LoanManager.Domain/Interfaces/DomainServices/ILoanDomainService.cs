@@ -11,6 +11,6 @@ namespace LoanManager.Domain.Interfaces.DomainServices
     {
         void EndLoan(Guid id);
         Task<Loan> ReadLoanByFriendNameAsync(string name);
-        Task<IEnumerable<Loan>> ReadLoanHistoryByGameNameAsync(int offset, int limit);
+        Task<IEnumerable<Loan>> ReadLoanHistoryByGameAsync(int offset, int limit);
     }
 }

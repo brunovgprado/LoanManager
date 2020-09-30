@@ -16,16 +16,12 @@ namespace LoanManager.Domain.DomainServices
             _unityOfWork = unityOfWork;
         }
 
+        #region CRUD operations
         public async Task<Guid> CreateAsync(Game entity)
         {
             entity.Id = Guid.NewGuid();
             await _unityOfWork.Games.CreateAsync(entity);
             return entity.Id;
-        }
-
-        public async Task DeleteAsync(Guid id)
-        {
-            await _unityOfWork.Games.DeleteAsync(id);            
         }
 
         public async Task<IEnumerable<Game>> ReadAllAsync(int offset, int limit)
@@ -42,5 +38,10 @@ namespace LoanManager.Domain.DomainServices
         {
              _unityOfWork.Games.Update(entity);
         }
+        public async Task DeleteAsync(Guid id)
+        {
+            await _unityOfWork.Games.DeleteAsync(id);            
+        }
+        #endregion
     }
 }
