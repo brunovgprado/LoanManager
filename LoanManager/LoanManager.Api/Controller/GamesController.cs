@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using LoanManager.Api.Models;
 using LoanManager.Application.Interfaces.AppServices;
 using LoanManager.Application.Models.DTO;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LoanManager.Api.Controller
@@ -29,6 +28,30 @@ namespace LoanManager.Api.Controller
         public async Task<IActionResult> Create(GameDto game)
         {
             return _actionResultConverter.Convert( await _gameService.Create(game));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Read(Guid id)
+        {
+            return _actionResultConverter.Convert(await _gameService.Get(id));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ReadAll([FromQuery]int offset, int limit)
+        {
+            return _actionResultConverter.Convert(await _gameService.GetAll(offset, limit));
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update(GameDto game)
+        {
+            return _actionResultConverter.Convert(await _gameService.Update(game));
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            return _actionResultConverter.Convert(await _gameService.Delete(id));
         }
     }
 }

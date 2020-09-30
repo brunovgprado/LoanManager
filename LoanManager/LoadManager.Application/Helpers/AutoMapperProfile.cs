@@ -12,6 +12,7 @@ namespace LoanManager.Application.Helpers
         public AutoMapperProfile()
         {
             CreateMap<GameDto, Game>();
+            CreateMap<Game, GameDto>();
         }
     }
 }

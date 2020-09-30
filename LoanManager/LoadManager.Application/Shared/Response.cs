@@ -7,7 +7,7 @@ namespace LoanManager.Application.Shared
 {
     public class Response<T> : IResponse
     {
-        private UseCaseResponseKind ErrorKind { get; set; }
+        private ResponseKind ErrorKind { get; set; }
         public string ErrorMessage { get; private set; }
         public IEnumerable<ErrorMessage> Errors { get; private set; }
 
@@ -21,7 +21,7 @@ namespace LoanManager.Application.Shared
             return this;
         }
 
-        public Response<T> SetError(string errorMessage, UseCaseResponseKind errorKind, IEnumerable<ErrorMessage> errors = null)
+        public Response<T> SetError(string errorMessage, ResponseKind errorKind, IEnumerable<ErrorMessage> errors = null)
         {
             ErrorMessage = errorMessage;
             ErrorKind = errorKind;
@@ -32,17 +32,17 @@ namespace LoanManager.Application.Shared
 
         public Response<T> SetInternalServerError(string errorMessage, IEnumerable<ErrorMessage> errors = null)
         {
-            return SetError(errorMessage, UseCaseResponseKind.InternalServerError, errors);
+            return SetError(errorMessage, ResponseKind.InternalServerError, errors);
         }
 
         public Response<T> SetBadRequest(string errorMessage, IEnumerable<ErrorMessage> errors = null)
         {
-            return SetError(errorMessage, UseCaseResponseKind.BadRequest, errors);
+            return SetError(errorMessage, ResponseKind.BadRequest, errors);
         }
 
         public Response<T> SetNotFound(string errorMessage, IEnumerable<ErrorMessage> errors = null)
         {
-            return SetError(errorMessage, UseCaseResponseKind.NotFound, errors);
+            return SetError(errorMessage, ResponseKind.NotFound, errors);
         }
 
         public bool Success()
@@ -50,7 +50,7 @@ namespace LoanManager.Application.Shared
             return ReferenceEquals(ErrorMessage, null);
         }
 
-        public UseCaseResponseKind? GetErrorKind()
+        public ResponseKind? GetErrorKind()
         {
             if (ReferenceEquals(ErrorMessage, null))
                 return null;
@@ -65,10 +65,10 @@ namespace LoanManager.Application.Shared
 
         public Response<T> SetRequestValidationError(string errorMessage, IEnumerable<ErrorMessage> errors = null)
         {
-            return SetStatus(UseCaseResponseKind.UnprocessableEntity, errorMessage, errors);
+            return SetStatus(ResponseKind.UnprocessableEntity, errorMessage, errors);
         }
 
-        public Response<T> SetStatus(UseCaseResponseKind status, string errorMessage = null, IEnumerable<ErrorMessage> errors = null)
+        public Response<T> SetStatus(ResponseKind status, string errorMessage = null, IEnumerable<ErrorMessage> errors = null)
         {
             ErrorKind = status;
             ErrorMessage = errorMessage;

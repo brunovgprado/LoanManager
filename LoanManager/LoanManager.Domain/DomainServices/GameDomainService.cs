@@ -1,10 +1,8 @@
 ﻿using LoadManager.Domain.Interfaces;
 using LoanManager.Domain.Entities;
 using LoanManager.Domain.Interfaces.DomainServices;
-using LoanManager.Domain.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LoanManager.Domain.DomainServices
@@ -25,24 +23,24 @@ namespace LoanManager.Domain.DomainServices
             return entity.Id;
         }
 
-        public Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            await _unityOfWork.Games.DeleteAsync(id);            
         }
 
-        public Task<IEnumerable<Game>> ReadAllAsync(int offset, int limit)
+        public async Task<IEnumerable<Game>> ReadAllAsync(int offset, int limit)
         {
-            throw new NotImplementedException();
+            return await _unityOfWork.Games.ReadAllAsync(offset, limit);
         }
 
-        public Task<Game> ReadAsync(Guid id)
+        public async Task<Game> ReadAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _unityOfWork.Games.ReadAsync(id);
         }
 
         public void Update(Game entity)
         {
-            throw new NotImplementedException();
+             _unityOfWork.Games.Update(entity);
         }
     }
 }

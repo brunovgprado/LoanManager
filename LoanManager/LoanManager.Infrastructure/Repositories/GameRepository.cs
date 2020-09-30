@@ -4,6 +4,7 @@ using LoanManager.Domain.Interfaces.Repositories;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -33,12 +34,20 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
         }
         public async Task<IEnumerable<Game>> ReadAllAsync(int offset, int limit)
         {
-            var query = "SELECT * FROM Games WHERE Id= @Id";
+            var query = @"SELECT * FROM Games 
+                                ORDER BY Title
+                                OFFSET @index ROWS
+                                FETCH NEXT @size ROWS ONLY";
+
+            // Aplying pagination limits
+            var param = new DynamicParameters();
+            param.Add("@index", offset, DbType.Int32);
+            param.Add("@size", limit == 0 ? 10 : limit, DbType.Int32);
 
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
-                var result = await connection.QueryAsync<Game>(query.ToString());
+                var result = await connection.QueryAsync<Game>(query.ToString(), param);
                 return result;
             }
         }
@@ -47,10 +56,13 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
         {
             var query = @"SELECT * FROM Games WHERE Id= @Id";
 
+            var param = new DynamicParameters();
+            param.Add("@Id", id, DbType.Guid);
+
             using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 connection.Open();
-                var result = await connection.QueryAsync<Game>(query, new { Id = id });
+                var result = await connection.QueryAsync<Game>(query, param);
                 return result.FirstOrDefault();
             }
         }

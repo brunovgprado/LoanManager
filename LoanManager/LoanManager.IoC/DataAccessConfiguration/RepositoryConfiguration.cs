@@ -13,6 +13,8 @@ namespace LoanManager.IoC.DataAccessConfiguration
         public static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IGameRepository, GameRepository>();
+            services.AddSingleton<IFriendRepository, FriendRepository>();
+            services.AddSingleton<ILoanRepository, LoanRepository>();
             services.AddSingleton<IUnitOfWork, UnitOfWork>();
         }
     }

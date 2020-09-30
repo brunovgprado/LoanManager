@@ -24,7 +24,7 @@ namespace LoanManager.Api.Models
         public IActionResult Convert<T>(Response<T> response)
         {
             if (response == null)
-                return BuildError(new[] { new ErrorMessage("000", "ActionResultConverter Error") }, UseCaseResponseKind.InternalServerError);
+                return BuildError(new[] { new ErrorMessage("000", "ActionResultConverter Error") }, ResponseKind.InternalServerError);
 
             if (response.Success())
             {
@@ -34,7 +34,7 @@ namespace LoanManager.Api.Models
             {
                 var useCaseResponseErrorKind = response.GetErrorKind();
                 if (useCaseResponseErrorKind == null)
-                    return BuildError(new[] { new ErrorMessage("000", "ActionResultConverter Error") }, UseCaseResponseKind.InternalServerError);
+                    return BuildError(new[] { new ErrorMessage("000", "ActionResultConverter Error") }, ResponseKind.InternalServerError);
 
                 var hasErrors = response.Errors == null || !response.Errors.Any();
                 var errorResult = hasErrors
@@ -45,9 +45,9 @@ namespace LoanManager.Api.Models
             }
         }
 
-        private ObjectResult BuildError(object data, UseCaseResponseKind statusCode)
+        private ObjectResult BuildError(object data, ResponseKind statusCode)
         {
-            if (statusCode == UseCaseResponseKind.InternalServerError)
+            if (statusCode == ResponseKind.InternalServerError)
                 Console.Write($"[ERROR] {_path} ({{@data}})", data);
 
             return new ObjectResult(data)
