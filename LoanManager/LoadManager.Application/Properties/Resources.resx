@@ -117,7 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="UnexpectedErrorCreatingGame" xml:space="preserve">
-    <value>Erro inexperado ao criar jogo</value>
+  <data name="UnexpectedErrorWhileCreatingGame" xml:space="preserve">
+    <value>Unexpected error while creating game</value>
+  </data>
+  <data name="UnexpectedErrorWhileDeletingGame" xml:space="preserve">
+    <value>Unexpected error while deleting game</value>
+  </data>
+  <data name="UnexpectedErrorWhileDeletingLoan" xml:space="preserve">
+    <value>Unexpected error while deleting loan</value>
+  </data>
+  <data name="UnexpectedErrorWhileGeneratingLoan" xml:space="preserve">
+    <value>Unexpected error while generating loan</value>
+  </data>
+  <data name="UnexpectedErrorWhileGettingGame" xml:space="preserve">
+    <value>Unexpected error while getting game</value>
+  </data>
+  <data name="UnexpectedErrorWhileGettingLoan" xml:space="preserve">
+    <value>Unexpected error while getting loan</value>
+  </data>
+  <data name="UnexpectedErrorWhileUpdatingGame" xml:space="preserve">
+    <value>Unexpected error while updating game</value>
+  </data>
+  <data name="UnexpectedErrorWhileUpdatingLoan" xml:space="preserve">
+    <value>Unexpected error while updating loan</value>
   </data>
 </root>
