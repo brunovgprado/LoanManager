@@ -9,16 +9,19 @@ using System.Threading.Tasks;
 using Dapper;
 using System.Data;
 using System.Linq;
+using Npgsql;
 
 namespace LoanManager.Infrastructure.DataAccess.Repositories
 {
     public class LoanRepository : ILoanRepository
     {
         private readonly IConfiguration _configuration;
+        private readonly string _connectionString;
 
         public LoanRepository(IConfiguration configuration)
         {
             _configuration = configuration;
+            _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
         }
 
         public async Task CreateAsync(Loan entity)
@@ -26,7 +29,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             var command = @"INSERT INTO Loans (Id, FriendId, GameId, LoanDate, LoanStatus)
                              VALUES (@Id, @FriendId, @GameId, @LoanDate, @LoanStatus)";
 
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
                 var afftectedRows = await connection.ExecuteAsync(command, entity);
@@ -44,7 +47,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             param.Add("@index", offset, DbType.Int32);
             param.Add("@size", limit == 0 ? 10 : limit, DbType.Int32);
 
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
                 var result = await connection.QueryAsync<Loan>(query.ToString(), param);
@@ -59,7 +62,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             var param = new DynamicParameters();
             param.Add("@Id", id, DbType.Guid);
 
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
                 var result = await connection.QueryAsync<Loan>(query, param);
@@ -75,7 +78,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
                                     LoanStatus = @LoanStatus
                                 WHERE Id = @Id";
 
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
                 await connection.ExecuteAsync(command, entity);
@@ -89,7 +92,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             var param = new DynamicParameters();
             param.Add("@Id", id, DbType.Guid);
 
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
                 await connection.ExecuteAsync(command, param);

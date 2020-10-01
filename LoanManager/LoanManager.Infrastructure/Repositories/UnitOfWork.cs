@@ -1,4 +1,4 @@
-﻿using LoadManager.Domain.Interfaces;
+﻿using LoanManager.Domain.Interfaces;
 using LoanManager.Domain.Interfaces.Repositories;
 
 namespace LoanManager.Infrastructure.DataAccess.Repositories
