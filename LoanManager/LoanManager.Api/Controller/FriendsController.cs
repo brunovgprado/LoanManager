@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using LoanManager.Api.Models;
+using LoanManager.Api.Models.Request;
 using LoanManager.Application.Interfaces.AppServices;
 using LoanManager.Application.Models.DTO;
 using Microsoft.AspNetCore.Http;
@@ -16,20 +18,24 @@ namespace LoanManager.Api.Controller
     {
         private readonly IActionResultConverter _actionResultConverter;
         private readonly IFriendAppService _friendService;
+        private readonly IMapper _mapper;
 
         public FriendsController(
             IActionResultConverter actionResultConverter,
-            IFriendAppService friendService
+            IFriendAppService friendService,
+            IMapper mapper
             )
         {
             _actionResultConverter = actionResultConverter;
             _friendService = friendService;
+            _mapper = mapper;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(FriendDto friend)
+        public async Task<IActionResult> Create(CreateFriendRequest friend)
         {
-            return _actionResultConverter.Convert(await _friendService.Create(friend));
+            var FriendDto = _mapper.Map<FriendDto>(friend);
+            return _actionResultConverter.Convert(await _friendService.Create(FriendDto));
         }
 
         [HttpGet("{id}")]

@@ -1,4 +1,4 @@
-﻿using LoadManager.Domain.Interfaces;
+﻿using LoanManager.Domain.Interfaces;
 using LoanManager.Domain.Entities;
 using LoanManager.Domain.Interfaces.DomainServices;
 using System;

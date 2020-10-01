@@ -9,24 +9,27 @@ using System.Threading.Tasks;
 using Dapper;
 using System.Data;
 using System.Linq;
+using Npgsql;
 
 namespace LoanManager.Infrastructure.DataAccess.Repositories
 {
     public class LoanRepository : ILoanRepository
     {
         private readonly IConfiguration _configuration;
+        private readonly string _connectionString;
 
         public LoanRepository(IConfiguration configuration)
         {
             _configuration = configuration;
+            _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
         }
 
         public async Task CreateAsync(Loan entity)
         {
-            var command = @"INSERT INTO Loans (Id, FriendId, GameId, LoanDate, LoanStatus)
-                             VALUES (@Id, @FriendId, @GameId, @LoanDate, @LoanStatus)";
+            var command = @"INSERT INTO Loans (Id, FriendId, GameId, LoanDate, Returned)
+                             VALUES (@Id, @FriendId, @GameId, @LoanDate, @Returned)";
 
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
                 var afftectedRows = await connection.ExecuteAsync(command, entity);
@@ -34,20 +37,29 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
         }
         public async Task<IEnumerable<Loan>> ReadAllAsync(int offset, int limit)
         {
-            var query = @"SELECT * FROM Loans 
-                                ORDER BY LoanDate
-                                OFFSET @index ROWS
-                                FETCH NEXT @size ROWS ONLY";
+            var query = @"SELECT * FROM Loans AS Lo
+                            JOIN Friends AS Fr ON Fr.Id = Lo.FriendId
+                            JOIN Games AS Ga ON Ga.Id = Lo.GameId 
+                            ORDER BY LoanDate
+                            OFFSET @index ROWS
+                            FETCH NEXT @size ROWS ONLY";
 
             // Aplying pagination limits
             var param = new DynamicParameters();
             param.Add("@index", offset, DbType.Int32);
             param.Add("@size", limit == 0 ? 10 : limit, DbType.Int32);
 
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                var result = await connection.QueryAsync<Loan>(query.ToString(), param);
+                var result = await connection.QueryAsync<Loan, Friend, Game, Loan>(query,
+                    map: (loan, friend, game) =>
+                    {
+                        loan.Friend = friend;
+                        loan.Game = game;
+                        return loan;
+                    }
+                    , param);
                 return result;
             }
         }
@@ -59,7 +71,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             var param = new DynamicParameters();
             param.Add("@Id", id, DbType.Guid);
 
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
                 var result = await connection.QueryAsync<Loan>(query, param);
@@ -75,7 +87,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
                                     LoanStatus = @LoanStatus
                                 WHERE Id = @Id";
 
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
                 await connection.ExecuteAsync(command, entity);
@@ -89,10 +101,86 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             var param = new DynamicParameters();
             param.Add("@Id", id, DbType.Guid);
 
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
                 await connection.ExecuteAsync(command, param);
+            }
+        }
+
+        public async Task EndLoan(Guid id)
+        {
+            var command = @"UPDATE Loans SET Returned = 't' WHERE Id = @Id";
+
+            var param = new DynamicParameters();
+            param.Add("@Id", id, DbType.Guid);
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+                await connection.ExecuteAsync(command, param);
+            }
+        }
+
+        public async Task<IEnumerable<Loan>> ReadLoanByFriendNameAsync(string name, int offset, int limit)
+        {
+            var query = @"SELECT * FROM Loans AS Lo
+                            JOIN Friends AS Fr ON Fr.Id = Lo.FriendId
+                            JOIN Games AS Ga ON Ga.Id = Lo.GameId
+                            WHERE Fr.Name LIKE CONCAT('%', @name, '%') 
+                            ORDER BY Name
+                            OFFSET @index ROWS
+                            FETCH NEXT @size ROWS ONLY";
+
+            // Aplying pagination limits and parameters
+            var param = new DynamicParameters();
+            param.Add("@index", offset, DbType.Int32);
+            param.Add("@size", limit == 0 ? 10 : limit, DbType.Int32);
+            param.Add("@name", name);
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+                var result = await connection.QueryAsync<Loan, Friend, Game, Loan>(query,
+                    map: (loan, friend, game) => 
+                    {
+                        loan.Friend = friend;
+                        loan.Game = game;
+                        return loan;
+                    }
+                    , param);
+                return result;
+            }
+        }
+
+        public async Task<IEnumerable<Loan>> ReadLoanHistoryByGameAsync(Guid id, int offset, int limit)
+        {
+            var query = @"SELECT * FROM Loans AS Lo
+                            JOIN Friends AS Fr ON Fr.Id = Lo.FriendId
+                            JOIN Games AS Ga ON Ga.Id = Lo.GameId
+                            WHERE Lo.Id = @Id 
+                            ORDER BY Name
+                            OFFSET @index ROWS
+                            FETCH NEXT @size ROWS ONLY";
+
+            // Aplying pagination limits and parameters
+            var param = new DynamicParameters();
+            param.Add("@index", offset, DbType.Int32);
+            param.Add("@size", limit == 0 ? 10 : limit, DbType.Int32);
+            param.Add("@Id", id, DbType.Guid);
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+                var result = await connection.QueryAsync<Loan, Friend, Game, Loan>(query,
+                    map: (loan, friend, game) =>
+                    {
+                        loan.Friend = friend;
+                        loan.Game = game;
+                        return loan;
+                    }
+                    , param);
+                return result;
             }
         }
     }

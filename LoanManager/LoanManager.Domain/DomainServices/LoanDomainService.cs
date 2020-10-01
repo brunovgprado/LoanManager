@@ -1,4 +1,4 @@
-﻿using LoadManager.Domain.Interfaces;
+﻿using LoanManager.Domain.Interfaces;
 using LoanManager.Domain.Entities;
 using LoanManager.Domain.Interfaces.DomainServices;
 using System;
@@ -47,19 +47,19 @@ namespace LoanManager.Domain.DomainServices
         #endregion
 
         #region Business operations
-        public void EndLoan(Guid id)
+        public async Task EndLoan(Guid id)
         {
-            throw new NotImplementedException();
+            await _unityOfWork.Loans.EndLoan(id);
         }
 
-        public Task<Loan> ReadLoanByFriendNameAsync(string name)
+        public async Task<IEnumerable<Loan>> ReadLoanByFriendNameAsync(string name, int offset, int limit)
         {
-            throw new NotImplementedException();
+            return await _unityOfWork.Loans.ReadLoanByFriendNameAsync(name, offset, limit);
         }
 
-        public Task<IEnumerable<Loan>> ReadLoanHistoryByGameAsync(int offset, int limit)
+        public async Task<IEnumerable<Loan>> ReadLoanHistoryByGameAsync(Guid id, int offset, int limit)
         {
-            throw new NotImplementedException();
+            return await _unityOfWork.Loans.ReadLoanHistoryByGameAsync(id, offset, limit);
         }
         #endregion
     }

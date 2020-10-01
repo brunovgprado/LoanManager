@@ -9,7 +9,6 @@ using LoanManager.Domain.Interfaces.DomainServices;
 using LoanManager.Domain.Validators.LoanValidators;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LoanManager.Application.AppServices
@@ -98,6 +97,7 @@ namespace LoanManager.Application.AppServices
                 return response.SetInternalServerError(Resources.UnexpectedErrorWhileUpdatingLoan);
             }
         }
+
         public async Task<Response<bool>> Delete(Guid id)
         {
             var response = new Response<bool>();
@@ -113,5 +113,50 @@ namespace LoanManager.Application.AppServices
             }
         }
         #endregion
+
+        public async Task<Response<IEnumerable<LoanDto>>> ReadLoanByFriendNameAsync(string name, int offset, int limit)
+        {
+            var response = new Response<IEnumerable<LoanDto>>();
+            try
+            {
+                var result = await _loanDomainService.ReadLoanByFriendNameAsync(name, offset, limit);
+                return response.SetResult(_mapper.Map<IEnumerable<LoanDto>>(result));
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                return response.SetInternalServerError(Resources.UnexpectedErrorWhileGettingLoan);
+            }
+        }
+
+        public async Task<Response<bool>> EndLoan(Guid id)
+        {
+            var response = new Response<bool>();
+            try
+            {
+                await _loanDomainService.EndLoan(id);
+                return response.SetResult(true);
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                return response.SetInternalServerError(Resources.UnexpectedErrorWhileDeletingLoan);
+            }           
+        }
+
+        public async Task<Response<IEnumerable<LoanDto>>> ReadLoanHistoryByGameAsync(Guid id, int offset, int limit)
+        {
+            var response = new Response<IEnumerable<LoanDto>>();
+            try
+            {
+                var result = await _loanDomainService.ReadLoanHistoryByGameAsync(id, offset, limit);
+                return response.SetResult(_mapper.Map<IEnumerable<LoanDto>>(result));
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
+                return response.SetInternalServerError(Resources.UnexpectedErrorWhileGettingLoan);
+            }
+        }
     }
 }

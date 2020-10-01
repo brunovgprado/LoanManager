@@ -2,6 +2,7 @@
 using LoanManager.Domain.Entities;
 using LoanManager.Domain.Interfaces.Repositories;
 using Microsoft.Extensions.Configuration;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,10 +16,12 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
     public class GameRepository : IGameRepository
     {
         private readonly IConfiguration _configuration;
+        private readonly string _connectionString;
 
         public GameRepository(IConfiguration configuration)
         {
             _configuration = configuration;
+            _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
         }
 
         public async Task CreateAsync(Game entity)
@@ -26,7 +29,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             var command = @"INSERT INTO Games (Id, Title, Description, Genre, Platform)
                              VALUES (@Id, @Title, @Description, @Genre, @Platform)";
             
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
                 var afftectedRows = await connection.ExecuteAsync(command, entity);               
@@ -44,7 +47,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             param.Add("@index", offset, DbType.Int32);
             param.Add("@size", limit == 0 ? 10 : limit, DbType.Int32);
 
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
                 var result = await connection.QueryAsync<Game>(query.ToString(), param);
@@ -59,7 +62,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             var param = new DynamicParameters();
             param.Add("@Id", id, DbType.Guid);
 
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
                 var result = await connection.QueryAsync<Game>(query, param);
@@ -74,7 +77,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             var param = new DynamicParameters();
             param.Add("@Id", id, DbType.Guid);
 
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
                 await connection.ExecuteAsync(command, param);
@@ -90,7 +93,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
                                     Platform = @Platform
                                 WHERE Id = @Id";
 
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
                 await connection.ExecuteAsync(command, entity);
