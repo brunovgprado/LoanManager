@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using LoanManager.Api.Models;
+using LoanManager.Api.Models.Request;
 using LoanManager.Application.Interfaces.AppServices;
 using LoanManager.Application.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
@@ -15,19 +17,23 @@ namespace LoanManager.Api.Controller
     {
         private readonly IActionResultConverter _actionResultConverter;
         private readonly IGameAppService _gameService;
+        private readonly IMapper _mapper;
 
         public GamesController(
             IActionResultConverter actionResultConverter,
-            IGameAppService gameService)
+            IGameAppService gameService,
+            IMapper mapper)
         {
             _actionResultConverter = actionResultConverter;
             _gameService = gameService;
+            _mapper = mapper;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(GameDto game)
+        public async Task<IActionResult> Create(CreateGameRequest game)
         {
-            return _actionResultConverter.Convert( await _gameService.Create(game));
+            var gameDto = _mapper.Map<GameDto>(game);
+            return _actionResultConverter.Convert( await _gameService.Create(gameDto));
         }
 
         [HttpGet("{id}")]

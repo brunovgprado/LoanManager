@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using LoanManager.Api.Models;
+using LoanManager.Api.Models.Request;
 using LoanManager.Application.Interfaces.AppServices;
 using LoanManager.Application.Models.DTO;
 using Microsoft.AspNetCore.Http;
@@ -16,19 +18,24 @@ namespace LoanManager.Api.Controller
     {
         private readonly IActionResultConverter _actionResultConverter;
         private readonly ILoanAppService _loanAppService;
+        private readonly IMapper _mapper;
 
         public LoansController(
             IActionResultConverter actionResultConverter,
-            ILoanAppService loanAppService)
+            ILoanAppService loanAppService,
+            IMapper mapper)
         {
             _actionResultConverter = actionResultConverter;
             _loanAppService = loanAppService;
+            _mapper = mapper;
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> Create(LoanDto loan)
+        public async Task<IActionResult> Create(CreateLoanRequest loan)
         {
-            return _actionResultConverter.Convert(await _loanAppService.Create(loan));
+            var loanDto = _mapper.Map<LoanDto>(loan);
+            return _actionResultConverter.Convert(await _loanAppService.Create(loanDto));
         }
 
         [HttpGet("{id}")]
@@ -53,6 +60,26 @@ namespace LoanManager.Api.Controller
         public async Task<IActionResult> Delete(Guid id)
         {
             return _actionResultConverter.Convert(await _loanAppService.Delete(id));
+        }
+
+        [HttpGet("/friendloans")]
+        public async Task<IActionResult> GetByFriendName([FromQuery] string friendName, int offset, int limit)
+        {
+            return _actionResultConverter.Convert(
+                await _loanAppService.ReadLoanByFriendNameAsync(friendName, offset, limit));
+        }
+
+        [HttpGet("/loansbygameid")]
+        public async Task<IActionResult> GetByGame([FromQuery] Guid id, int offset, int limit)
+        {
+            return _actionResultConverter.Convert(
+                await _loanAppService.ReadLoanHistoryByGameAsync(id, offset, limit));
+        }
+
+        [HttpPut("/endloan")]
+        public async Task<IActionResult> EndLoan(Guid id)
+        {
+            return _actionResultConverter.Convert(await _loanAppService.EndLoan(id));
         }
     }
 }

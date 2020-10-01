@@ -1,7 +1,5 @@
-﻿using LoanManager.Domain.Enums.Loan;
+﻿using LoanManager.Domain.Entities;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LoanManager.Application.Models.DTO
 {
@@ -11,6 +9,9 @@ namespace LoanManager.Application.Models.DTO
         public Guid FriendId { get; set; }
         public Guid GameId { get; set; }
         public DateTime LoanDate { get; set; }
-        public Status LoanStatus { get; set; }
+        public bool Returned { get; set; }
+        public FriendDto Friend { get; set; }
+        public Game Game { get; set; }
+
     }
 }
