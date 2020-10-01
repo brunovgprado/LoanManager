@@ -19,8 +19,8 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "DB_CONNECTION_STRING": "Server=tcp:pradoserver.database.windows.net,1433;Initial Catalog=pradoDataBase;Persist Security Info=False;User ID=bruno.prado;Password=9933@pipo;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
-        "ASPNETCORE_ENVIRONMENT": "Local"
+        "DB_CONNECTION_STRING": "host=127.0.0.1;port=32773;database=loandb;username=loanuser;password=loanuser",
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "LoanManager.Api": {

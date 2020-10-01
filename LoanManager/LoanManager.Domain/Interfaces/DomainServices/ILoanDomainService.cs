@@ -9,8 +9,8 @@ namespace LoanManager.Domain.Interfaces.DomainServices
 {
     public interface ILoanDomainService : IGenericService<Guid, Loan>
     {
-        void EndLoan(Guid id);
-        Task<Loan> ReadLoanByFriendNameAsync(string name);
-        Task<IEnumerable<Loan>> ReadLoanHistoryByGameAsync(int offset, int limit);
+        Task EndLoan(Guid id);
+        Task<IEnumerable<Loan>> ReadLoanByFriendNameAsync(string name, int offset, int limit);
+        Task<IEnumerable<Loan>> ReadLoanHistoryByGameAsync(Guid id, int offset, int limit);
     }
 }
