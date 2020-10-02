@@ -10,5 +10,6 @@ namespace LoanManager.Domain.Interfaces.Repositories
         Task EndLoan(Guid id);
         Task<IEnumerable<Loan>> ReadLoanByFriendNameAsync(string name, int offset, int limit);
         Task<IEnumerable<Loan>> ReadLoanHistoryByGameAsync(Guid id, int offset, int limit);
+        Task<bool> CheckIfGameIsOnALoanInProgress(Guid game);
     }
 }

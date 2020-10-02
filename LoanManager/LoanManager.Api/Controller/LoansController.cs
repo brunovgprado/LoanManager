@@ -7,6 +7,7 @@ using LoanManager.Api.Models;
 using LoanManager.Api.Models.Request;
 using LoanManager.Application.Interfaces.AppServices;
 using LoanManager.Application.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +15,7 @@ namespace LoanManager.Api.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class LoansController : ControllerBase
     {
         private readonly IActionResultConverter _actionResultConverter;

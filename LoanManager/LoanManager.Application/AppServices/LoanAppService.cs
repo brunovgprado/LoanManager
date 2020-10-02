@@ -4,6 +4,7 @@ using LoanManager.Application.Interfaces.AppServices;
 using LoanManager.Application.Models.DTO;
 using LoanManager.Application.Properties;
 using LoanManager.Application.Shared;
+using LoanManager.Domain;
 using LoanManager.Domain.Entities;
 using LoanManager.Domain.Interfaces.DomainServices;
 using LoanManager.Domain.Validators.LoanValidators;
@@ -40,6 +41,10 @@ namespace LoanManager.Application.AppServices
             catch (ValidationException ex)
             {
                 return response.SetRequestValidationError(ex);
+            }
+            catch(GameIsOnLoanException ex)
+            {
+                return response.SetBadRequest(ex.Message);
             }
             catch (Exception ex)
             {

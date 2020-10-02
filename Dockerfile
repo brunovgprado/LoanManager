@@ -7,6 +7,7 @@ COPY LoanManager/LoanManager.Domain/*.csproj ./LoanManager/LoanManager.Domain/
 COPY LoanManager/LoanManager.Application/*.csproj ./LoanManager/LoanManager.Application/
 COPY LoanManager/LoanManager.Infrastructure/*.csproj ./LoanManager/LoanManager.Infrastructure/
 COPY LoanManager/LoanManager.IoC/*.csproj ./LoanManager/LoanManager.IoC/
+COPY LoanManager/LoanManager.Auth/*.csproj ./LoanManager/LoanManager.Auth/
 COPY LoanManager/LoanManager.Tests/*.csproj ./LoanManager/LoanManager.Tests/
 
 RUN dotnet restore LoanManager/LoanManager.Api/LoanManager.Api.csproj
@@ -16,6 +17,7 @@ COPY LoanManager/LoanManager.Domain/. ./LoanManager/LoanManager.Domain/
 COPY LoanManager/LoanManager.Application/. ./LoanManager/LoanManager.Application/
 COPY LoanManager/LoanManager.Infrastructure/. ./LoanManager/LoanManager.Infrastructure/
 COPY LoanManager/LoanManager.IoC/. ./LoanManager/LoanManager.IoC/
+COPY LoanManager/LoanManager.Auth/. ./LoanManager/LoanManager.Auth/
 
 WORKDIR /app/LoanManager
 RUN dotnet publish LoanManager.Api/LoanManager.Api.csproj -c Release -o out

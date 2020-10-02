@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LoanManager.Application\LoanManager.Application.csproj" />
+    <ProjectReference Include="..\LoanManager.Auth\LoanManager.Auth.csproj" />
     <ProjectReference Include="..\LoanManager.IoC\LoanManager.IoC.csproj" />
   </ItemGroup>
 
