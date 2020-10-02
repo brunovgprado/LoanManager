@@ -4,24 +4,38 @@ using LoanManager.Domain.Interfaces.DomainServices;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LoanManager.Domain.Validators.GameValidators;
+using FluentValidation;
 
 namespace LoanManager.Domain.DomainServices
 {
     public class GameDomainService : IGameDomainService
     {
         private readonly IUnitOfWork _unityOfWork;
+        private readonly CreateGameValidator _createGameValidator;
 
-        public GameDomainService(IUnitOfWork unityOfWork)
+
+        public GameDomainService(
+            IUnitOfWork unityOfWork,
+            CreateGameValidator createGameValidator
+            )
         {
             _unityOfWork = unityOfWork;
+            _createGameValidator = createGameValidator;
         }
 
         #region CRUD operations
-        public async Task<Guid> CreateAsync(Game entity)
+        public async Task<Guid> CreateAsync(Game game)
         {
-            entity.Id = Guid.NewGuid();
-            await _unityOfWork.Games.CreateAsync(entity);
-            return entity.Id;
+            // Validantig entity
+            await _createGameValidator.ValidateAndThrowAsync(game);
+
+            // Setting unique identificatior to entity
+            game.Id = Guid.NewGuid();
+
+            // Persisting entity
+            await _unityOfWork.Games.CreateAsync(game);
+            return game.Id;
         }
 
         public async Task<IEnumerable<Game>> ReadAllAsync(int offset, int limit)

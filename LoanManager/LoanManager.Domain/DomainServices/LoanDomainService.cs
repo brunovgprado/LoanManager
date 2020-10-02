@@ -5,25 +5,36 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using LoanManager.Domain.Validators.LoanValidators;
+using FluentValidation;
 
 namespace LoanManager.Domain.DomainServices
 {
     public class LoanDomainService : ILoanDomainService
     {
         private readonly IUnitOfWork _unityOfWork;
+        private readonly CreateLoanValidator _createLoanValidations;
 
-        public LoanDomainService(IUnitOfWork unityOfWork)
+        public LoanDomainService(
+            IUnitOfWork unityOfWork,
+            CreateLoanValidator createLoanValidations
+            )
         {
             _unityOfWork = unityOfWork;
+            _createLoanValidations = createLoanValidations;
         }
 
         #region CRUD operations
         public async Task<Guid> CreateAsync(Loan entity)
         {
-            // Set date and unique identificator to entity before persit
+            // Validating entity
+            await _createLoanValidations.ValidateAndThrowAsync(entity);
+
+            // Seting date and unique identificator to entity before persit
             entity.Id = Guid.NewGuid();
             entity.LoanDate = DateTime.Now;
 
+            // Persisting entity
             await _unityOfWork.Loans.CreateAsync(entity);
             return entity.Id;
         }

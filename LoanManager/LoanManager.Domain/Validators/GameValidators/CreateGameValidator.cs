@@ -17,7 +17,8 @@ namespace LoanManager.Domain.Validators.GameValidators
                 .WithMessage(Resources.GameNameIsMandatory);
 
             RuleFor(x => x.Platform)
-                .NotNull()    
+                .NotEmpty()
+                .Must(x => !String.IsNullOrWhiteSpace(x))
                 .WithMessage(Resources.PlatformNameISMandatory);
         }
     }
