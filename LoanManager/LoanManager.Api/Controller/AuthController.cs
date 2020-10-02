@@ -26,14 +26,14 @@ namespace LoanManager.Api.Controller
             _service = service;
         }
 
-        [HttpPost("login")]
+        [HttpPost("signin")]
         [AllowAnonymous]
         public async Task<IActionResult> Authenticate([FromBody] UserCredentials credentials)
         {
             return _actionResultConverter.Convert(await _service.Authenticate(credentials));
         }
 
-        [HttpPost("signin")]
+        [HttpPost("signup")]
         [AllowAnonymous]
         public async Task<IActionResult> CreateAccount([FromBody] UserCredentials credentials)
         {
