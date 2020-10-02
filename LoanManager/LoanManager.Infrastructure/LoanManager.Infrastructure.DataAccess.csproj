@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LoanManager.Auth\LoanManager.Auth.csproj" />
     <ProjectReference Include="..\LoanManager.Domain\LoanManager.Domain.csproj" />
   </ItemGroup>
 
