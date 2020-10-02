@@ -1,0 +1,9 @@
+language: csharp
+mono: none
+dist: xenial
+dotnet: 3.1
+install:
+  - dotnet restore ./LoanManager/LoanManager.Api/LoanManager.Api.csproj
+script:
+  - dotnet build ./LoanManager/LoanManager.Api/LoanManager.Api.csproj
+  - dotnet test ./LoanManager/LoanManager.Tests/LoanManager.Tests.csproj
