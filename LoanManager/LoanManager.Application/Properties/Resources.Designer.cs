@@ -61,6 +61,15 @@ namespace LoanManager.Application.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unexpected error while checking database connection.
+        /// </summary>
+        internal static string UnexpectedErrorWhileCheckingDatabaseConnection {
+            get {
+                return ResourceManager.GetString("UnexpectedErrorWhileCheckingDatabaseConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected error while creating game.
         /// </summary>
         internal static string UnexpectedErrorWhileCreatingGame {
