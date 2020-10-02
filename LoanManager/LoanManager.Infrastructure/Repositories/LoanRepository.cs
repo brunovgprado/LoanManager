@@ -182,6 +182,25 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
                     , param);
                 return result;
             }
+
+        }
+
+        public async Task<bool> CheckIfGameIsOnALoanInProgress(Guid id)
+        {
+            var query = @"SELECT CASE WHEN EXISTS 
+                (SELECT 1 FROM Loans WHERE GameId = @GameId)
+                THEN CAST (1 AS BIT) 
+                ELSE CAST (0 AS BIT) END";
+
+            var param = new DynamicParameters();
+            param.Add("@GameId", id, DbType.Guid);
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+                var result = await connection.QueryAsync<bool>(query, param);
+                return result.FirstOrDefault();
+            }
         }
     }
 }

@@ -25,7 +25,16 @@ CREATE TABLE Loans (
     Returned BOOLEAN
 );
 
+--Creating Users table
+CREATE TABLE Users (
+    Id UUID PRIMARY KEY,
+    Email varchar(100),
+    Password varchar(200)
+);
+
 ALTER TABLE "friends" OWNER TO loanuser;
+ALTER TABLE "games" OWNER TO loanuser;
+ALTER TABLE "users" OWNER TO loanuser;
 
 -- Pushing some mocked data to database
 INSERT INTO Friends (Id, Name, PhoneNumber) VALUES ('c8400148-79d5-4d25-8dd8-5b2bd217c6a6', 'Luiz Helmont', '21985487958');
@@ -38,9 +47,6 @@ INSERT INTO Friends (Id, Name, PhoneNumber) VALUES ('6d25efab-3ab5-47d1-9401-3fd
 INSERT INTO Friends (Id, Name, PhoneNumber) VALUES ('de4019e6-3f02-4a20-a6cb-b6aa3e0ec41d', 'Patricia Souza', '21965210352');
 INSERT INTO Friends (Id, Name, PhoneNumber) VALUES ('aaf34e57-204f-45a2-b338-acfc725e2706', 'João Gabriel', '21965520102');
 INSERT INTO Friends (Id, Name, PhoneNumber) VALUES ('0d54a6b4-4b46-46a0-bf72-23576c61ff49', 'Gabriel Moura', '51977485478');
-
-
-ALTER TABLE "games" OWNER TO loanuser;
 
 INSERT INTO Games (Id, Title, Description, Genre, Platform) VALUES ('7d613abf-367b-45a9-92b3-0d2374d9e523', 'Dino Crisis', 'Amazing survival horror game', 'survival', 'Console');
 INSERT INTO Games (Id, Title, Description, Genre, Platform) VALUES ('ebe22480-e47b-409c-af0b-0d1ec697a71a', 'Dino Crisis 2', 'The best game ever!', 'survival', 'Console');

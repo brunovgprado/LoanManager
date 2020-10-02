@@ -19,7 +19,7 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "DB_CONNECTION_STRING": "host=127.0.0.1;port=32773;database=loandb;username=loanuser;password=loanuser",
+        "DB_CONNECTION_STRING": "host=127.0.0.1;port=32772;database=loandb;username=loanuser;password=loanuser",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },

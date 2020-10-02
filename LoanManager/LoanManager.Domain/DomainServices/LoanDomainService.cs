@@ -30,6 +30,14 @@ namespace LoanManager.Domain.DomainServices
             // Validating entity
             await _createLoanValidations.ValidateAndThrowAsync(entity);
 
+            // Checks whether the game is on a loan in progress
+            var gameIsOnLoan = await _unityOfWork.Loans
+                .CheckIfGameIsOnALoanInProgress(entity.GameId);
+
+            // Throwing exception when existis some user account with the same email adress
+            if (gameIsOnLoan)
+                throw new GameIsOnLoanException();
+
             // Seting date and unique identificator to entity before persit
             entity.Id = Guid.NewGuid();
             entity.LoanDate = DateTime.Now;
