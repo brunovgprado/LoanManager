@@ -15,12 +15,10 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 {
     public class LoanRepository : ILoanRepository
     {
-        private readonly IConfiguration _configuration;
         private readonly string _connectionString;
 
         public LoanRepository(IConfiguration configuration)
         {
-            _configuration = configuration;
             _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
         }
 

@@ -17,6 +17,7 @@ namespace LoanManager.IoC.DataAccessConfiguration
             services.AddSingleton<IFriendRepository, FriendRepository>();
             services.AddSingleton<ILoanRepository, LoanRepository>();
             services.AddSingleton<IAuthRepository, AuthRepository>();
+            services.AddSingleton<IHealthCheckRepository, HealthCheckRepository>();
             services.AddSingleton<IUnitOfWork, UnitOfWork>();
         }
     }

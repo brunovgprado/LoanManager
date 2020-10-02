@@ -16,6 +16,7 @@ namespace LoanManager.Application.Configurations
             services.AddSingleton<IGameAppService, GameAppService>();
             services.AddSingleton<IFriendAppService, FriendAppService>();
             services.AddSingleton<ILoanAppService, LoanAppService>();
+            services.AddSingleton<IHealthCheckService, HealthCheckService>();
             return services;
         }
     }
