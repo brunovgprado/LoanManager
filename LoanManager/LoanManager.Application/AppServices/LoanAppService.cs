@@ -16,17 +16,14 @@ namespace LoanManager.Application.AppServices
     public class LoanAppService : ILoanAppService
     {
         private readonly ILoanDomainService _loanDomainService;
-        private readonly CreateLoanValidator _createLoanValidations;
         private readonly IMapper _mapper;
 
         public LoanAppService(
             ILoanDomainService loanDomainService,
-            CreateLoanValidator validations,
             IMapper mapper
             )
         {
             _loanDomainService = loanDomainService;
-            _createLoanValidations = validations;
             _mapper = mapper;
         }
 
@@ -37,7 +34,6 @@ namespace LoanManager.Application.AppServices
             try
             {
                 var loanEntity = _mapper.Map<Loan>(loan);
-                await _createLoanValidations.ValidateAndThrowAsync(loanEntity);
                 var result = await _loanDomainService.CreateAsync(loanEntity);
                 return response.SetResult(new { Id = result });
             }

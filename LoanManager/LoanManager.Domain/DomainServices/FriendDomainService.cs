@@ -5,22 +5,35 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using LoanManager.Domain.Validators.FriendValidators;
+using FluentValidation;
 
 namespace LoanManager.Domain.DomainServices
 {
     public class FriendDomainService : IFriendDomainService
     {
         private readonly IUnitOfWork _unityOfWork;
+        private readonly CreateFriendValidator _createFriendValidations;
 
-        public FriendDomainService(IUnitOfWork unityOfWork)
+        public FriendDomainService(
+            IUnitOfWork unityOfWork,
+            CreateFriendValidator createFriendValidations
+            )
         {
             _unityOfWork = unityOfWork;
+            _createFriendValidations = createFriendValidations;
         }
 
         #region CRUD operations
         public async Task<Guid> CreateAsync(Friend entity)
         {
+            // Validating entity
+            await _createFriendValidations.ValidateAndThrowAsync(entity);
+
+            // Setting unique identificator to entity
             entity.Id = Guid.NewGuid();
+
+            // Persisting entity
             await _unityOfWork.Friends.CreateAsync(entity);
             return entity.Id;
         }

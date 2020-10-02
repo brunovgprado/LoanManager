@@ -158,7 +158,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             var query = @"SELECT * FROM Loans AS Lo
                             JOIN Friends AS Fr ON Fr.Id = Lo.FriendId
                             JOIN Games AS Ga ON Ga.Id = Lo.GameId
-                            WHERE Lo.Id = @Id 
+                            WHERE Ga.Id = @Id 
                             ORDER BY Name
                             OFFSET @index ROWS
                             FETCH NEXT @size ROWS ONLY";

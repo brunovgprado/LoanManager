@@ -17,17 +17,14 @@ namespace LoanManager.Application.AppServices
     public class FriendAppService : IFriendAppService
     {
         private readonly IFriendDomainService _friendDomainService;
-        private readonly CreateFriendValidator _createFriendValidations;
         private readonly IMapper _mapper;
 
         public FriendAppService(
             IFriendDomainService friendDomainService,
-            CreateFriendValidator validations,
             IMapper mapper
             )
         {
             _friendDomainService = friendDomainService;
-            _createFriendValidations = validations;
             _mapper = mapper;
         }
 
@@ -37,7 +34,6 @@ namespace LoanManager.Application.AppServices
             try
             {
                 var friendEntity = _mapper.Map<Friend>(friend);
-                await _createFriendValidations.ValidateAndThrowAsync(friendEntity);
                 var result = await _friendDomainService.CreateAsync(friendEntity);
                 return response.SetResult(new { Id = result });
             }

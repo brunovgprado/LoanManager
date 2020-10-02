@@ -17,17 +17,14 @@ namespace LoanManager.Application.AppServices
     public class GameAppService : IGameAppService
     {
         private readonly IGameDomainService _gameDomainService;
-        private readonly CreateGameValidator _createGameValidator;
         private readonly IMapper _mapper;
 
         public GameAppService(
             IGameDomainService gameDomainService,
-            CreateGameValidator createGameValidator,
             IMapper mapper
             )
         {
             _gameDomainService = gameDomainService;
-            _createGameValidator = createGameValidator;
             _mapper = mapper;
         }
 
@@ -37,7 +34,6 @@ namespace LoanManager.Application.AppServices
             try
             {
                 var gameEntity = _mapper.Map<Game>(game);
-                await _createGameValidator.ValidateAndThrowAsync(gameEntity);
                 var result = await _gameDomainService.CreateAsync(gameEntity);
                 return response.SetResult(new { Id = result});
             }
