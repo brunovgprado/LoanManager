@@ -12,7 +12,7 @@ See /docs for endpoints description and tests with swagger.
 ## Safety
 
 All endpoints on Loan Manager are protected by authentication, so all requisitions need to have a Bearer token in the header.   
-To make the authentication process more easy, Loan Manager uses JWT and provides endpoints to signup and signin.
+To make the authentication process more easy, Loan Manager have an integrated authentication service that uses JWT and provides endpoints to signup and signin.
 
 ## How to run the project
 
