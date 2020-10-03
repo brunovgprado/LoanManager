@@ -5,7 +5,7 @@ Solution for manage your game loans
 
 See /docs for endpoints description and tests with swagger.
 
-- __Game registration__. You can registrate your games midias one by one individually, recording information like Title, Description, Genre and Platform.
+- __Game registration__. You can registrate your game midias one by one individually, recording information like Title, Description, Genre and Platform.
 - __Friend registration__. You can register your friends, recording Name and Phone number. You will use that data to register your media game loans.
 - __Loan registration__. With this feature, you are able to registrate your game loans, so you can loan a game midia to a friend and manage that loan. You can also end a loan, search loans by friend name and search loans by game identification id.
 
