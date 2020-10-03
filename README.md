@@ -25,4 +25,4 @@ $ docker-compose build
 ```
 $ docker-compose up
 ```
-So voilà! docker will up the API, create the database, create e populating the tables and make the Loan manager API accessible on 127.0.0.1:800.
+So voilà! docker will up the API and the PostgreSql server, create the database, create e populating the tables and make the Loan manager API accessible on localhost:8000.
