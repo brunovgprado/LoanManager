@@ -1,3 +1,5 @@
+[![Build Status Travis](https://travis-ci.com/brunovitorprado/LoanManager.svg?branch=master)](https://travis-ci.org/brunovitorprado/LoanManager)
+
 # LoanManager
 Solution for manage your game loans  
 
