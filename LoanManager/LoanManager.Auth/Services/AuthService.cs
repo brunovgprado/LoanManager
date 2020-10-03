@@ -97,6 +97,9 @@ namespace LoanManager.Auth.Services
                 if (userAlreadyExistis)
                     throw new EmailAdressAlreadyRegistredException();
 
+                // Generating Unique identification
+                userEntity.Id = Guid.NewGuid();
+
                 // Encrypting password before persist
                 userEntity.Password = _hasherService.EncriptKey(userEntity.Password);
 
