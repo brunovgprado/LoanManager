@@ -72,7 +72,7 @@ namespace LoanManager.Domain.DomainServices
         }
 
         public async Task<IEnumerable<Loan>> ReadLoanByFriendNameAsync(string name, int offset, int limit)
-        {
+        {            
             return await _unityOfWork.Loans.ReadLoanByFriendNameAsync(name, offset, limit);
         }
 

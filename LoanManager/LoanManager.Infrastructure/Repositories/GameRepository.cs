@@ -37,7 +37,19 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
         }
         public async Task<IEnumerable<Game>> ReadAllAsync(int offset, int limit)
         {
-            var query = @"SELECT * FROM Games 
+            var query = @"SELECT Ga.Id, 
+                                 Ga.Title, 
+                                 Ga.Description, 
+                                 Ga.Platform,
+                                 Ga.Genre,
+                                    (SELECT CASE WHEN
+                                    EXISTS(SELECT Lo.Returned FROM Loans Lo 
+                                            WHERE Lo.GameId = Ga.Id 
+                                                and Lo.Returned <> 't')
+                                    THEN CAST(1 AS BIT) 
+                		            ELSE CAST(0 AS BIT) END)
+                                    OnLoan
+                                FROM Games Ga
                                 ORDER BY Title
                                 OFFSET @index ROWS
                                 FETCH NEXT @size ROWS ONLY";
@@ -57,7 +69,21 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 
         public async Task<Game> ReadAsync(Guid id)
         {
-            var query = @"SELECT * FROM Games WHERE Id= @Id";
+            var query = @"SELECT Ga.Id, 
+                                 Ga.Title, 
+                                 Ga.Description, 
+                                 Ga.Platform,
+                                 Ga.Genre,
+                                    (SELECT CASE WHEN
+                                    EXISTS(SELECT Lo.Returned FROM Loans Lo 
+                                            WHERE Lo.GameId = Ga.Id 
+                                                and Lo.Returned <> 't')
+                                    THEN CAST(1 AS BIT) 
+                		            ELSE CAST(0 AS BIT) END)
+                                    OnLoan
+                                FROM Games Ga
+                                WHERE Id= @Id
+                                ORDER BY Ga.Title";
 
             var param = new DynamicParameters();
             param.Add("@Id", id, DbType.Guid);

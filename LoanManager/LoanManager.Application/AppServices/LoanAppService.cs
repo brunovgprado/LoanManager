@@ -120,8 +120,16 @@ namespace LoanManager.Application.AppServices
             var response = new Response<IEnumerable<LoanDto>>();
             try
             {
+                // Validating if name is null or empty
+                if (String.IsNullOrEmpty(name))
+                    throw new ValidationException(message:Resources.FriendNameIsMandatory);
+
                 var result = await _loanDomainService.ReadLoanByFriendNameAsync(name, offset, limit);
                 return response.SetResult(_mapper.Map<IEnumerable<LoanDto>>(result));
+            }
+            catch (ValidationException ex)
+            {
+                return response.SetRequestValidationError(ex);
             }
             catch (Exception ex)
             {
