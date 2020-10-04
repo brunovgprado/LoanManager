@@ -52,12 +52,6 @@ namespace LoanManager.Api.Controller
             return _actionResultConverter.Convert(await _loanAppService.GetAll(offset, limit));
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update(LoanDto loan)
-        {
-            return _actionResultConverter.Convert(await _loanAppService.Update(loan));
-        }
-
         [HttpDelete]
         public async Task<IActionResult> Delete(Guid id)
         {

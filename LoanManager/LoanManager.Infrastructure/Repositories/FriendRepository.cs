@@ -22,6 +22,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
         }
 
+        #region CRUD Operations
         public async Task CreateAsync(Friend entity)
         {
             var command = @"INSERT INTO Friends (Id, Name, PhoneNumber)
@@ -82,7 +83,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             }
         }
 
-        public async void Update(Friend entity)
+        public async Task Update(Friend entity)
         {
             var command = @"UPDATE Friends 
                                 SET Name = @Name, 
@@ -93,6 +94,26 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             {
                 connection.Open();
                 await connection.ExecuteAsync(command, entity);
+            }
+        }
+        #endregion
+
+        public async Task<bool> VerifyIfFriendExsistsById(Guid id)
+        {
+            var query = @"SELECT CASE WHEN
+                                EXISTS(SELECT 1 FROM Friends
+                                        WHERE Id = @Id)
+                                THEN CAST(1 AS BIT) 
+                		        ELSE CAST(0 AS BIT) END";
+
+            var param = new DynamicParameters();
+            param.Add("@Id", id, DbType.Guid);
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+                var result = await connection.QueryAsync<bool>(query, param);
+                return result.FirstOrDefault();
             }
         }
     }

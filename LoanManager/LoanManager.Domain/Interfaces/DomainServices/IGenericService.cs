@@ -9,6 +9,6 @@ namespace LoanManager.Domain.Interfaces.Services
     public interface IGenericService<TKey, T> : IBasicGenericService<TKey, T>
     {
         Task<T> ReadAsync(TKey id);
-        void Update(T entity);
+        Task Update(T entity);
     }
 }

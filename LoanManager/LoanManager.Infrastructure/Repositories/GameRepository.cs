@@ -24,6 +24,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
         }
 
+        #region CRUD Operations
         public async Task CreateAsync(Game entity)
         {            
             var command = @"INSERT INTO Games (Id, Title, Description, Genre, Platform)
@@ -75,7 +76,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
                                  Ga.Platform,
                                  Ga.Genre,
                                     (SELECT CASE WHEN
-                                    EXISTS(SELECT Lo.Returned FROM Loans Lo 
+                                    EXISTS(SELECT 1 FROM Loans Lo 
                                             WHERE Lo.GameId = Ga.Id 
                                                 and Lo.Returned <> 't')
                                     THEN CAST(1 AS BIT) 
@@ -98,7 +99,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 
         public async Task DeleteAsync(Guid id)
         {
-            var command = @"DELETE FROM Friends WHERE Id= @Id";
+            var command = @"DELETE FROM Games WHERE Id= @Id";
 
             var param = new DynamicParameters();
             param.Add("@Id", id, DbType.Guid);
@@ -110,7 +111,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             }
         }
 
-        public async void Update(Game entity)
+        public async Task Update(Game entity)
         {
             var command = @"UPDATE Games 
                                 SET Title = @Title, 
@@ -123,6 +124,26 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             {
                 connection.Open();
                 await connection.ExecuteAsync(command, entity);
+            }
+        }
+        #endregion
+
+        public async Task<bool> VerifyIfGameExsistsById(Guid id)
+        {
+            var query = @"SELECT CASE WHEN
+                                EXISTS(SELECT 1 FROM Games
+                                        WHERE Id = @Id)
+                                THEN CAST(1 AS BIT) 
+                		        ELSE CAST(0 AS BIT) END";
+
+            var param = new DynamicParameters();
+            param.Add("@Id", id, DbType.Guid);
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+                var result = await connection.QueryAsync<bool>(query, param);
+                return result.FirstOrDefault();
             }
         }
     }

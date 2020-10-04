@@ -6,6 +6,7 @@ using LoanManager.Application.Properties;
 using LoanManager.Application.Shared;
 using LoanManager.Domain;
 using LoanManager.Domain.Entities;
+using LoanManager.Domain.Exceptions;
 using LoanManager.Domain.Interfaces.DomainServices;
 using LoanManager.Domain.Validators.LoanValidators;
 using System;
@@ -17,14 +18,20 @@ namespace LoanManager.Application.AppServices
     public class LoanAppService : ILoanAppService
     {
         private readonly ILoanDomainService _loanDomainService;
+        private readonly IFriendDomainService _friendDomainService;
+        private readonly IGameDomainService _gameDomainService;
         private readonly IMapper _mapper;
 
         public LoanAppService(
             ILoanDomainService loanDomainService,
+            IFriendDomainService friendDomainService,
+            IGameDomainService gameDomainService,
             IMapper mapper
             )
         {
             _loanDomainService = loanDomainService;
+            _friendDomainService = friendDomainService;
+            _gameDomainService = gameDomainService;
             _mapper = mapper;
         }
 
@@ -42,7 +49,11 @@ namespace LoanManager.Application.AppServices
             {
                 return response.SetRequestValidationError(ex);
             }
-            catch(GameIsOnLoanException ex)
+            catch (EntityNotExistsException ex)
+            {
+                return response.SetNotFound(ex.Message);
+            }
+            catch (GameIsOnLoanException ex)
             {
                 return response.SetBadRequest(ex.Message);
             }
@@ -60,6 +71,10 @@ namespace LoanManager.Application.AppServices
             {
                 var result = await _loanDomainService.ReadAsync(id);
                 return response.SetResult(_mapper.Map<LoanDto>(result));
+            }
+            catch (EntityNotExistsException ex)
+            {
+                return response.SetNotFound(Resources.CantFounLoanWithGivenId);
             }
             catch (Exception ex)
             {
@@ -83,29 +98,18 @@ namespace LoanManager.Application.AppServices
             }
         }
 
-        public async Task<Response<bool>> Update(LoanDto game)
-        {
-            var response = new Response<bool>();
-            try
-            {
-                var gameEntity = _mapper.Map<Loan>(game);
-                _loanDomainService.Update(gameEntity);
-                return response.SetResult(true);
-            }
-            catch (Exception ex)
-            {
-                Console.Write(ex.Message);
-                return response.SetInternalServerError(Resources.UnexpectedErrorWhileUpdatingLoan);
-            }
-        }
-
         public async Task<Response<bool>> Delete(Guid id)
         {
             var response = new Response<bool>();
             try
             {
+                // Deletting entity
                 await _loanDomainService.DeleteAsync(id);
                 return response.SetResult(true);
+            }
+            catch (EntityNotExistsException ex)
+            {
+                return response.SetNotFound(Resources.CantFounLoanWithGivenId);
             }
             catch (Exception ex)
             {
@@ -145,6 +149,10 @@ namespace LoanManager.Application.AppServices
             {
                 await _loanDomainService.EndLoan(id);
                 return response.SetResult(true);
+            }
+            catch (EntityNotExistsException ex)
+            {
+                return response.SetNotFound(Resources.CantFounLoanWithGivenId);
             }
             catch (Exception ex)
             {

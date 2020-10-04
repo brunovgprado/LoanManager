@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CantFounFriendWithGivenId" xml:space="preserve">
+    <value>No friend with the given id was found</value>
+  </data>
+  <data name="CantFounGameWithGivenId" xml:space="preserve">
+    <value>No game with the given id was found</value>
+  </data>
   <data name="FriendIsMandatory" xml:space="preserve">
     <value>Friend can't be empty</value>
   </data>

@@ -85,11 +85,18 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                var result = await connection.QueryAsync<Loan>(query, param);
+                var result = await connection.QueryAsync<Loan, Friend, Game, Loan>(query,
+                    map: (loan, friend, game) =>
+                    {
+                        loan.Friend = friend;
+                        loan.Game = game;
+                        return loan;
+                    }
+                    , param);
                 return result.FirstOrDefault();
             }
         }
-        public async void Update(Loan entity)
+        public async Task Update(Loan entity)
         {
             var command = @"UPDATE Loans 
                                 SET FriendId = @FriendId, 
@@ -209,12 +216,31 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
         public async Task<bool> CheckIfGameIsOnALoanInProgress(Guid id)
         {
             var query = @"SELECT CASE WHEN EXISTS 
-                (SELECT 1 FROM Loans WHERE GameId = @GameId)
+                (SELECT 1 FROM Loans WHERE GameId = @GameId and Returned = 'f')
                 THEN CAST (1 AS BIT) 
                 ELSE CAST (0 AS BIT) END";
 
             var param = new DynamicParameters();
             param.Add("@GameId", id, DbType.Guid);
+
+            using (var connection = new NpgsqlConnection(_connectionString))
+            {
+                connection.Open();
+                var result = await connection.QueryAsync<bool>(query, param);
+                return result.FirstOrDefault();
+            }
+        }
+
+        public async Task<bool> VerifyIfLoanExsistsById(Guid id)
+        {
+            var query = @"SELECT CASE WHEN
+                                EXISTS(SELECT 1 FROM Loans
+                                        WHERE Id = @Id)
+                                THEN CAST(1 AS BIT) 
+                		        ELSE CAST(0 AS BIT) END";
+
+            var param = new DynamicParameters();
+            param.Add("@Id", id, DbType.Guid);
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
