@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using LoanManager.Domain.Validators.LoanValidators;
 using FluentValidation;
+using LoanManager.Domain.Exceptions;
+using LoanManager.Domain.Properties;
 
 namespace LoanManager.Domain.DomainServices
 {
@@ -27,8 +29,11 @@ namespace LoanManager.Domain.DomainServices
         #region CRUD operations
         public async Task<Guid> CreateAsync(Loan entity)
         {
-            // Validating entity
+            // Validating entity properties
             await _createLoanValidations.ValidateAndThrowAsync(entity);
+
+            // Verifyif friend and game exists on database and throw exception if not
+            await VerifyIfGameAndFriendExists(entity);
 
             // Checks whether the game is on a loan in progress
             var gameIsOnLoan = await _unityOfWork.Loans
@@ -53,14 +58,30 @@ namespace LoanManager.Domain.DomainServices
         }
         public async Task<Loan> ReadAsync(Guid id)
         {
-            return await _unityOfWork.Loans.ReadAsync(id);
+            // Verifying if friend exists on database
+            var result = await _unityOfWork.Loans.ReadAsync(id);
+            if(result == null)
+                throw new EntityNotExistsException();
+
+            return result;
         }
-        public void Update(Loan entity)
+        public async Task Update(Loan entity)
         {
-            _unityOfWork.Loans.Update(entity);
+            // Verifying if friend exists on database
+            var loanExistis = await this.VerifyIfLoanExsistsById(entity.Id);
+            if (!loanExistis)
+                throw new EntityNotExistsException();
+
+            await _unityOfWork.Loans.Update(entity);
         }
+
         public async Task DeleteAsync(Guid id)
         {
+            // Verifying if loan exists on database
+            var loanExistis = await this.VerifyIfLoanExsistsById(id);
+            if (!loanExistis)
+                throw new EntityNotExistsException();
+
             await _unityOfWork.Loans.DeleteAsync(id);
         }
         #endregion
@@ -68,6 +89,11 @@ namespace LoanManager.Domain.DomainServices
         #region Business operations
         public async Task EndLoan(Guid id)
         {
+            // Verifying if loan exists on database
+            var loanExistis = await this.VerifyIfLoanExsistsById(id);
+            if (!loanExistis)
+                throw new EntityNotExistsException();
+
             await _unityOfWork.Loans.EndLoan(id);
         }
 
@@ -81,5 +107,27 @@ namespace LoanManager.Domain.DomainServices
             return await _unityOfWork.Loans.ReadLoanHistoryByGameAsync(id, offset, limit);
         }
         #endregion
+
+        private async Task<bool> VerifyIfLoanExsistsById(Guid id)
+        {
+            return await _unityOfWork.Loans.VerifyIfLoanExsistsById(id);
+        }
+
+        private async Task VerifyIfGameAndFriendExists(Loan loan)
+        {
+            // Verifying if friend exists on database
+            StringBuilder errorMessages = new StringBuilder();
+            var friendExistis = await _unityOfWork.Friends.VerifyIfFriendExsistsById(loan.FriendId);
+            if (!friendExistis)
+                errorMessages.AppendLine(Resources.CantFounFriendWithGivenId);
+
+            // Verifying if game exists on database
+            var gameExistis = await _unityOfWork.Games.VerifyIfGameExsistsById(loan.GameId);
+            if (!gameExistis)
+                errorMessages.AppendLine(Resources.CantFounGameWithGivenId);
+
+            if (!friendExistis || !gameExistis)
+                throw new EntityNotExistsException(errorMessages.ToString());
+        }
     }
 }

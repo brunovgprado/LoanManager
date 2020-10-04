@@ -17,18 +17,21 @@ namespace LoanManager.Auth.Services
         private readonly IAuthRepository _repository;
         private readonly IMapper _mapper;
         private readonly KeyHasherService _hasherService;
+        private readonly TokenService _tokenService;
 
         public AuthService(
             IAuthRepository repository, 
             IMapper mapper,
             UserValidator userValidator,
-            KeyHasherService hasherService
+            KeyHasherService hasherService,
+            TokenService tokenService
             )
         {
             _repository = repository;
             _mapper = mapper;
             _userValidator = userValidator;
             _hasherService = hasherService;
+            _tokenService = tokenService;
         }
 
         public async Task<Response<UserResponse>> Authenticate(UserCredentials credentials)
@@ -42,7 +45,10 @@ namespace LoanManager.Auth.Services
                 // Mapping UserCredentials to User entity
                 var userEntity = _mapper.Map<User>(credentials);
 
-                // Trying to get User account with match email address
+                // Converting email to lowwercase
+                userEntity.Email = userEntity.Email.ToLower();
+
+                // Trying to get User account that match email address
                 var user = await _repository.GetUser(userEntity);
 
                 // Throwing exception when email address don't match any users
@@ -50,17 +56,17 @@ namespace LoanManager.Auth.Services
                     throw new UserNotFoundException();
 
                 // Validating password
-                var passwordNotMatch =_hasherService.VerifyKey(credentials.Password, user.Password);
+                var passwordMatch =_hasherService.VerifyKey(credentials.Password, user.Password);
 
                 // Throwing exception when password not match
-                if (passwordNotMatch)
+                if (!passwordMatch)
                     throw new UserNotFoundException();
 
                 // Mapping User entity to UserResponse object
                 var userResponse = _mapper.Map<UserResponse>(user);
 
                 // Generating token and return UserResponse object
-                userResponse.Token = TokenService.GenerateToken(userResponse);
+                userResponse.Token = _tokenService.GenerateToken(userResponse);
                 return response.SetResult(userResponse);
 
             }
@@ -100,6 +106,9 @@ namespace LoanManager.Auth.Services
                 // Generating Unique identification
                 userEntity.Id = Guid.NewGuid();
 
+                // Converting email to lowwercase
+                userEntity.Email = userEntity.Email.ToLower();
+
                 // Encrypting password before persist
                 userEntity.Password = _hasherService.EncriptKey(userEntity.Password);
 
@@ -110,7 +119,7 @@ namespace LoanManager.Auth.Services
                 var userResponse = new UserResponse { Email = credentials.Email };
 
                 // Generating token and return UserResponse object
-                userResponse.Token = TokenService.GenerateToken(userResponse);
+                userResponse.Token = _tokenService.GenerateToken(userResponse);
                 return response.SetResult(userResponse);
 
             }

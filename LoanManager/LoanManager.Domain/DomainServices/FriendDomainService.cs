@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LoanManager.Domain.Validators.FriendValidators;
 using FluentValidation;
+using LoanManager.Domain.Exceptions;
 
 namespace LoanManager.Domain.DomainServices
 {
@@ -45,18 +46,38 @@ namespace LoanManager.Domain.DomainServices
 
         public async Task<Friend> ReadAsync(Guid id)
         {
+            // Verifying if friend exists on database
+            var friendExistis = await this.VerifyIfFriendExsistsById(id);
+            if (!friendExistis)
+                throw new EntityNotExistsException();
+
             return await _unityOfWork.Friends.ReadAsync(id);
-
         }
 
-        public void Update(Friend entity)
+        public async Task Update(Friend entity)
         {
-            _unityOfWork.Friends.Update(entity);
+            // Verifying if friend exists on database
+            var friendExistis = await this.VerifyIfFriendExsistsById(entity.Id);
+            if (!friendExistis)
+                throw new EntityNotExistsException();
+
+            await _unityOfWork.Friends.Update(entity);
         }
+
         public async Task DeleteAsync(Guid id)
         {
-            await _unityOfWork.Games.DeleteAsync(id);
+            // Verifying if friend exists on database
+            var friendExistis = await this.VerifyIfFriendExsistsById(id);
+            if (!friendExistis)
+                throw new EntityNotExistsException();
+
+            await _unityOfWork.Friends.DeleteAsync(id);
         }
         #endregion
+
+        private async Task<bool> VerifyIfFriendExsistsById(Guid id)
+        {
+            return await _unityOfWork.Friends.VerifyIfFriendExsistsById(id);
+        }
     }
 }

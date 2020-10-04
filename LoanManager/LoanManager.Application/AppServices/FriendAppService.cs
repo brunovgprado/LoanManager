@@ -5,6 +5,7 @@ using LoanManager.Application.Models.DTO;
 using LoanManager.Application.Properties;
 using LoanManager.Application.Shared;
 using LoanManager.Domain.Entities;
+using LoanManager.Domain.Exceptions;
 using LoanManager.Domain.Interfaces.DomainServices;
 using LoanManager.Domain.Validators.FriendValidators;
 using System;
@@ -56,6 +57,10 @@ namespace LoanManager.Application.AppServices
                 await _friendDomainService.DeleteAsync(id);
                 return response.SetResult(true);
             }
+            catch (EntityNotExistsException ex)
+            {
+                return response.SetNotFound(Resources.CantFounFriendWithGivenId);
+            }
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
@@ -70,6 +75,10 @@ namespace LoanManager.Application.AppServices
             {
                 var result = await _friendDomainService.ReadAsync(id);
                 return response.SetResult(_mapper.Map<FriendDto>(result));
+            }
+            catch (EntityNotExistsException ex)
+            {
+                return response.SetNotFound(Resources.CantFounFriendWithGivenId);
             }
             catch (Exception ex)
             {
@@ -98,9 +107,16 @@ namespace LoanManager.Application.AppServices
             var response = new Response<bool>();
             try
             {
+                // Mapping FriendDto to Friend entity
                 var friendEntity = _mapper.Map<Friend>(friend);
-                _friendDomainService.Update(friendEntity);
+
+                // Persisting and returning result
+                await _friendDomainService.Update(friendEntity);
                 return response.SetResult(true);
+            }
+            catch (EntityNotExistsException ex)
+            {
+                return response.SetNotFound(Resources.CantFounFriendWithGivenId);
             }
             catch (Exception ex)
             {

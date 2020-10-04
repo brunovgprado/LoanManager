@@ -61,6 +61,24 @@ namespace LoanManager.Domain.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No friend with the given id was found.
+        /// </summary>
+        internal static string CantFounFriendWithGivenId {
+            get {
+                return ResourceManager.GetString("CantFounFriendWithGivenId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No game with the given id was found.
+        /// </summary>
+        internal static string CantFounGameWithGivenId {
+            get {
+                return ResourceManager.GetString("CantFounGameWithGivenId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Friend can&apos;t be empty.
         /// </summary>
         internal static string FriendIsMandatory {

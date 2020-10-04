@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using LoanManager.Domain.Validators.GameValidators;
 using FluentValidation;
+using LoanManager.Domain.Exceptions;
 
 namespace LoanManager.Domain.DomainServices
 {
@@ -45,17 +46,37 @@ namespace LoanManager.Domain.DomainServices
 
         public async Task<Game> ReadAsync(Guid id)
         {
-            return await _unityOfWork.Games.ReadAsync(id);
+            // Verifying if game exists on database
+            var result = await _unityOfWork.Games.ReadAsync(id);
+            if(result == null)
+                throw new EntityNotExistsException();
+
+            return result;
         }
 
-        public void Update(Game entity)
+        public async Task Update(Game entity)
         {
-             _unityOfWork.Games.Update(entity);
+            // Verifying if game exists on database
+            var gameExistis = await this.VerifyIfGameExsistsById(entity.Id);
+            if (!gameExistis)
+                throw new EntityNotExistsException();
+
+            await _unityOfWork.Games.Update(entity);
         }
         public async Task DeleteAsync(Guid id)
         {
-            await _unityOfWork.Games.DeleteAsync(id);            
+            // Verifying if friend exists on database
+            var gameExistis = await this.VerifyIfGameExsistsById(id);
+            if (!gameExistis)
+                throw new EntityNotExistsException();
+
+            await _unityOfWork.Games.DeleteAsync(id);
         }
         #endregion
+
+        private async Task<bool> VerifyIfGameExsistsById(Guid id)
+        {
+            return await _unityOfWork.Games.VerifyIfGameExsistsById(id);
+        }
     }
 }

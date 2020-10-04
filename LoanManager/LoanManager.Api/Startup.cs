@@ -35,7 +35,7 @@ namespace LoanManager.Api
             services.AddScoped<IActionResultConverter, ActionResultConverter>();
             services.ConfigureSwagger();
 
-            AuthConfig.ConfigureAuthentication(services);
+            AuthConfig.ConfigureAuthentication(services, this.configuration);
             ValidatorConfiguration.ConfigureServices(services);
             AppConfiguration.ConfigureServices(services);
             DomainServicesConfiguration.ConfigureServices(services);

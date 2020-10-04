@@ -9,19 +9,28 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace LoanManager.Auth.Services
 {
-    public static class TokenService
+    using Microsoft.Extensions.Configuration;
+
+    public class TokenService
     {
+        private readonly IConfiguration _configuration;
+
+        public TokenService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         // Token generator method
-        public static string GenerateToken(UserResponse user)
+        public string GenerateToken(UserResponse user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(TokenSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(_configuration.GetSection("Authentication:Secret").Value);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[] {
                     new Claim(ClaimTypes.Email, user.Email.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddHours(TokenSettings.ExpirationTimeInHours),
+                Expires = DateTime.UtcNow.AddHours(Convert.ToInt32(_configuration.GetSection("Authentication:ExpirationTimeInHours").Value)),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 

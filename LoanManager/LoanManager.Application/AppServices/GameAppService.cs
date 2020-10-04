@@ -5,6 +5,7 @@ using LoanManager.Application.Models.DTO;
 using LoanManager.Application.Properties;
 using LoanManager.Application.Shared;
 using LoanManager.Domain.Entities;
+using LoanManager.Domain.Exceptions;
 using LoanManager.Domain.Interfaces.DomainServices;
 using LoanManager.Domain.Validators.GameValidators;
 using System;
@@ -57,6 +58,10 @@ namespace LoanManager.Application.AppServices
               var result = await  _gameDomainService.ReadAsync(id);
               return response.SetResult( _mapper.Map<GameDto>(result));
             }
+            catch (EntityNotExistsException ex)
+            {
+                return response.SetNotFound(Resources.CantFounGameWithGivenId);
+            }
             catch (Exception ex)
             {
                 Console.Write(ex.Message);
@@ -84,9 +89,16 @@ namespace LoanManager.Application.AppServices
             var response = new Response<bool>();
             try
             {
+                // Mapping GameDto into Game entity
                 var gameEntity = _mapper.Map<Game>(game);
-                _gameDomainService.Update(gameEntity);
+
+                // Persisting entity and returning
+                await _gameDomainService.Update(gameEntity);
                 return response.SetResult(true);
+            }
+            catch(EntityNotExistsException ex)
+            {
+                return response.SetNotFound(Resources.CantFounGameWithGivenId);
             }
             catch (Exception ex)
             {
@@ -99,9 +111,16 @@ namespace LoanManager.Application.AppServices
             var response = new Response<bool>();
             try
             {
+                // Deleting game and returning
                 await _gameDomainService.DeleteAsync(id);
                 return response.SetResult(true);
-            }catch(Exception ex)
+
+            }
+            catch (EntityNotExistsException ex)
+            {
+                return response.SetNotFound(Resources.CantFounGameWithGivenId);
+            }
+            catch (Exception ex)
             {
                 Console.Write(ex.Message);
                 return response.SetInternalServerError(Resources.UnexpectedErrorWhileDeletingGame);

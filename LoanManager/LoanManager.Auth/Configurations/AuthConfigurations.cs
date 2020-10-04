@@ -17,6 +17,8 @@ namespace LoanManager.Auth.Configurations
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSingleton<IAuthService, AuthService>();
             services.AddSingleton<UserValidator, UserValidator>();
+            services.AddSingleton<TokenService, TokenService>();
+            
             return services;
         }
     }

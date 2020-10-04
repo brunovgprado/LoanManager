@@ -1,5 +1,6 @@
 ﻿using LoanManager.Auth.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -8,9 +9,9 @@ namespace LoanManager.Api.Configurations
 {
     public static class AuthConfig
     {
-        public static void ConfigureAuthentication(IServiceCollection services)
+        public static void ConfigureAuthentication(IServiceCollection services, IConfiguration configuration)
         {
-            var key = Encoding.ASCII.GetBytes(TokenSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(configuration.GetSection("Authentication:Secret").Value);
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
