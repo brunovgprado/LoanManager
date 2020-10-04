@@ -8,6 +8,7 @@ using LoanManager.Domain.Validators.LoanValidators;
 using LoanManager.Infrastructure.DataAccess.Repositories;
 using LoanManager.Tests.Builders;
 using Moq;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -37,19 +38,6 @@ namespace LoanManager.Tests.DomainServices
             _loanDomainService = new LoanDomainService(
                     _unityOfWork,
                     _createLoanValidator);
-        }
-
-        [Fact]
-        public async Task CreateGame_Success()
-        {
-            //Arrange
-            var entity = new LoanBuilder().Build();
-
-            //Act
-            var response = await _loanDomainService.CreateAsync(entity);
-
-            //Assert
-            response.Should().NotBeEmpty();
         }
 
         [Fact]
