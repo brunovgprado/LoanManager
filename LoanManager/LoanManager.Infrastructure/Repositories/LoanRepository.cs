@@ -35,7 +35,12 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
         }
         public async Task<IEnumerable<Loan>> ReadAllAsync(int offset, int limit)
         {
-            var query = @"SELECT * FROM Loans AS Lo
+            var query = @"SELECT *, (SELECT CASE WHEN
+                                    (Lo.Returned <> 't')
+                                    THEN CAST(1 AS BIT) 
+                		            ELSE CAST(0 AS BIT) END)
+                                    OnLoan
+                            FROM Loans AS Lo
                             JOIN Friends AS Fr ON Fr.Id = Lo.FriendId
                             JOIN Games AS Ga ON Ga.Id = Lo.GameId 
                             ORDER BY LoanDate
@@ -64,7 +69,15 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 
         public async Task<Loan> ReadAsync(Guid id)
         {
-            var query = @"SELECT * FROM Loans WHERE Id= @Id";
+            var query = @"SELECT *, (SELECT CASE WHEN
+                                    (Lo.Returned <> 't')
+                                    THEN CAST(1 AS BIT) 
+                		            ELSE CAST(0 AS BIT) END)
+                                    OnLoan
+                            FROM Loans AS Lo
+                            JOIN Friends AS Fr ON Fr.Id = Lo.FriendId
+                            JOIN Games AS Ga ON Ga.Id = Lo.GameId 
+                            WHERE Lo.Id = @Id";
 
             var param = new DynamicParameters();
             param.Add("@Id", id, DbType.Guid);
@@ -122,7 +135,12 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 
         public async Task<IEnumerable<Loan>> ReadLoanByFriendNameAsync(string name, int offset, int limit)
         {
-            var query = @"SELECT * FROM Loans AS Lo
+            var query = @"SELECT *, (SELECT CASE WHEN
+                                    (Lo.Returned <> 't')
+                                    THEN CAST(1 AS BIT) 
+                		            ELSE CAST(0 AS BIT) END)
+                                    OnLoan
+                            FROM Loans AS Lo
                             JOIN Friends AS Fr ON Fr.Id = Lo.FriendId
                             JOIN Games AS Ga ON Ga.Id = Lo.GameId
                             WHERE Fr.Name LIKE CONCAT('%', @name, '%') 
@@ -153,7 +171,12 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 
         public async Task<IEnumerable<Loan>> ReadLoanHistoryByGameAsync(Guid id, int offset, int limit)
         {
-            var query = @"SELECT * FROM Loans AS Lo
+            var query = @"SELECT *, (SELECT CASE WHEN
+                                    (Lo.Returned <> 't')
+                                    THEN CAST(1 AS BIT) 
+                		            ELSE CAST(0 AS BIT) END)
+                                    OnLoan 
+                            FROM Loans AS Lo
                             JOIN Friends AS Fr ON Fr.Id = Lo.FriendId
                             JOIN Games AS Ga ON Ga.Id = Lo.GameId
                             WHERE Ga.Id = @Id 

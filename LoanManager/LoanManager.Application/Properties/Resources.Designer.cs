@@ -61,6 +61,15 @@ namespace LoanManager.Application.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Friend name can&apos;t be empty.
+        /// </summary>
+        internal static string FriendNameIsMandatory {
+            get {
+                return ResourceManager.GetString("FriendNameIsMandatory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unexpected error while checking database connection.
         /// </summary>
         internal static string UnexpectedErrorWhileCheckingDatabaseConnection {
