@@ -18,7 +18,7 @@ To make the authentication process more easy, Loan Manager have an integrated au
 
 ## How to run the project
 
-Loan manager is a Restfull API project that uses a docker based environment with a docker-compose file, so you just need to docker running on your computer.   
+Loan manager is a Restfull API project that uses a docker based environment with a docker-compose file, so you just need docker running on your computer.   
 So assuming you have docker running, you can push the commands below into your prompt terminal.
 
 ```
