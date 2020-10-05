@@ -5,8 +5,6 @@ Solution for manage your game midia loans
 
 ## Features
 
-See /docs for endpoints description and tests with swagger.
-
 - __Game registration__. You can registrate your game midias one by one individually, recording information like Title, Description, Genre and Platform.
 - __Friend registration__. You can register your friends, recording Name and Phone number. You will use that data to register your media game loans.
 - __Loan registration__. With this feature, you are able to registrate your game loans, so you can loan a game midia to a friend and manage that loan. You can also end a loan, search loans by friend name and search loans by game identification id.
@@ -27,4 +25,5 @@ $ docker-compose build
 ```
 $ docker-compose up
 ```
-So voilà! docker will up the API and the PostgreSql server, create the database, create e populating the tables and make the Loan manager API accessible on localhost:8000.
+So voilà! docker will up the API and the PostgreSql server, create the database, create e populating the tables and make the Loan manager API accessible on localhost:8000.  
+You can look at http://localhost:8000/docs for endpoints description and tests with swagger.
