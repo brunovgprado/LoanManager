@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace LoanManager.Application.Models.Shared
+﻿namespace LoanManager.Application.Models.Shared
 {
     public class ErrorMessage
     {

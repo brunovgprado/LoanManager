@@ -8,7 +8,6 @@ using LoanManager.Domain;
 using LoanManager.Domain.Entities;
 using LoanManager.Domain.Exceptions;
 using LoanManager.Domain.Interfaces.DomainServices;
-using LoanManager.Domain.Validators.LoanValidators;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -72,7 +71,7 @@ namespace LoanManager.Application.AppServices
                 var result = await _loanDomainService.ReadAsync(id);
                 return response.SetResult(_mapper.Map<LoanDto>(result));
             }
-            catch (EntityNotExistsException ex)
+            catch (EntityNotExistsException)
             {
                 return response.SetNotFound(Resources.CantFounLoanWithGivenId);
             }
@@ -107,7 +106,7 @@ namespace LoanManager.Application.AppServices
                 await _loanDomainService.DeleteAsync(id);
                 return response.SetResult(true);
             }
-            catch (EntityNotExistsException ex)
+            catch (EntityNotExistsException)
             {
                 return response.SetNotFound(Resources.CantFounLoanWithGivenId);
             }
@@ -150,7 +149,7 @@ namespace LoanManager.Application.AppServices
                 await _loanDomainService.EndLoan(id);
                 return response.SetResult(true);
             }
-            catch (EntityNotExistsException ex)
+            catch (EntityNotExistsException)
             {
                 return response.SetNotFound(Resources.CantFounLoanWithGivenId);
             }

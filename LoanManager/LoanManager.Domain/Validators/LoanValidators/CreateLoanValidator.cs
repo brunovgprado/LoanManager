@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using LoanManager.Domain.Entities;
 using LoanManager.Domain.Properties;
-using System;
 
 namespace LoanManager.Domain.Validators.LoanValidators
 {

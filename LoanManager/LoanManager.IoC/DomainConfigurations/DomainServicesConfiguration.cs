@@ -1,9 +1,6 @@
 ﻿using LoanManager.Domain.DomainServices;
 using LoanManager.Domain.Interfaces.DomainServices;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LoanManager.IoC.DomainConfigurations
 {

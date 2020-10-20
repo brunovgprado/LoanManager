@@ -7,10 +7,8 @@ using LoanManager.Application.Shared;
 using LoanManager.Domain.Entities;
 using LoanManager.Domain.Exceptions;
 using LoanManager.Domain.Interfaces.DomainServices;
-using LoanManager.Domain.Validators.GameValidators;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LoanManager.Application.AppServices
@@ -58,7 +56,7 @@ namespace LoanManager.Application.AppServices
               var result = await  _gameDomainService.ReadAsync(id);
               return response.SetResult( _mapper.Map<GameDto>(result));
             }
-            catch (EntityNotExistsException ex)
+            catch (EntityNotExistsException)
             {
                 return response.SetNotFound(Resources.CantFounGameWithGivenId);
             }
@@ -96,7 +94,7 @@ namespace LoanManager.Application.AppServices
                 await _gameDomainService.Update(gameEntity);
                 return response.SetResult(true);
             }
-            catch(EntityNotExistsException ex)
+            catch(EntityNotExistsException)
             {
                 return response.SetNotFound(Resources.CantFounGameWithGivenId);
             }
@@ -116,7 +114,7 @@ namespace LoanManager.Application.AppServices
                 return response.SetResult(true);
 
             }
-            catch (EntityNotExistsException ex)
+            catch (EntityNotExistsException)
             {
                 return response.SetNotFound(Resources.CantFounGameWithGivenId);
             }

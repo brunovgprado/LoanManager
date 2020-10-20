@@ -1,12 +1,12 @@
-﻿using LoanManager.Domain.Interfaces;
+﻿using FluentValidation;
 using LoanManager.Domain.Entities;
+using LoanManager.Domain.Exceptions;
+using LoanManager.Domain.Interfaces;
 using LoanManager.Domain.Interfaces.DomainServices;
+using LoanManager.Domain.Validators.GameValidators;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using LoanManager.Domain.Validators.GameValidators;
-using FluentValidation;
-using LoanManager.Domain.Exceptions;
 
 namespace LoanManager.Domain.DomainServices
 {

@@ -2,8 +2,6 @@
 using LoanManager.Domain.Entities;
 using LoanManager.Domain.Properties;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LoanManager.Domain.Validators.GameValidators
 {

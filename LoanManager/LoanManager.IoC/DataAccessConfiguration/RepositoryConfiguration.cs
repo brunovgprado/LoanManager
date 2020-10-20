@@ -3,9 +3,6 @@ using LoanManager.Domain.Interfaces;
 using LoanManager.Domain.Interfaces.Repositories;
 using LoanManager.Infrastructure.DataAccess.Repositories;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LoanManager.IoC.DataAccessConfiguration
 {
