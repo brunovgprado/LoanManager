@@ -1,5 +1,4 @@
-﻿
-using LoanManager.Domain.Interfaces.Repositories;
+﻿using LoanManager.Domain.Interfaces.Repositories;
 
 namespace LoanManager.Domain.Interfaces
 {

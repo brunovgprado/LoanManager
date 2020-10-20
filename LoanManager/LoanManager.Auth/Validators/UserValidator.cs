@@ -2,8 +2,6 @@
 using LoanManager.Auth.Models;
 using LoanManager.Auth.Properties;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LoanManager.Auth.Validators
 {

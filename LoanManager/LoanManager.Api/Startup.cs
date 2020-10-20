@@ -1,17 +1,17 @@
-using LoanManager.IoC;
+using LoanManager.Api.Configurations;
+using LoanManager.Api.Models;
 using LoanManager.Application.Configurations;
+using LoanManager.Auth.Configurations;
+using LoanManager.IoC;
 using LoanManager.IoC.DataAccessConfiguration;
+using LoanManager.IoC.DomainConfigurations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using LoanManager.IoC.DomainConfigurations;
-using LoanManager.Api.Models;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using LoanManager.Api.Configurations;
-using LoanManager.Auth.Configurations;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 
 namespace LoanManager.Api
 {

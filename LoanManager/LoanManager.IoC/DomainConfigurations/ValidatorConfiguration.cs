@@ -1,5 +1,4 @@
-﻿using LoanManager.Domain.Validators;
-using LoanManager.Domain.Validators.FriendValidators;
+﻿using LoanManager.Domain.Validators.FriendValidators;
 using LoanManager.Domain.Validators.GameValidators;
 using LoanManager.Domain.Validators.LoanValidators;
 using Microsoft.Extensions.DependencyInjection;
