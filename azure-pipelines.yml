@@ -47,10 +47,9 @@ jobs:
     displayName: Publish Code Coverage
     inputs:
       codeCoverageTool: 'Cobertura'
-      summaryFileLocation: $(System.DefaultWorkingDirectory)/$(project_name)/$(project_name).Tests/results/result.co
+      summaryFileLocation: $(System.DefaultWorkingDirectory)/$(project_name)/$(project_name).Tests/results/result.cobertura.xml
       pathToSources: .
       failIfCoverageEmpty: true
-      additionalCodeCoverageFiles: 
        
   - task: PublishTestResults@2
     displayName: Publish Test Result
