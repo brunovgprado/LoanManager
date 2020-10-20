@@ -1,5 +1,8 @@
 trigger:
 - master
+- releases/*
+- hotfix/*
+- refactor/*
 
 pool:
   vmImage: 'ubuntu-latest'
