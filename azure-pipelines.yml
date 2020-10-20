@@ -16,7 +16,7 @@ jobs:
       dotnet restore $(project_name)
       dotnet publish $(project_name) -c Release -o bin/Release/netcoreapp$(netcore_version)
       mkdir artifact
-      cp -r $(pwd)/bin/Release/netcoreapp$(netcore_version) artifact/$(Build.SourceBranchName)
+      cp -r $(System.DefaultWorkingDirectory)/bin/Release/netcoreapp$(netcore_version) artifact/$(Build.SourceBranchName)
     displayName: Build Application
   - task: PublishPipelineArtifact@1
     displayName: Store Application Artifact
@@ -41,7 +41,7 @@ jobs:
   - task:  PublishPipelineArtifact@1
     displayName: Store Test Result
     inputs:
-      path: $(System.DefaultWorkingDirectory)/$(project_name).Tests/results
+      path: $(System.DefaultWorkingDirectory)/$(project_name)/$(project_name).Tests/results
       artifact: UnitTestResults
   - task: PublishCodeCoverageResults@1
     displayName: Publish Code Coverage
