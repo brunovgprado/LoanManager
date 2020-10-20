@@ -13,7 +13,7 @@ jobs:
   steps:
   - script: |
       pwd && ls -la
-      dotnet restore
+      dotnet restore $(project_name)
       dotnet publish -c Release -o bin/Release/netcoreapp$(nercore_version)
       mkdir artifact
       cp -r $(project_name)/bin/Release/netcoreapp$(nercore_version) artifact/$(Build.SorceBranchName)
