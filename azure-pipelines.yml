@@ -6,7 +6,7 @@ pool:
 
 variables:
   project_name: 'LoanManager'
-  netcore_version: '2.2'
+  netcore_version: '3.1'
 
 jobs:
 - job: Build
