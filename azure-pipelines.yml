@@ -14,9 +14,9 @@ jobs:
   - script: |
       pwd && ls -la
       dotnet restore $(project_name)
-      dotnet publish $(project_name) -c Release -o bin/Release/netcoreapp$(nercore_version)
+      dotnet publish $(project_name) -c Release -o bin/Release/netcoreapp$(netcore_version)
       mkdir artifact
-      cp -r $(project_name)/bin/Release/netcoreapp$(nercore_version) artifact/$(Build.SorceBranchName)
+      cp -r $(project_name)/bin/Release/netcoreapp$(netcore_version) artifact/$(Build.SourceBranchName)
     displayName: Build Application
   - task: PublishPipelineArtifact@1
     displayName: Store Application Artifact
