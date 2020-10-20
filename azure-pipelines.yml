@@ -9,7 +9,7 @@ variables:
   netcore_version: '3.1'
   sonarcloud_project: 'hortohome_LoanManager'
   sonarcloud_organization: 'hortohome'
-  sonarcloud_account: 'o-pinguin-democratico73937'
+  sonarcloud_account: 'LoanManager'
 
 jobs:
 - job: Build
