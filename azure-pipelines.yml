@@ -60,7 +60,7 @@ jobs:
       testRunTitle: Collecting Test Results
 
 - job: QualityAnalysis
-  dependsOn: Build
+  dependsOn: UnityTests
   steps:
     - task: DownloadPipelineArtifact@2
       displayName: Get Test Results
