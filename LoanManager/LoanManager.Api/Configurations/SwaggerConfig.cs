@@ -54,7 +54,7 @@ namespace LoanManager.Api.Configurations
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Loan Manager for Games V1.0") ;
-                c.RoutePrefix = "docs";
+                c.RoutePrefix = "api-docs";
             });
         }
     }
