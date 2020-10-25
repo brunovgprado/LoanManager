@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using LoanManager.Api.Models;
+﻿using LoanManager.Api.Models;
 using LoanManager.Auth.Interfaces.Services;
 using LoanManager.Auth.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace LoanManager.Api.Controller
 {

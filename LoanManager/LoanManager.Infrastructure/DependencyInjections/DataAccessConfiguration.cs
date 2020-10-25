@@ -1,6 +1,4 @@
-﻿
-
-using LoanManager.Domain.Interfaces;
+﻿using LoanManager.Domain.Interfaces;
 using LoanManager.Domain.Interfaces.Repositories;
 using LoanManager.Infrastructure.DataAccess.Repositories;
 using Microsoft.Extensions.DependencyInjection;

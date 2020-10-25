@@ -3,8 +3,7 @@ using LoanManager.Application.Properties;
 using LoanManager.Application.Shared;
 using LoanManager.Domain.Interfaces.Repositories;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 
 namespace LoanManager.Application.AppServices
@@ -30,14 +29,20 @@ namespace LoanManager.Application.AppServices
                 if(databaseConnectionIsOK)
                     return response.SetResult(
                         new { 
-                            App = "API is working done!", 
                             DatabaseConnection = "DB connection is working done!" 
                         });
-
                 return response.SetResult(
-                    new { 
-                        App = "API is working done!", 
-                        DatabaseConnection = "Has some problem with DB connection" 
+                    new
+                    {
+                        DatabaseConnection = "Has some problem with DB"
+                    });
+            }
+            catch (SqlException)
+            {
+                return response.SetResult(
+                    new
+                    {
+                        DatabaseConnection = "An error was ocurred when trying to connect to DB"
                     });
             }
             catch (Exception ex)

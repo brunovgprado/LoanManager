@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace LoanManager.Api.Models.Request
+﻿namespace LoanManager.Api.Models.Request
 {
     public class CreateGameRequest
     {

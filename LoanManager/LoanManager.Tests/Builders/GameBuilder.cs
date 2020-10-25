@@ -2,8 +2,6 @@
 using LoanManager.Domain.Entities;
 using LoanManager.Tests.Utils;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LoanManager.Tests.Builders
 {

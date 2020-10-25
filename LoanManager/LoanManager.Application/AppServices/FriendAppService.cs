@@ -7,10 +7,8 @@ using LoanManager.Application.Shared;
 using LoanManager.Domain.Entities;
 using LoanManager.Domain.Exceptions;
 using LoanManager.Domain.Interfaces.DomainServices;
-using LoanManager.Domain.Validators.FriendValidators;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LoanManager.Application.AppServices
@@ -57,7 +55,7 @@ namespace LoanManager.Application.AppServices
                 await _friendDomainService.DeleteAsync(id);
                 return response.SetResult(true);
             }
-            catch (EntityNotExistsException ex)
+            catch (EntityNotExistsException)
             {
                 return response.SetNotFound(Resources.CantFounFriendWithGivenId);
             }
@@ -76,7 +74,7 @@ namespace LoanManager.Application.AppServices
                 var result = await _friendDomainService.ReadAsync(id);
                 return response.SetResult(_mapper.Map<FriendDto>(result));
             }
-            catch (EntityNotExistsException ex)
+            catch (EntityNotExistsException)
             {
                 return response.SetNotFound(Resources.CantFounFriendWithGivenId);
             }
@@ -114,7 +112,7 @@ namespace LoanManager.Application.AppServices
                 await _friendDomainService.Update(friendEntity);
                 return response.SetResult(true);
             }
-            catch (EntityNotExistsException ex)
+            catch (EntityNotExistsException)
             {
                 return response.SetNotFound(Resources.CantFounFriendWithGivenId);
             }

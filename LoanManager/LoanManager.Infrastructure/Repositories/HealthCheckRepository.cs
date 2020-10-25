@@ -2,8 +2,6 @@
 using LoanManager.Domain.Interfaces.Repositories;
 using Npgsql;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LoanManager.Infrastructure.DataAccess.Repositories

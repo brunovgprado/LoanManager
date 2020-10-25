@@ -1,15 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Dapper;
 using LoanManager.Domain.Entities;
 using LoanManager.Domain.Interfaces.Repositories;
+using Microsoft.Extensions.Configuration;
+using Npgsql;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Text;
-using System.Threading.Tasks;
-using Dapper;
 using System.Data;
 using System.Linq;
-using Npgsql;
+using System.Threading.Tasks;
 
 namespace LoanManager.Infrastructure.DataAccess.Repositories
 {

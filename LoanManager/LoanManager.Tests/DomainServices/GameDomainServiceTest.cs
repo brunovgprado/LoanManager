@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using FluentValidation;
-using FluentValidation.TestHelper;
 using LoanManager.Domain.DomainServices;
 using LoanManager.Domain.Interfaces;
 using LoanManager.Domain.Interfaces.DomainServices;
@@ -9,7 +8,6 @@ using LoanManager.Domain.Validators.GameValidators;
 using LoanManager.Infrastructure.DataAccess.Repositories;
 using LoanManager.Tests.Builders;
 using Moq;
-using System;
 using System.Threading.Tasks;
 using Xunit;
 

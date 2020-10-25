@@ -1,5 +1,4 @@
-﻿
-namespace LoanManager.Application.Shared
+﻿namespace LoanManager.Application.Shared
 {
     public interface IResponse { }
 }
