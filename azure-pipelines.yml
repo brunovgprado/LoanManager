@@ -2,6 +2,7 @@ trigger:
 - master
 - releases/*
 - hotfix/*
+- bugfix/*
 - refactor/*
 
 pool:
@@ -10,8 +11,8 @@ pool:
 variables:
   project_name: 'LoanManager'
   netcore_version: '3.1'
-  sonarcloud_project: 'hortohome_LoanManager'
-  sonarcloud_organization: 'hortohome'
+  sonarcloud_project: 'brunovitorprado_LoanManager'
+  sonarcloud_organization: 'brunovitorprado'
   sonarcloud_account: 'LoanManager'
   docker_image_name: 'brunomcp2010/loanmanager-api' 
   docker_registry_account: 'loanmanager-api'
