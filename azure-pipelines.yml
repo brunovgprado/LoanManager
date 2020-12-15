@@ -2,6 +2,7 @@ trigger:
 - master
 - releases/*
 - hotfix/*
+- bugfix/*
 - refactor/*
 
 pool:
