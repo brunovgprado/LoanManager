@@ -1,5 +1,5 @@
 [![Build Status Travis](https://travis-ci.com/brunovitorprado/LoanManager.svg?branch=master)](https://travis-ci.org/brunovitorprado/LoanManager)
-[![Build Status](https://brunovitorprado.visualstudio.com/LoanManager/_apis/build/status/brunovitorprado.LoanManager?branchName=master)](https://brunovitorprado.visualstudio.com/LoanManager/_build/latest?definitionId=2&branchName=master)
+[![Build Status](https://hortohome.visualstudio.com/LoanManager/_apis/build/status/brunovitorprado.LoanManager?branchName=master)](https://hortohome.visualstudio.com/LoanManager/_build/latest?definitionId=2&branchName=master)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=brunovitorprado_LoanManager&metric=bugs)](https://sonarcloud.io/dashboard?id=brunovitorprado_LoanManager)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=brunovitorprado_LoanManager&metric=code_smells)](https://sonarcloud.io/dashboard?id=brunovitorprado_LoanManager)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=brunovitorprado_LoanManager&metric=coverage)](https://sonarcloud.io/dashboard?id=brunovitorprado_LoanManager)
