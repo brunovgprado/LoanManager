@@ -37,4 +37,8 @@ $ docker-compose build
 $ docker-compose up
 ```
 So voilà! docker will up the API and the PostgreSql server, create the database, create and populate the tables and make the Loan manager API accessible at localhost:8000.  
-You can look at http://localhost:8000/docs for endpoints description and make tests with swagger .
+You can look at http://localhost:8000/docs for endpoints description and make tests with swagger .   
+
+## Demo   
+
+[DEMO](https://loanmanager-api.azurewebsites.net/docs) 
