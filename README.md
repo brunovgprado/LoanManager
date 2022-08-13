@@ -12,7 +12,10 @@
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=brunovitorprado_LoanManager&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=brunovitorprado_LoanManager)
 
 # :video_game: :minidisc: LoanManager
-A back-end solution for manage your game midia loans  
+A back-end solution for manage your game midia loans
+
+## :dart: Objectives
+Loan Manager is a recreative project to practice acquired knowledgements and learn with it in real life
 
 ## :memo: Features
 
@@ -38,6 +41,17 @@ $ docker-compose up
 ```
 So voilà! docker will up the API and the PostgreSql server, create the database, create and populate the tables and make the Loan manager API accessible at localhost:8000.  
 You can look at http://localhost:8000/docs for endpoints description and make tests with swagger .   
+
+## :construction_worker: Work todo
+You can contribute if you want :grin:
+
+- Features must be segregated in use cases;
+- keys mus be placed on secrets;
+- Coupling must be reduced to minimum;
+- Some project structural issues must be fixed;
+- Unit tests coverage must be increased;
+- Code smells identified by sonar cloud must be fixed;
+- Load test coverage must be introduced.
 
 ## :rocket: Demo   
 
