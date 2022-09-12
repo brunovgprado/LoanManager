@@ -43,7 +43,7 @@ jobs:
       dotnet test /p:CollectCoverage=true \
                   /p:CoverletOutputFormat=\"opencover,cobertura\" \
                   /p:CoverletOutput=results/result \
-                  /p:Exclude=[xunit.*]* $(project_name)/$(project_name).sln \
+                  /p:Exclude=[xunit.*]* $(project_name).sln \
                   --test-adapter-path:. --logger:"xunit;LogFilePath=results/result.xunit.xml"
     displayName: Runnig Unit Tests
   - task:  PublishPipelineArtifact@1
