@@ -34,15 +34,14 @@ namespace LoanManager.Application.AppServices
             _mapper = mapper;
         }
 
-        #region CRUD operations
-        public async Task<Response<object>> Create(LoanDto loan)
+        public async Task<Response<Guid>> Create(LoanDto loan)
         {
-            var response = new Response<Object>();
+            var response = new Response<Guid>();
             try
             {
                 var loanEntity = _mapper.Map<Loan>(loan);
                 var result = await _loanDomainService.CreateAsync(loanEntity);
-                return response.SetResult(new { Id = result });
+                return response.SetResult(result);
             }
             catch (ValidationException ex)
             {
@@ -116,7 +115,6 @@ namespace LoanManager.Application.AppServices
                 return response.SetInternalServerError(Resources.UnexpectedErrorWhileDeletingLoan);
             }
         }
-        #endregion
 
         public async Task<Response<IEnumerable<LoanDto>>> ReadLoanByFriendNameAsync(string name, int offset, int limit)
         {

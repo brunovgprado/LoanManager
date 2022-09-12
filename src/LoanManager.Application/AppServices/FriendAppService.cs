@@ -27,14 +27,14 @@ namespace LoanManager.Application.AppServices
             _mapper = mapper;
         }
 
-        public async Task<Response<object>> Create(FriendDto friend)
+        public async Task<Response<Guid>> Create(FriendDto friend)
         {
-            var response = new Response<Object>();
+            var response = new Response<Guid>();
             try
             {
                 var friendEntity = _mapper.Map<Friend>(friend);
                 var result = await _friendDomainService.CreateAsync(friendEntity);
-                return response.SetResult(new { Id = result });
+                return response.SetResult(result);
             }
             catch (ValidationException ex)
             {
