@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 ENV ASPNETCORE_ENVIRONMENT="Development"
 
 WORKDIR /app
-COPY LoanManager ./
+COPY src ./
 
 RUN dotnet restore LoanManager.Api/LoanManager.Api.csproj
 RUN dotnet publish LoanManager.Api/LoanManager.Api.csproj -c Release -o out
