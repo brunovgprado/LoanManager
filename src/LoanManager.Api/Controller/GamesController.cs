@@ -6,6 +6,7 @@ using LoanManager.Application.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace LoanManager.Api.Controller
@@ -30,6 +31,10 @@ namespace LoanManager.Api.Controller
         }
 
         [HttpPost]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType(typeof(PaginatedDto<PartnerDeliveryDto>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Create(CreateGameRequest game)
         {
             var gameDto = _mapper.Map<GameDto>(game);

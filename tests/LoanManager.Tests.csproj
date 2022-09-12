@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LoanManager.Domain\LoanManager.Domain.csproj" />
-    <ProjectReference Include="..\LoanManager.Infrastructure\LoanManager.Infrastructure.DataAccess.csproj" />
+    <ProjectReference Include="..\src\LoanManager.Domain\LoanManager.Domain.csproj" />
+    <ProjectReference Include="..\src\LoanManager.Infrastructure\LoanManager.Infrastructure.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>
