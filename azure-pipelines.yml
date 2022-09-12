@@ -81,7 +81,7 @@ jobs:
         projectName: '$(project_name)'
         extraProperties: 'sonar.cs.opencover.reportsPaths=$(Pipeline.Workspace)/result.opencover.xml'
     - script: |
-        dotnet build $(project_name)
+        dotnet build $(project_name).sln
       displayName: Runing Build for Analysis
     - task: SonarCloudAnalyze@1
       displayName: Finish Sonar Analysis
