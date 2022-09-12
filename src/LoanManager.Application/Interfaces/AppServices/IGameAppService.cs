@@ -9,7 +9,7 @@ namespace LoanManager.Application.Interfaces.AppServices
 {
     public interface IGameAppService
     {
-        Task<Response<Object>> Create(GameDto game);
+        Task<Response<Guid>> Create(GameDto game);
         Task<Response<GameDto>> Get(Guid id);
         Task<Response<IEnumerable<GameDto>>> GetAll(int offset, int limit);
         Task<Response<bool>> Update(GameDto game);

@@ -8,7 +8,7 @@ namespace LoanManager.Application.Interfaces.AppServices
 {
     public interface ILoanAppService
     {
-        Task<Response<Object>> Create(LoanDto game);
+        Task<Response<Guid>> Create(LoanDto loan);
         Task<Response<LoanDto>> Get(Guid id);
         Task<Response<IEnumerable<LoanDto>>> GetAll(int offset, int limit);
         Task<Response<bool>> Delete(Guid id);
