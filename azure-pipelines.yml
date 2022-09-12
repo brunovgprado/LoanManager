@@ -38,8 +38,8 @@ jobs:
   steps:
   - script: |
       dotnet tool install --global coverlet.console
-      dotnet add $(project_name)/tests/$(project_name).Tests.csproj package coverlet.msbuild
-      dotnet add $(project_name)/tests/$(project_name).Tests.csproj package XunitXml.TestLogger
+      dotnet add tests/$(project_name).Tests.csproj package coverlet.msbuild
+      dotnet add tests/$(project_name).Tests.csproj package XunitXml.TestLogger
       dotnet test /p:CollectCoverage=true \
                   /p:CoverletOutputFormat=\"opencover,cobertura\" \
                   /p:CoverletOutput=results/result \
