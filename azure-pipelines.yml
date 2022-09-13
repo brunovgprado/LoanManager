@@ -95,7 +95,7 @@ jobs:
   variables:
     Version: '$(Build.BuildNumber)'
   steps:
-  - ${{ if ed(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+  - ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
     - task: DownloadPipelineArtifact@2
       displayName: Get Application Artifact
       inputs:
