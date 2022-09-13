@@ -89,28 +89,29 @@ jobs:
       inputs:
         pollingTimeoutSec: '300'
 
-- job: PublishDockerImage
-  dependsOn: QualityAnalysis
-  condition:  and(succeeded(), variables['Build.SourceBranch'], 'refs/heads/master')
-  variables:
-    Version: '$(Build.BuildNumber)'
-  steps:
-  - task: DownloadPipelineArtifact@2
-    displayName: Get Application Artifact
-    inputs:
-      artifact: $(project_name)
-  - script: |
-      mkdir -p $(project_name)/bin/Release
-      cp -r $(Pipeline.Workspace)/$(Build.SourceBranchName) $(project_name)/bin/Release/netcoreapp$(netcore_version)
-    displayName: Prepare Files
-  - task: Docker@2
-    displayName: 'Build and Publish Docker Image'
-    inputs:
-      containerRegistry: '$(docker_registry_account)'
-      repository: '$(docker_image_name)'
-      command: 'buildAndPush'
-      Dockerfile: '$(System.DefaultWorkingDirectory)/Dockerfile'
-      buildContext: '$(System.DefaultWorkingDirectory)'
-      tags: |
-        $(Version)
-        latest
+- ${{ if ed(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+  - job: PublishDockerImage
+    dependsOn: QualityAnalysis
+    condition:  and(succeeded(), variables['Build.SourceBranch'], 'refs/heads/master')
+    variables:
+      Version: '$(Build.BuildNumber)'
+    steps:
+    - task: DownloadPipelineArtifact@2
+      displayName: Get Application Artifact
+      inputs:
+        artifact: $(project_name)
+    - script: |
+        mkdir -p $(project_name)/bin/Release
+        cp -r $(Pipeline.Workspace)/$(Build.SourceBranchName) $(project_name)/bin/Release/netcoreapp$(netcore_version)
+      displayName: Prepare Files
+    - task: Docker@2
+      displayName: 'Build and Publish Docker Image'
+      inputs:
+        containerRegistry: '$(docker_registry_account)'
+        repository: '$(docker_image_name)'
+        command: 'buildAndPush'
+        Dockerfile: '$(System.DefaultWorkingDirectory)/Dockerfile'
+        buildContext: '$(System.DefaultWorkingDirectory)'
+        tags: |
+          $(Version)
+          latest
