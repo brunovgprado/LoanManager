@@ -89,13 +89,13 @@ jobs:
       inputs:
         pollingTimeoutSec: '300'
 
-- ${{ if ed(variables['Build.SourceBranch'], 'refs/heads/master') }}:
-  - job: PublishDockerImage
-    dependsOn: QualityAnalysis
-    condition:  and(succeeded(), variables['Build.SourceBranch'], 'refs/heads/master')
-    variables:
-      Version: '$(Build.BuildNumber)'
-    steps:
+- job: PublishDockerImage
+  dependsOn: QualityAnalysis
+  condition:  and(succeeded(), variables['Build.SourceBranch'], 'refs/heads/master')
+  variables:
+    Version: '$(Build.BuildNumber)'
+  steps:
+  - ${{ if ed(variables['Build.SourceBranch'], 'refs/heads/master') }}:
     - task: DownloadPipelineArtifact@2
       displayName: Get Application Artifact
       inputs:
