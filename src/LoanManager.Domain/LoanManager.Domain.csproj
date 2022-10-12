@@ -8,6 +8,12 @@
     <Compile Remove="Interfaces\Services\**" />
     <EmbeddedResource Remove="Interfaces\Services\**" />
     <None Remove="Interfaces\Services\**" />
+    <Compile Remove="ValueObjects\**" />
+    <EmbeddedResource Remove="ValueObjects\**" />
+    <None Remove="ValueObjects\**" />
+    <Compile Remove="Interfaces\DomainServices\ValueObjects\**" />
+    <EmbeddedResource Remove="Interfaces\DomainServices\ValueObjects\**" />
+    <None Remove="Interfaces\DomainServices\ValueObjects\**" />
   </ItemGroup>
 
   <ItemGroup>

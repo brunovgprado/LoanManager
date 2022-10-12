@@ -24,17 +24,13 @@ namespace LoanManager.Domain.DomainServices
             _unityOfWork = unityOfWork;
             _createGameValidator = createGameValidator;
         }
-
-        #region CRUD operations
+        
         public async Task<Guid> CreateAsync(Game game)
         {
-            // Validantig entity
             await _createGameValidator.ValidateAndThrowAsync(game);
-
-            // Setting unique identificatior to entity
+            
             game.Id = Guid.NewGuid();
-
-            // Persisting entity
+            
             await _unityOfWork.Games.CreateAsync(game);
             return game.Id;
         }
@@ -46,7 +42,6 @@ namespace LoanManager.Domain.DomainServices
 
         public async Task<Game> ReadAsync(Guid id)
         {
-            // Verifying if game exists on database
             var result = await _unityOfWork.Games.ReadAsync(id);
             if(result == null)
                 throw new EntityNotExistsException();
@@ -56,27 +51,24 @@ namespace LoanManager.Domain.DomainServices
 
         public async Task Update(Game entity)
         {
-            // Verifying if game exists on database
-            var gameExistis = await this.VerifyIfGameExsistsById(entity.Id);
-            if (!gameExistis)
+            var gameExists = await this.CheckIfGameExistsById(entity.Id);
+            if (!gameExists)
                 throw new EntityNotExistsException();
 
             await _unityOfWork.Games.Update(entity);
         }
         public async Task DeleteAsync(Guid id)
         {
-            // Verifying if friend exists on database
-            var gameExistis = await this.VerifyIfGameExsistsById(id);
-            if (!gameExistis)
+            var gameExists = await this.CheckIfGameExistsById(id);
+            if (!gameExists)
                 throw new EntityNotExistsException();
 
             await _unityOfWork.Games.DeleteAsync(id);
         }
-        #endregion
 
-        private async Task<bool> VerifyIfGameExsistsById(Guid id)
+        private async Task<bool> CheckIfGameExistsById(Guid id)
         {
-            return await _unityOfWork.Games.VerifyIfGameExsistsById(id);
+            return await _unityOfWork.Games.CheckIfGameExistsById(id);
         }
     }
 }

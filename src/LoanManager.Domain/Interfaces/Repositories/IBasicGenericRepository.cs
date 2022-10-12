@@ -5,8 +5,8 @@ namespace LoanManager.Domain.Interfaces.Repositories
 {
     public interface IBasicGenericRepository<TKey, T>
     {
-        Task CreateAsync(T entity);
+        Task<int> CreateAsync(T entity);
         Task<IEnumerable<T>> ReadAllAsync(int offset, int limit);
-        Task DeleteAsync(TKey id);
+        Task<int> DeleteAsync(TKey id);
     }
 }
