@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LoanManager.Infrastructure.DataAccess.Repositories
 {
-    public class GameRepository : IGameRepository
+    public class GameRepository : BaseRepository, IGameRepository
     {
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
@@ -21,39 +21,39 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             _configuration = configuration;
             _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
         }
-
-        #region CRUD Operations
-        public async Task CreateAsync(Game entity)
-        {            
-            var command = @"INSERT INTO Games (Id, Title, Description, Genre, Platform)
+        
+        public async Task<int> CreateAsync(Game entity)
+        {
+            const string command = @"INSERT INTO Game (Id, Title, Description, Genre, Platform)
                              VALUES (@Id, @Title, @Description, @Genre, @Platform)";
-            
+
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                var afftectedRows = await connection.ExecuteAsync(command, entity);               
+                return await connection.ExecuteAsync(command, entity);               
             }
         }
+        
         public async Task<IEnumerable<Game>> ReadAllAsync(int offset, int limit)
         {
-            var query = @"SELECT Ga.Id, 
+            const string query = @"SELECT Ga.Id, 
                                  Ga.Title, 
                                  Ga.Description, 
                                  Ga.Platform,
                                  Ga.Genre,
                                     (SELECT CASE WHEN
-                                    EXISTS(SELECT Lo.Returned FROM Loans Lo 
+                                    EXISTS(SELECT Lo.Returned FROM Loan Lo 
                                             WHERE Lo.GameId = Ga.Id 
                                                 and Lo.Returned <> 't')
                                     THEN CAST(1 AS BIT) 
                 		            ELSE CAST(0 AS BIT) END)
                                     OnLoan
-                                FROM Games Ga
+                                FROM Game Ga
                                 ORDER BY Title
                                 OFFSET @index ROWS
                                 FETCH NEXT @size ROWS ONLY";
 
-            // Aplying pagination limits
+            // Applying pagination limits
             var param = new DynamicParameters();
             param.Add("@index", offset, DbType.Int32);
             param.Add("@size", limit == 0 ? 10 : limit, DbType.Int32);
@@ -68,19 +68,19 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 
         public async Task<Game> ReadAsync(Guid id)
         {
-            var query = @"SELECT Ga.Id, 
+            const string query = @"SELECT Ga.Id, 
                                  Ga.Title, 
                                  Ga.Description, 
                                  Ga.Platform,
                                  Ga.Genre,
                                     (SELECT CASE WHEN
-                                    EXISTS(SELECT 1 FROM Loans Lo 
+                                    EXISTS(SELECT 1 FROM Loan Lo 
                                             WHERE Lo.GameId = Ga.Id 
                                                 and Lo.Returned <> 't')
                                     THEN CAST(1 AS BIT) 
                 		            ELSE CAST(0 AS BIT) END)
                                     OnLoan
-                                FROM Games Ga
+                                FROM Game Ga
                                 WHERE Id= @Id
                                 ORDER BY Ga.Title";
 
@@ -95,9 +95,9 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             }
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task<int> DeleteAsync(Guid id)
         {
-            var command = @"DELETE FROM Games WHERE Id= @Id";
+            const string command = @"DELETE FROM Game WHERE Id= @Id";
 
             var param = new DynamicParameters();
             param.Add("@Id", id, DbType.Guid);
@@ -105,13 +105,13 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                await connection.ExecuteAsync(command, param);
+                return await connection.ExecuteAsync(command, param);
             }
         }
 
-        public async Task Update(Game entity)
+        public async Task<int> Update(Game entity)
         {
-            var command = @"UPDATE Games 
+            const string command = @"UPDATE Game 
                                 SET Title = @Title, 
                                     Description = @Description, 
                                     Genre = @Genre, 
@@ -121,28 +121,13 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                await connection.ExecuteAsync(command, entity);
+                return await connection.ExecuteAsync(command, entity);
             }
         }
-        #endregion
 
-        public async Task<bool> VerifyIfGameExsistsById(Guid id)
+        public async Task<bool> CheckIfGameExistsById(Guid id)
         {
-            var query = @"SELECT CASE WHEN
-                                EXISTS(SELECT 1 FROM Games
-                                        WHERE Id = @Id)
-                                THEN CAST(1 AS BIT) 
-                		        ELSE CAST(0 AS BIT) END";
-
-            var param = new DynamicParameters();
-            param.Add("@Id", id, DbType.Guid);
-
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                connection.Open();
-                var result = await connection.QueryAsync<bool>(query, param);
-                return result.FirstOrDefault();
-            }
+            return await CheckIfEntityExistsById(id, "Games");
         }
     }
 }

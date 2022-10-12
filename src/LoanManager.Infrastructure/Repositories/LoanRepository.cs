@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LoanManager.Infrastructure.DataAccess.Repositories
 {
-    public class LoanRepository : ILoanRepository
+    public class LoanRepository : BaseRepository, ILoanRepository
     {
         private readonly string _connectionString;
 
@@ -20,32 +20,33 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
         }
 
-        public async Task CreateAsync(Loan entity)
+        public async Task<int> CreateAsync(Loan entity)
         {
-            var command = @"INSERT INTO Loans (Id, FriendId, GameId, LoanDate, Returned)
+            const string command = @"INSERT INTO Loan (Id, FriendId, GameId, LoanDate, Returned)
                              VALUES (@Id, @FriendId, @GameId, @LoanDate, @Returned)";
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                var afftectedRows = await connection.ExecuteAsync(command, entity);
+                return await connection.ExecuteAsync(command, entity);
             }
         }
+        
         public async Task<IEnumerable<Loan>> ReadAllAsync(int offset, int limit)
         {
-            var query = @"SELECT *, (SELECT CASE WHEN
+            const string query = @"SELECT *, (SELECT CASE WHEN
                                     (Lo.Returned <> 't')
                                     THEN CAST(1 AS BIT) 
                 		            ELSE CAST(0 AS BIT) END)
                                     OnLoan
-                            FROM Loans AS Lo
-                            JOIN Friends AS Fr ON Fr.Id = Lo.FriendId
-                            JOIN Games AS Ga ON Ga.Id = Lo.GameId 
+                            FROM Loan AS Lo
+                            JOIN Friend AS Fr ON Fr.Id = Lo.FriendId
+                            JOIN Game AS Ga ON Ga.Id = Lo.GameId 
                             ORDER BY LoanDate
                             OFFSET @index ROWS
                             FETCH NEXT @size ROWS ONLY";
 
-            // Aplying pagination limits
+            // Applying pagination limits
             var param = new DynamicParameters();
             param.Add("@index", offset, DbType.Int32);
             param.Add("@size", limit == 0 ? 10 : limit, DbType.Int32);
@@ -67,14 +68,14 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 
         public async Task<Loan> ReadAsync(Guid id)
         {
-            var query = @"SELECT *, (SELECT CASE WHEN
+            const string query = @"SELECT *, (SELECT CASE WHEN
                                     (Lo.Returned <> 't')
                                     THEN CAST(1 AS BIT) 
                 		            ELSE CAST(0 AS BIT) END)
                                     OnLoan
-                            FROM Loans AS Lo
-                            JOIN Friends AS Fr ON Fr.Id = Lo.FriendId
-                            JOIN Games AS Ga ON Ga.Id = Lo.GameId 
+                            FROM Loan AS Lo
+                            JOIN Friend AS Fr ON Fr.Id = Lo.FriendId
+                            JOIN Game AS Ga ON Ga.Id = Lo.GameId 
                             WHERE Lo.Id = @Id";
 
             var param = new DynamicParameters();
@@ -94,9 +95,10 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
                 return result.FirstOrDefault();
             }
         }
-        public async Task Update(Loan entity)
+        
+        public async Task<int> Update(Loan entity)
         {
-            var command = @"UPDATE Loans 
+            const string command = @"UPDATE Loan 
                                 SET FriendId = @FriendId, 
                                     GameId = @GameId,
                                     LoanDate = @LoanDate,
@@ -106,13 +108,13 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                await connection.ExecuteAsync(command, entity);
+                return await connection.ExecuteAsync(command, entity);
             }
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task<int> DeleteAsync(Guid id)
         {
-            var command = @"DELETE FROM Loans WHERE Id = @Id";
+            const string command = @"DELETE FROM Loan WHERE Id = @Id";
 
             var param = new DynamicParameters();
             param.Add("@Id", id, DbType.Guid);
@@ -120,13 +122,13 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                await connection.ExecuteAsync(command, param);
+                return await connection.ExecuteAsync(command, param);
             }
         }
 
-        public async Task EndLoan(Guid id)
+        public async Task<int> EndLoan(Guid id)
         {
-            var command = @"UPDATE Loans SET Returned = 't' WHERE Id = @Id";
+            const string command = @"UPDATE Loan SET Returned = 't' WHERE Id = @Id";
 
             var param = new DynamicParameters();
             param.Add("@Id", id, DbType.Guid);
@@ -134,26 +136,26 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                await connection.ExecuteAsync(command, param);
+                return await connection.ExecuteAsync(command, param);
             }
         }
 
         public async Task<IEnumerable<Loan>> ReadLoanByFriendNameAsync(string name, int offset, int limit)
         {
-            var query = @"SELECT *, (SELECT CASE WHEN
+            const string query = @"SELECT *, (SELECT CASE WHEN
                                     (Lo.Returned <> 't')
                                     THEN CAST(1 AS BIT) 
                 		            ELSE CAST(0 AS BIT) END)
                                     OnLoan
-                            FROM Loans AS Lo
-                            JOIN Friends AS Fr ON Fr.Id = Lo.FriendId
-                            JOIN Games AS Ga ON Ga.Id = Lo.GameId
+                            FROM Loan AS Lo
+                            JOIN Friend AS Fr ON Fr.Id = Lo.FriendId
+                            JOIN Game AS Ga ON Ga.Id = Lo.GameId
                             WHERE Fr.Name LIKE CONCAT('%', @name, '%') 
                             ORDER BY Name
                             OFFSET @index ROWS
                             FETCH NEXT @size ROWS ONLY";
 
-            // Aplying pagination limits and parameters
+            // Applying pagination limits and parameters
             var param = new DynamicParameters();
             param.Add("@index", offset, DbType.Int32);
             param.Add("@size", limit == 0 ? 10 : limit, DbType.Int32);
@@ -176,20 +178,20 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 
         public async Task<IEnumerable<Loan>> ReadLoanHistoryByGameAsync(Guid id, int offset, int limit)
         {
-            var query = @"SELECT *, (SELECT CASE WHEN
+            const string query = @"SELECT *, (SELECT CASE WHEN
                                     (Lo.Returned <> 't')
                                     THEN CAST(1 AS BIT) 
                 		            ELSE CAST(0 AS BIT) END)
                                     OnLoan 
-                            FROM Loans AS Lo
-                            JOIN Friends AS Fr ON Fr.Id = Lo.FriendId
-                            JOIN Games AS Ga ON Ga.Id = Lo.GameId
+                            FROM Loan AS Lo
+                            JOIN Friend AS Fr ON Fr.Id = Lo.FriendId
+                            JOIN Game AS Ga ON Ga.Id = Lo.GameId
                             WHERE Ga.Id = @Id 
                             ORDER BY Name
                             OFFSET @index ROWS
                             FETCH NEXT @size ROWS ONLY";
 
-            // Aplying pagination limits and parameters
+            // Applying pagination limits and parameters
             var param = new DynamicParameters();
             param.Add("@index", offset, DbType.Int32);
             param.Add("@size", limit == 0 ? 10 : limit, DbType.Int32);
@@ -211,10 +213,10 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 
         }
 
-        public async Task<bool> CheckIfGameIsOnALoanInProgress(Guid id)
+        public async Task<bool> CheckIfGameIsOnLoan(Guid id)
         {
-            var query = @"SELECT CASE WHEN EXISTS 
-                (SELECT 1 FROM Loans WHERE GameId = @GameId and Returned = 'f')
+            const string query = @"SELECT CASE WHEN EXISTS 
+                (SELECT 1 FROM Loan WHERE GameId = @GameId and Returned = 'f')
                 THEN CAST (1 AS BIT) 
                 ELSE CAST (0 AS BIT) END";
 
@@ -229,23 +231,9 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             }
         }
 
-        public async Task<bool> VerifyIfLoanExsistsById(Guid id)
+        public async Task<bool> CheckIfyIfLoanExistsById(Guid id)
         {
-            var query = @"SELECT CASE WHEN
-                                EXISTS(SELECT 1 FROM Loans
-                                        WHERE Id = @Id)
-                                THEN CAST(1 AS BIT) 
-                		        ELSE CAST(0 AS BIT) END";
-
-            var param = new DynamicParameters();
-            param.Add("@Id", id, DbType.Guid);
-
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                connection.Open();
-                var result = await connection.QueryAsync<bool>(query, param);
-                return result.FirstOrDefault();
-            }
+            return await CheckIfEntityExistsById(id, "Loans");
         }
     }
 }

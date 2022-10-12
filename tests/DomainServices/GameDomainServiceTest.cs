@@ -40,7 +40,7 @@ namespace LoanManager.Tests.DomainServices
         }
 
         [Fact]
-        public async Task CreateGame_Success()
+        public async Task CreateGame_WithValidState_MustReturnSuccess()
         {
             //Arrange
             var entity = new GameBuilder().Build();
@@ -53,7 +53,7 @@ namespace LoanManager.Tests.DomainServices
         }
 
         [Fact]
-        public async Task CreateGame_With_Title_Empty()
+        public async Task CreateGame_WithTitleEmpty_MustThrowException()
         {
             //Arrange
             var entity = new GameBuilder().WithTitleEmpty();
@@ -65,7 +65,7 @@ namespace LoanManager.Tests.DomainServices
         }
 
         [Fact]
-        public async Task CreateGame_With_Platform_Empty()
+        public async Task CreateGame_WithPlatformEmpty_MustThrowException()
         {
             //Arrange
             var entity = new GameBuilder().WithPlatformEmpty();

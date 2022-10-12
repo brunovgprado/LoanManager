@@ -39,7 +39,7 @@ namespace LoanManager.Tests.DomainServices
         }
 
         [Fact]
-        public async Task CreateGame_With_GameId_Empty()
+        public async Task CreateGame_WithGameIdEmpty_MustThrowException()
         {
             //Arrange
             var entity = new LoanBuilder().WithGameIdEmpty();
@@ -50,7 +50,7 @@ namespace LoanManager.Tests.DomainServices
         }
 
         [Fact]
-        public async Task CreateGame_With_FriendId_Empty()
+        public async Task CreateGame_WithFriendIdEmpty_MustThrowException()
         {
             //Arrange
             var entity = new LoanBuilder().WithFriendIdEmpty();
