@@ -23,17 +23,12 @@ namespace LoanManager.Domain.DomainServices
             _unityOfWork = unityOfWork;
             _createFriendValidations = createFriendValidations;
         }
-
-        #region CRUD operations
+        
         public async Task<Guid> CreateAsync(Friend entity)
         {
-            // Validating entity
             await _createFriendValidations.ValidateAndThrowAsync(entity);
-
-            // Setting unique identificator to entity
+            
             entity.Id = Guid.NewGuid();
-
-            // Persisting entity
             await _unityOfWork.Friends.CreateAsync(entity);
             return entity.Id;
         }
@@ -45,38 +40,33 @@ namespace LoanManager.Domain.DomainServices
 
         public async Task<Friend> ReadAsync(Guid id)
         {
-            // Verifying if friend exists on database
-            var friendExistis = await this.VerifyIfFriendExsistsById(id);
-            if (!friendExistis)
-                throw new EntityNotExistsException();
+            await this.CheckIfEntityExistsById(id);
 
             return await _unityOfWork.Friends.ReadAsync(id);
         }
 
         public async Task Update(Friend entity)
         {
-            // Verifying if friend exists on database
-            var friendExistis = await this.VerifyIfFriendExsistsById(entity.Id);
-            if (!friendExistis)
-                throw new EntityNotExistsException();
+            await this.CheckIfEntityExistsById(entity.Id);
 
             await _unityOfWork.Friends.Update(entity);
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            // Verifying if friend exists on database
-            var friendExistis = await this.VerifyIfFriendExsistsById(id);
-            if (!friendExistis)
-                throw new EntityNotExistsException();
+            await this.CheckIfEntityExistsById(id);
 
             await _unityOfWork.Friends.DeleteAsync(id);
         }
-        #endregion
 
-        private async Task<bool> VerifyIfFriendExsistsById(Guid id)
+        private async Task<bool> CheckIfEntityExistsById(Guid id)
         {
-            return await _unityOfWork.Friends.VerifyIfFriendExsistsById(id);
+            var entityExists = await _unityOfWork.Friends.CheckIfFriendExistsById(id);
+
+            if (!entityExists)
+                throw new EntityNotExistsException();
+
+            return true;
         }
     }
 }

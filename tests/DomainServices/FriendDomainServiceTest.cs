@@ -40,7 +40,7 @@ namespace LoanManager.Tests.DomainServices
         }
 
         [Fact]
-        public async Task CreateGame_Success()
+        public async Task CreateFriend_WithValidState_MustReturnSuccess()
         {
             //Arrange
             var entity = new FriendBuilder().Build();
@@ -53,7 +53,7 @@ namespace LoanManager.Tests.DomainServices
         }
 
         [Fact]
-        public async Task CreateGame_With_Title_Empty()
+        public async Task CreateFriend_WithNameEmpty_MustThrowException()
         {
             //Arrange
             var entity = new FriendBuilder().WithNameEmpty();

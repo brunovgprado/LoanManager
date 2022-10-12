@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LoanManager.Infrastructure.DataAccess.Repositories
 {
-    public class FriendRepository : IFriendRepository
+    public class FriendRepository : BaseRepository, IFriendRepository
     {
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
@@ -21,27 +21,27 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             _configuration = configuration;
             _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
         }
-
-        #region CRUD Operations
-        public async Task CreateAsync(Friend entity)
+        
+        public async Task<int> CreateAsync(Friend entity)
         {
-            var command = @"INSERT INTO Friends (Id, Name, PhoneNumber)
+            const string command = @"INSERT INTO Friend (Id, Name, PhoneNumber)
                              VALUES (@Id, @Name, @PhoneNumber)";
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                var afftectedRows = await connection.ExecuteAsync(command, entity);
+                return await connection.ExecuteAsync(command, entity);
             }
         }
+        
         public async Task<IEnumerable<Friend>> ReadAllAsync(int offset, int limit)
         {
-            var query = @"SELECT * FROM Friends 
+            const string query = @"SELECT * FROM Friend 
                                 ORDER BY Name
                                 OFFSET @index ROWS
                                 FETCH NEXT @size ROWS ONLY";
 
-            // Aplying pagination limits
+            // Applying pagination limits
             var param = new DynamicParameters();
             param.Add("@index", offset, DbType.Int32);
             param.Add("@size", limit == 0 ? 10 : limit, DbType.Int32);
@@ -56,7 +56,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 
         public async Task<Friend> ReadAsync(Guid id)
         {
-            var query = @"SELECT * FROM Friends WHERE Id= @Id";
+            const string query = @"SELECT * FROM Friend WHERE Id= @Id";
 
             var param = new DynamicParameters();
             param.Add("@Id", id, DbType.Guid);
@@ -69,9 +69,9 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             }
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task<int> DeleteAsync(Guid id)
         {
-            var command = @"DELETE FROM Friends WHERE Id= @Id";
+            const string command = @"DELETE FROM Friend WHERE Id= @Id";
 
             var param = new DynamicParameters();
             param.Add("@Id", id, DbType.Guid);
@@ -79,13 +79,13 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                await connection.ExecuteAsync(command, param);
+                return await connection.ExecuteAsync(command, param);
             }
         }
 
-        public async Task Update(Friend entity)
+        public async Task<int> Update(Friend entity)
         {
-            var command = @"UPDATE Friends 
+            const string command = @"UPDATE Friend 
                                 SET Name = @Name, 
                                     PhoneNumber = @PhoneNumber
                                 WHERE Id = @Id";
@@ -93,28 +93,13 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                await connection.ExecuteAsync(command, entity);
+                return await connection.ExecuteAsync(command, entity);
             }
         }
-        #endregion
 
-        public async Task<bool> VerifyIfFriendExsistsById(Guid id)
+        public async Task<bool> CheckIfFriendExistsById(Guid id)
         {
-            var query = @"SELECT CASE WHEN
-                                EXISTS(SELECT 1 FROM Friends
-                                        WHERE Id = @Id)
-                                THEN CAST(1 AS BIT) 
-                		        ELSE CAST(0 AS BIT) END";
-
-            var param = new DynamicParameters();
-            param.Add("@Id", id, DbType.Guid);
-
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                connection.Open();
-                var result = await connection.QueryAsync<bool>(query, param);
-                return result.FirstOrDefault();
-            }
+            return await CheckIfEntityExistsById(id, "Friend");
         }
     }
 }

@@ -6,6 +6,6 @@ namespace LoanManager.Domain.Interfaces.Repositories
 {
     public interface IGameRepository : IGenericRepository<Guid, Game>
     {
-        Task<bool> VerifyIfGameExsistsById(Guid id);
+        Task<bool> CheckIfGameExistsById(Guid id);
     }
 }
