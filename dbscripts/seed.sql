@@ -13,7 +13,8 @@ CREATE TABLE Game (
 CREATE TABLE Friend (
     Id UUID PRIMARY KEY,
     Name varchar(100),
-    PhoneNumber varchar(50)
+    PhoneNumber varchar(50),
+	Cpf varchar(11)
 );
 
 --Creating Loan table
@@ -26,15 +27,15 @@ CREATE TABLE Loan (
 );
 
 --Creating User table
-CREATE TABLE User (
+CREATE TABLE UserAccount (
     Id UUID PRIMARY KEY,
     Email varchar(100),
     Password varchar(200)
 );
 
-ALTER TABLE "friend" OWNER TO loanuser;
-ALTER TABLE "game" OWNER TO loanuser;
-ALTER TABLE "user" OWNER TO loanuser;
+ALTER TABLE Friend OWNER TO loanuser;
+ALTER TABLE Game OWNER TO loanuser;
+ALTER TABLE UserAccount OWNER TO loanuser;
 
 -- Pushing some mocked data to database
 INSERT INTO Friend (Id, Name, PhoneNumber) VALUES ('c8400148-79d5-4d25-8dd8-5b2bd217c6a6', 'Luiz Helmont', '21985487958');

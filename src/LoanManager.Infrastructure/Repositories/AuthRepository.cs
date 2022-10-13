@@ -20,7 +20,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 
         public async Task<User> GetUser(User credentials)
         {
-            var query = @"SELECT * FROM User WHERE Email = @Email";
+            const string query = @"SELECT * FROM UserAccount WHERE Email = @Email";
 
             var param = new DynamicParameters();
             param.Add("@Email", credentials.Email, DbType.String);
@@ -35,7 +35,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 
         public async Task CreateAccount(User credentials)
         {
-            var command = @"INSERT INTO User (Id, Email, Password)
+            const string command = @"INSERT INTO UserAccount (Id, Email, Password)
                              VALUES (@Id, @Email, @Password)";
 
             using (var connection = new NpgsqlConnection(_connectionString))
@@ -47,8 +47,8 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 
         public async Task<bool> CheckIfUserAlreadyExistis(User credentials)
         {
-            var query = @"SELECT CASE WHEN EXISTS 
-                (SELECT 1 FROM User WHERE Email = @Email)
+            const string query = @"SELECT CASE WHEN EXISTS 
+                (SELECT 1 FROM UserAccount WHERE Email = @Email)
                 THEN CAST (1 AS BIT) 
                 ELSE CAST (0 AS BIT) END";
 
