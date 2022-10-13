@@ -39,33 +39,24 @@ namespace LoanManager.Auth.Services
             var response = new Response<UserResponse>();
             try
             {
-                // Validating object properties
                 await _userValidator.ValidateAndThrowAsync(credentials);
-
-                // Mapping UserCredentials to User entity
-                var userEntity = _mapper.Map<User>(credentials);
-
-                // Converting email to lowwercase
-                userEntity.Email = userEntity.Email.ToLower();
-
-                // Trying to get User account that match email address
-                var user = await _repository.GetUser(userEntity);
-
-                // Throwing exception when email address don't match any users
-                if (user == null)
+                
+                var userEmail = _mapper.Map<User>(credentials);
+                
+                userEmail.Email = userEmail.Email.ToLower();
+                
+                var userAccount = await _repository.GetUser(userEmail);
+                
+                if (userAccount == null)
                     throw new UserNotFoundException();
-
-                // Validating password
-                var passwordMatch =_hasherService.VerifyKey(credentials.Password, user.Password);
-
-                // Throwing exception when password not match
+                
+                var passwordMatch =_hasherService.VerifyKey(credentials.Password, userAccount.Password);
+                
                 if (!passwordMatch)
                     throw new UserNotFoundException();
-
-                // Mapping User entity to UserResponse object
-                var userResponse = _mapper.Map<UserResponse>(user);
-
-                // Generating token and return UserResponse object
+                
+                var userResponse = _mapper.Map<UserResponse>(userAccount);
+                
                 userResponse.Token = _tokenService.GenerateToken(userResponse);
                 return response.SetResult(userResponse);
 
@@ -90,35 +81,25 @@ namespace LoanManager.Auth.Services
             var response = new Response<UserResponse>();
             try
             {
-                // Validating object properties
                 await _userValidator.ValidateAndThrowAsync(credentials);
+                
+                var userAccount = _mapper.Map<User>(credentials);
+                
+                var userAlreadyExists = await _repository.CheckIfUserAlreadyExistis(userAccount);
 
-                // Mapping UserCredentials entity to User object
-                var userEntity = _mapper.Map<User>(credentials);
-
-                // Verifying if existis some user account with the same email address
-                var userAlreadyExistis = await _repository.CheckIfUserAlreadyExistis(userEntity);
-
-                // Throwing exception when existis some user account with the same email address
-                if (userAlreadyExistis)
+                if (userAlreadyExists)
                     throw new EmailAdressAlreadyRegistredException();
-
-                // Generating Unique identification
-                userEntity.Id = Guid.NewGuid();
-
-                // Converting email to lowwercase
-                userEntity.Email = userEntity.Email.ToLower();
-
-                // Encrypting password before persist
-                userEntity.Password = _hasherService.EncriptKey(userEntity.Password);
-
-                // Persisting User
-                await _repository.CreateAccount(userEntity);
-
-                // Creating a new UserResponse instance an setting email address
+                
+                userAccount.Id = Guid.NewGuid();
+                
+                userAccount.Email = userAccount.Email.ToLower();
+                
+                userAccount.Password = _hasherService.EncriptKey(userAccount.Password);
+                
+                await _repository.CreateAccount(userAccount);
+                
                 var userResponse = new UserResponse { Email = credentials.Email };
-
-                // Generating token and return UserResponse object
+                
                 userResponse.Token = _tokenService.GenerateToken(userResponse);
                 return response.SetResult(userResponse);
 
