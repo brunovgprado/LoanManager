@@ -123,8 +123,8 @@
   <data name="UserEmailMustHaveAtLeastFiveCharacters" xml:space="preserve">
     <value>The full email adress must be at least 9 characters long (ex: ab@cd.ef)</value>
   </data>
-  <data name="UserPassrdMustHaveAtLeastEightCharacters" xml:space="preserve">
-    <value>The password must be at least 8 characters long</value>
+  <data name="UserPasswordMustHaveAtLeastEightCharacters" xml:space="preserve">
+    <value>The password must have between 8 and 20 characters</value>
   </data>
   <data name="UserPasswordIsMandatory" xml:space="preserve">
     <value>Email can't be empty</value>
