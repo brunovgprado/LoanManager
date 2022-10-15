@@ -1,11 +1,10 @@
-﻿using LoanManager.Domain.Interfaces.DomainServices;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
-namespace LoanManager.Domain.Interfaces.Services
+namespace LoanManager.Domain.Interfaces.DomainServices
 {
     public interface IGenericService<TKey, T> : IBaseService<TKey, T>
     {
-        Task<T> ReadAsync(TKey id);
-        Task Update(T entity);
+        Task<T> GetAsync(TKey id);
+        Task<bool> UpdateAsync(T entity);
     }
 }

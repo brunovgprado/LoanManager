@@ -1,5 +1,4 @@
 ﻿using LoanManager.Domain.Entities;
-using LoanManager.Domain.Interfaces.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

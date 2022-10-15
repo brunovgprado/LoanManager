@@ -67,7 +67,7 @@ namespace LoanManager.Application.AppServices
             var response = new Response<LoanDto>();
             try
             {
-                var result = await _loanDomainService.ReadAsync(id);
+                var result = await _loanDomainService.GetAsync(id);
                 return response.SetResult(_mapper.Map<LoanDto>(result));
             }
             catch (EntityNotExistsException)
@@ -86,7 +86,7 @@ namespace LoanManager.Application.AppServices
             var response = new Response<IEnumerable<LoanDto>>();
             try
             {
-                var result = await _loanDomainService.ReadAllAsync(offset, limit);
+                var result = await _loanDomainService.GetAsync(offset, limit);
                 return response.SetResult(_mapper.Map<IEnumerable<LoanDto>>(result));
             }
             catch (Exception ex)

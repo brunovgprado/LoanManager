@@ -20,19 +20,24 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
         }
 
-        public async Task<int> CreateAsync(Loan entity)
+        public async Task<bool> CreateAsync(Loan entity)
         {
+            entity.Id = Guid.NewGuid();
+            entity.LoanDate = DateTime.Now;
+            
             const string command = @"INSERT INTO Loan (Id, FriendId, GameId, LoanDate, Returned)
                              VALUES (@Id, @FriendId, @GameId, @LoanDate, @Returned)";
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                return await connection.ExecuteAsync(command, entity);
+                var affectedRows = await connection.ExecuteAsync(command, entity);
+
+                return affectedRows > 0;
             }
         }
         
-        public async Task<IEnumerable<Loan>> ReadAllAsync(int offset, int limit)
+        public async Task<IEnumerable<Loan>> GetAsync(int offset, int limit)
         {
             const string query = @"SELECT *, (SELECT CASE WHEN
                                     (Lo.Returned <> 't')
@@ -66,7 +71,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             }
         }
 
-        public async Task<Loan> ReadAsync(Guid id)
+        public async Task<Loan> GetAsync(Guid id)
         {
             const string query = @"SELECT *, (SELECT CASE WHEN
                                     (Lo.Returned <> 't')
@@ -96,7 +101,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             }
         }
         
-        public async Task<int> Update(Loan entity)
+        public async Task<bool> UpdateAsync(Loan entity)
         {
             const string command = @"UPDATE Loan 
                                 SET FriendId = @FriendId, 
@@ -108,11 +113,12 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                return await connection.ExecuteAsync(command, entity);
+                var affectedLines = await connection.ExecuteAsync(command, entity);
+                return affectedLines > 0;
             }
         }
 
-        public async Task<int> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             const string command = @"DELETE FROM Loan WHERE Id = @Id";
 
@@ -122,7 +128,8 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                return await connection.ExecuteAsync(command, param);
+                var affectedLines = await connection.ExecuteAsync(command, param);
+                return affectedLines > 0;
             }
         }
 
