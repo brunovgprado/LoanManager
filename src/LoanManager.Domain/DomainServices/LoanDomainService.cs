@@ -76,18 +76,13 @@ namespace LoanManager.Domain.DomainServices
             return await _loanRepository.DeleteAsync(id);
         }
         
-        public async Task EndLoan(Guid id)
+        public async Task<bool> FinishLoanAsync(Guid id)
         {
             var loanExists = await this.CheckIfLoanExistsById(id);
             if (!loanExists)
                 throw new EntityNotExistsException();
 
-            await _loanRepository.EndLoan(id);
-        }
-
-        public async Task<IEnumerable<Loan>> ReadLoanByFriendNameAsync(string name, int offset, int limit)
-        {            
-            return await _loanRepository.ReadLoanByFriendNameAsync(name, offset, limit);
+            return await _loanRepository.FinishLoanAsync(id);
         }
 
         public async Task<IEnumerable<Loan>> ReadLoanHistoryByGameAsync(Guid id, int offset, int limit)

@@ -116,35 +116,12 @@ namespace LoanManager.Application.AppServices
             }
         }
 
-        public async Task<Response<IEnumerable<LoanDto>>> ReadLoanByFriendNameAsync(string name, int offset, int limit)
-        {
-            var response = new Response<IEnumerable<LoanDto>>();
-            try
-            {
-                // Validating if name is null or empty
-                if (String.IsNullOrEmpty(name))
-                    throw new ValidationException(message:Resources.FriendNameIsMandatory);
-
-                var result = await _loanDomainService.ReadLoanByFriendNameAsync(name, offset, limit);
-                return response.SetResult(_mapper.Map<IEnumerable<LoanDto>>(result));
-            }
-            catch (ValidationException ex)
-            {
-                return response.SetRequestValidationError(ex);
-            }
-            catch (Exception ex)
-            {
-                Console.Write(ex.Message);
-                return response.SetInternalServerError(Resources.UnexpectedErrorWhileGettingLoan);
-            }
-        }
-
         public async Task<Response<bool>> EndLoan(Guid id)
         {
             var response = new Response<bool>();
             try
             {
-                await _loanDomainService.EndLoan(id);
+                await _loanDomainService.FinishLoanAsync(id);
                 return response.SetResult(true);
             }
             catch (EntityNotExistsException)

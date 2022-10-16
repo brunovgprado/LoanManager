@@ -133,7 +133,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             }
         }
 
-        public async Task<int> EndLoan(Guid id)
+        public async Task<bool> FinishLoanAsync(Guid id)
         {
             const string command = @"UPDATE Loan SET Returned = 't' WHERE Id = @Id";
 
@@ -143,43 +143,8 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                return await connection.ExecuteAsync(command, param);
-            }
-        }
-
-        public async Task<IEnumerable<Loan>> ReadLoanByFriendNameAsync(string name, int offset, int limit)
-        {
-            const string query = @"SELECT *, (SELECT CASE WHEN
-                                    (Lo.Returned <> 't')
-                                    THEN CAST(1 AS BIT) 
-                		            ELSE CAST(0 AS BIT) END)
-                                    OnLoan
-                            FROM Loan AS Lo
-                            JOIN Friend AS Fr ON Fr.Id = Lo.FriendId
-                            JOIN Game AS Ga ON Ga.Id = Lo.GameId
-                            WHERE Fr.Name LIKE CONCAT('%', @name, '%') 
-                            ORDER BY Name
-                            OFFSET @index ROWS
-                            FETCH NEXT @size ROWS ONLY";
-
-            // Applying pagination limits and parameters
-            var param = new DynamicParameters();
-            param.Add("@index", offset, DbType.Int32);
-            param.Add("@size", limit == 0 ? 10 : limit, DbType.Int32);
-            param.Add("@name", name);
-
-            using (var connection = new NpgsqlConnection(_connectionString))
-            {
-                connection.Open();
-                var result = await connection.QueryAsync<Loan, Friend, Game, Loan>(query,
-                    map: (loan, friend, game) => 
-                    {
-                        loan.Friend = friend;
-                        loan.Game = game;
-                        return loan;
-                    }
-                    , param);
-                return result;
+                var affectedLines = await connection.ExecuteAsync(command, param);
+                return affectedLines > 0;
             }
         }
 

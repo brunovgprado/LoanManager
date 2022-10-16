@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LoanManager.Domain
+namespace LoanManager.Domain.Exceptions
 {
     public class GameIsOnLoanException : Exception
     {

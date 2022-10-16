@@ -7,8 +7,7 @@ namespace LoanManager.Domain.Interfaces.Repositories
 {
     public interface ILoanRepository : IBaseRepository<Guid, Loan>
     {
-        Task<int> EndLoan(Guid id);
-        Task<IEnumerable<Loan>> ReadLoanByFriendNameAsync(string name, int offset, int limit);
+        Task<bool> FinishLoanAsync(Guid id);
         Task<IEnumerable<Loan>> ReadLoanHistoryByGameAsync(Guid id, int offset, int limit);
         Task<bool> CheckIfGameIsOnLoan(Guid id);
         Task<bool> CheckIfyIfLoanExistsById(Guid id);
