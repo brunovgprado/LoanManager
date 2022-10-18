@@ -3,6 +3,7 @@ using LoanManager.Api.Models;
 using LoanManager.Application.Configurations;
 using LoanManager.Auth.Configurations;
 using LoanManager.IoC;
+using LoanManager.IoC.CrossCutting;
 using LoanManager.IoC.DataAccessConfiguration;
 using LoanManager.IoC.DomainConfigurations;
 using Microsoft.AspNetCore.Builder;
@@ -32,7 +33,6 @@ namespace LoanManager.Api
             services.AddCors();
             services.AddControllers();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddScoped<IActionResultConverter, ActionResultConverter>();
             services.ConfigureSwagger();
 
             AuthConfig.ConfigureAuthentication(services, this.configuration);
@@ -41,6 +41,7 @@ namespace LoanManager.Api
             DomainServicesConfiguration.ConfigureServices(services);
             RepositoryConfiguration.ConfigureServices(services);
             AuthConfigurations.ConfigureServices(services);
+            CrossCuttingConfiguration.ConfigureServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

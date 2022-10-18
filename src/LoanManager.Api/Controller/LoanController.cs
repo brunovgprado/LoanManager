@@ -3,6 +3,7 @@ using LoanManager.Api.Models;
 using LoanManager.Api.Models.Request;
 using LoanManager.Application.Interfaces.AppServices;
 using LoanManager.Application.Models.DTO;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,21 +13,17 @@ using System.Threading.Tasks;
 
 namespace LoanManager.Api.Controller
 {
-    [Route("api/v1/[controller]")]
-    [ApiController]
     [Authorize]
-    public class LoansController : ControllerBase
+    public class LoanController : BaseController
     {
-        private readonly IActionResultConverter _actionResultConverter;
         private readonly ILoanAppService _loanAppService;
         private readonly IMapper _mapper;
 
-        public LoansController(
-            IActionResultConverter actionResultConverter,
+        public LoanController(
+            INotificationHandler notificationHandler,
             ILoanAppService loanAppService,
-            IMapper mapper)
+            IMapper mapper): base(notificationHandler)
         {
-            _actionResultConverter = actionResultConverter;
             _loanAppService = loanAppService;
             _mapper = mapper;
         }
@@ -37,10 +34,11 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType(typeof(Guid), (int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> Create(CreateLoanRequest loan)
+        public async Task<IActionResult> Create(CreateLoanRequestDto loan)
         {
             var loanDto = _mapper.Map<LoanDto>(loan);
-            return _actionResultConverter.Convert(await _loanAppService.Create(loanDto));
+            var result = await _loanAppService.Create(loanDto);
+            return CreateResult(data: result);
         }
 
         [HttpGet("{id}")]
@@ -48,9 +46,10 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType(typeof(LoanDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> Read(Guid id)
+        public async Task<IActionResult> Get(Guid id)
         {
-            return _actionResultConverter.Convert(await _loanAppService.Get(id));
+            var result = await _loanAppService.Get(id);
+            return CreateResult(data: result);
         }
 
         [HttpGet]
@@ -58,9 +57,10 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType(typeof(IEnumerable<LoanDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> ReadAll([FromQuery] int offset, int limit)
+        public async Task<IActionResult> Get([FromQuery] int offset, int limit)
         {
-            return _actionResultConverter.Convert(await _loanAppService.GetAll(offset, limit));
+            var result = await _loanAppService.Get(offset, limit);
+            return CreateResult(data: result);
         }
 
         [HttpDelete]
@@ -70,29 +70,19 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            return _actionResultConverter.Convert(await _loanAppService.Delete(id));
+            var result = await _loanAppService.Delete(id);
+            return CreateResult(data: result);
         }
 
-        [HttpGet("/friendloans")]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        [ProducesResponseType(typeof(IEnumerable<LoanDto>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetByFriendName([FromQuery] string friendName, int offset, int limit)
-        {
-            return _actionResultConverter.Convert(
-                await _loanAppService.ReadLoanByFriendNameAsync(friendName, offset, limit));
-        }
-
-        [HttpGet("/loansbygameid")]
+        [HttpGet("/loanhistory")]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(IEnumerable<LoanDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> GetByGame([FromQuery] Guid id, int offset, int limit)
         {
-            return _actionResultConverter.Convert(
-                await _loanAppService.ReadLoanHistoryByGameAsync(id, offset, limit));
+            var result = await _loanAppService.ReadLoanHistoryByGameAsync(id, offset, limit);
+            return CreateResult(data: result);
         }
 
         [HttpPut("/endloan")]
@@ -102,7 +92,8 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> EndLoan(Guid id)
         {
-            return _actionResultConverter.Convert(await _loanAppService.EndLoan(id));
+            var result = await _loanAppService.EndLoan(id);
+            return CreateResult(data: result);
         }
     }
 }

@@ -1,13 +1,14 @@
 ﻿using FluentAssertions;
-using FluentValidation;
 using LoanManager.Domain.DomainServices;
-using LoanManager.Domain.Interfaces;
+using LoanManager.Domain.Entities;
 using LoanManager.Domain.Interfaces.DomainServices;
 using LoanManager.Domain.Interfaces.Repositories;
 using LoanManager.Domain.Validators.GameValidators;
-using LoanManager.Infrastructure.DataAccess.Repositories;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using LoanManager.Tests.Builders;
 using Moq;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -17,33 +18,27 @@ namespace LoanManager.Tests.DomainServices
     {
         private readonly CreateGameValidator _createGameValidator;
         private readonly Mock<IGameRepository> _gameRepositoryMock;
-        private readonly Mock<IFriendRepository> _friendRepositoryMock;
-        private readonly Mock<ILoanRepository> _loanRepositoryMock;
-        private readonly IUnitOfWork _unityOfWork;
+        private readonly INotificationHandler _notificationHandler;
         private readonly IGameDomainService _gameDomainService;
 
         public GameDomainServiceTest()
         {
-            _createGameValidator = new CreateGameValidator();
+            var createGameValidator = new CreateGameValidator();
             _gameRepositoryMock = new Mock<IGameRepository>();
-            _friendRepositoryMock = new Mock<IFriendRepository>();
-            _loanRepositoryMock = new Mock<ILoanRepository>();
-
-            _unityOfWork = new UnitOfWork(
-                _gameRepositoryMock.Object, 
-                _friendRepositoryMock.Object, 
-                _loanRepositoryMock.Object);
+            _notificationHandler = new NotificationHandler();
 
             _gameDomainService = new GameDomainService(
-                    _unityOfWork,
-                    _createGameValidator);
+                createGameValidator,
+                _notificationHandler,
+                _gameRepositoryMock.Object);
         }
 
-        [Fact]
+        [Fact(DisplayName = "Create game with success")]
+        [Trait("Game Domain Service", "CreateAsync")]
         public async Task CreateGame_WithValidState_MustReturnSuccess()
         {
             //Arrange
-            var entity = new GameBuilder().Build();
+            var entity = GameMock.GenerateGame();
 
             //Act
             var response = await _gameDomainService.CreateAsync(entity);
@@ -52,28 +47,113 @@ namespace LoanManager.Tests.DomainServices
             response.Should().NotBeEmpty();
         }
 
-        [Fact]
+        [Fact(DisplayName = "Create game with empty title throws exception")]
+        [Trait("Game Domain Service", "CreateAsync")]
         public async Task CreateGame_WithTitleEmpty_MustThrowException()
         {
             //Arrange
-            var entity = new GameBuilder().WithTitleEmpty();
+            var entity = GameMock.GenerateGameWithTitleEmpty();
 
-            //Act/Assert
-            await Assert.ThrowsAsync<ValidationException>(async 
-                () => await _gameDomainService.CreateAsync(entity));
+            //Act
+            await _gameDomainService.CreateAsync(entity);
+
+            //Assert
+            Assert.True(_notificationHandler.GetInstance().HasNotifications);
+            Assert.Contains(_notificationHandler.GetInstance().Notifications, n => n.Key.Equals("InputValidation"));
 
         }
 
-        [Fact]
+        [Fact(DisplayName = "Create game with empty platform throws exception")]
+        [Trait("Game Domain Service", "CreateAsync")]
         public async Task CreateGame_WithPlatformEmpty_MustThrowException()
         {
             //Arrange
-            var entity = new GameBuilder().WithPlatformEmpty();
+            var entity = GameMock.GenerateGameWithPlatformEmpty();
 
-            //Act/Assert
-            await Assert.ThrowsAsync<ValidationException>(async
-                () => await _gameDomainService.CreateAsync(entity));
+            //Act
+            await _gameDomainService.CreateAsync(entity);
 
+            //Assert
+            Assert.True(_notificationHandler.GetInstance().HasNotifications);
+            Assert.Contains(_notificationHandler.GetInstance().Notifications, n => n.Key.Equals("InputValidation"));
+
+        }
+        
+        [Fact(DisplayName = "Get game with success")]
+        [Trait("Game Domain Service", "GetAsync")]
+        public async Task GetGame_WithValidArguments_MustReturnSuccess()
+        {
+            //Arrange
+            var entity = GameMock.GenerateGame();
+
+            _gameRepositoryMock.Setup(x => x.GetAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(entity);
+
+            //Act
+            var result = await _gameDomainService.GetAsync(entity.Id);
+            
+            //Assert
+            Assert.NotNull(result);
+        }
+        
+        [Fact(DisplayName = "Get game list with success")]
+        [Trait("Game Domain Service", "GetAsync")]
+        public async Task GetGameList_WithValidArguments_MustReturnSuccess()
+        {
+            //Arrange
+            const int offset = 1;
+            const int limit = 20;
+            const int mockQuantity = 20;
+            
+            var entity = GameMock.GenerateGame(mockQuantity);
+
+            _gameRepositoryMock.Setup(x => x.GetAsync(offset, limit))
+                .ReturnsAsync(entity);
+
+            //Act
+            var result = await _gameDomainService.GetAsync(offset, limit);
+            
+            //Assert
+            Assert.NotNull(result);
+            Assert.Equal(limit, result.Count());
+        }
+        
+        [Fact(DisplayName = "Update game with success")]
+        [Trait("Game Domain Service", "GetAsync")]
+        public async Task UpdateGame_WithValidArguments_MustReturnSuccess()
+        {
+            //Arrange
+            var entity = GameMock.GenerateGame();
+
+            _gameRepositoryMock.Setup(x => x.UpdateAsync(It.IsAny<Game>()))
+                .ReturnsAsync(true);
+            _gameRepositoryMock.Setup(x => x.CheckIfGameExistsById(It.IsAny<Guid>()))
+                .ReturnsAsync(true);
+
+            //Act
+            var atLeastOneEntityWasUpdated = await _gameDomainService.UpdateAsync(entity);
+            
+            //Assert
+            Assert.True(atLeastOneEntityWasUpdated);
+        }
+        
+        [Fact(DisplayName = "Delete game with success")]
+        [Trait("Game Domain Service", "GetAsync")]
+        public async Task DeleteGame_WithValidArguments_MustReturnSuccess()
+        {
+            //Arrange
+            var entity = GameMock.GenerateGame();
+
+            _gameRepositoryMock.Setup(x => x.DeleteAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(true);
+            _gameRepositoryMock.Setup(x => x.CheckIfGameExistsById(It.IsAny<Guid>()))
+                .ReturnsAsync(true);
+
+            //Act
+            var atLeastOneEntityWasDeleted = await _gameDomainService.DeleteAsync(entity.Id);
+            
+            //Assert
+            Assert.True(atLeastOneEntityWasDeleted);
         }
     }
 }

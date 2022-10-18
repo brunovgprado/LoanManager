@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using LoanManager.Api.Models;
 using LoanManager.Api.Models.Request;
 using LoanManager.Application.Interfaces.AppServices;
 using LoanManager.Application.Models.DTO;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,21 +12,17 @@ using System.Threading.Tasks;
 
 namespace LoanManager.Api.Controller
 {
-    [Route("api/v1/[controller]")]
-    [ApiController]
     [Authorize]
-    public class GamesController : ControllerBase
+    public class GameController : BaseController
     {
-        private readonly IActionResultConverter _actionResultConverter;
         private readonly IGameAppService _gameService;
         private readonly IMapper _mapper;
 
-        public GamesController(
-            IActionResultConverter actionResultConverter,
+        public GameController(
+            INotificationHandler notificationHandler,
             IGameAppService gameService,
-            IMapper mapper)
+            IMapper mapper):base(notificationHandler)
         {
-            _actionResultConverter = actionResultConverter;
             _gameService = gameService;
             _mapper = mapper;
         }
@@ -35,10 +31,11 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(Guid), (int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> Create(CreateGameRequest game)
+        public async Task<IActionResult> Create(CreateGameRequestDto game)
         {
             var gameDto = _mapper.Map<GameDto>(game);
-            return _actionResultConverter.Convert( await _gameService.Create(gameDto));
+            var result = await _gameService.Create(gameDto);
+            return CreateResult(data: result);
         }
 
         [HttpGet("{id}")]
@@ -46,9 +43,10 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType(typeof(GameDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> Read(Guid id)
+        public async Task<IActionResult> Get(Guid id)
         {
-            return _actionResultConverter.Convert(await _gameService.Get(id));
+            var result = await _gameService.Get(id);
+            return CreateResult(data: result);
         }
 
         [HttpGet]
@@ -56,9 +54,10 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType(typeof(IEnumerable<GameDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> ReadAll([FromQuery]int offset, int limit)
+        public async Task<IActionResult> Get([FromQuery]int offset, int limit)
         {
-            return _actionResultConverter.Convert(await _gameService.GetAll(offset, limit));
+            var result = await _gameService.Get(offset, limit);
+            return CreateResult(data: result);
         }
 
         [HttpPut]
@@ -68,7 +67,8 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Update(GameDto game)
         {
-            return _actionResultConverter.Convert(await _gameService.Update(game));
+            var result = await _gameService.Update(game);
+            return CreateResult(data: result);
         }
 
         [HttpDelete]
@@ -78,7 +78,8 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            return _actionResultConverter.Convert(await _gameService.Delete(id));
+            var result = await _gameService.Delete(id);
+            return CreateResult(data: result);
         }
     }
 }

@@ -7,16 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bogus" Version="31.0.2" />
+    <PackageReference Include="Bogus" Version="34.0.2" />
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0-preview-20221003-04" />
     <PackageReference Include="Moq" Version="4.14.6" />
-    <PackageReference Include="xunit" Version="2.4.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\src\LoanManager.Api\LoanManager.Api.csproj" />
     <ProjectReference Include="..\src\LoanManager.Domain\LoanManager.Domain.csproj" />
     <ProjectReference Include="..\src\LoanManager.Infrastructure\LoanManager.Infrastructure.DataAccess.csproj" />
   </ItemGroup>

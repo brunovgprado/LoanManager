@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30225.117
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoanManager.Domain", "src\LoanManager.Domain\LoanManager.Domain.csproj", "{AC3CEABB-46A4-4765-8869-959F6FE8FF2A}"
 EndProject
@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoanManager.IoC", "src\Loan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoanManager.Application", "src\LoanManager.Application\LoanManager.Application.csproj", "{D7F902BF-037C-4276-BA30-B5E0AE2B597C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoanManager.Auth", "src\LoanManager.Auth\LoanManager.Auth.csproj", "{354F97AE-1A0C-4960-9BC2-ECDF0D9A2E2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoanManager.Auth", "src\LoanManager.Auth\LoanManager.Auth.csproj", "{354F97AE-1A0C-4960-9BC2-ECDF0D9A2E2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoanManager.Infrastructure.CrossCutting", "src\LoanManager.Infrastructure.CrossCutting\LoanManager.Infrastructure.CrossCutting.csproj", "{F64AE6D5-4DA3-4615-8B55-5298DAF123CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{354F97AE-1A0C-4960-9BC2-ECDF0D9A2E2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{354F97AE-1A0C-4960-9BC2-ECDF0D9A2E2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{354F97AE-1A0C-4960-9BC2-ECDF0D9A2E2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F64AE6D5-4DA3-4615-8B55-5298DAF123CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F64AE6D5-4DA3-4615-8B55-5298DAF123CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F64AE6D5-4DA3-4615-8B55-5298DAF123CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F64AE6D5-4DA3-4615-8B55-5298DAF123CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -10,9 +10,8 @@ namespace LoanManager.Application.Interfaces.AppServices
     {
         Task<Response<Guid>> Create(LoanDto loan);
         Task<Response<LoanDto>> Get(Guid id);
-        Task<Response<IEnumerable<LoanDto>>> GetAll(int offset, int limit);
+        Task<Response<IEnumerable<LoanDto>>> Get(int offset, int limit);
         Task<Response<bool>> Delete(Guid id);
-        Task<Response<IEnumerable<LoanDto>>> ReadLoanByFriendNameAsync(string name, int offset, int limit);
         Task<Response<bool>> EndLoan(Guid id);
         Task<Response<IEnumerable<LoanDto>>> ReadLoanHistoryByGameAsync(Guid id, int offset, int limit);
     }
