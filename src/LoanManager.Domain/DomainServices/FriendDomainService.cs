@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using LoanManager.Domain.Interfaces.Repositories;
+using LoanManager.Domain.Properties;
 
 namespace LoanManager.Domain.DomainServices
 {
@@ -47,7 +48,11 @@ namespace LoanManager.Domain.DomainServices
 
         public async Task<Friend> GetAsync(Guid id)
         {
-            return await _friendRepository.GetAsync(id);
+            var result =await _friendRepository.GetAsync(id);
+            if(result is null)
+                notificationHandler.AddNotification(new Notification("NotFound", Resources.CantFoundFriendWithGivenId));
+            
+            return result;
         }
 
         public async Task<bool> UpdateAsync(Friend entity)

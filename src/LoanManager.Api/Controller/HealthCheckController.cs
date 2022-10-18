@@ -8,22 +8,19 @@ namespace LoanManager.Api.Controller
 {
     public class HealthCheckController : BaseController
     {
-        private readonly IActionResultConverter _actionResultConverter;
         private readonly IHealthCheckService _service;
 
         public HealthCheckController(
             IHealthCheckService service,
-            INotificationHandler notificationHandler,
-            IActionResultConverter actionResultConverter
-            ):base(notificationHandler)
+            INotificationHandler notificationHandler
+        ):base(notificationHandler)
         {
             _service = service;
-            _actionResultConverter = actionResultConverter;
         }
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return _actionResultConverter.Convert(await _service.CheckDbConnection());
+            return CreateResult(await _service.CheckDbConnection());
         }
     }
 }

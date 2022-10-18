@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using LoanManager.Api.Models;
 using LoanManager.Api.Models.Request;
 using LoanManager.Application.Interfaces.AppServices;
 using LoanManager.Application.Models.DTO;
@@ -14,19 +13,16 @@ using System.Threading.Tasks;
 namespace LoanManager.Api.Controller
 {
     [Authorize]
-    public class GamesController : BaseController
+    public class GameController : BaseController
     {
-        private readonly IActionResultConverter _actionResultConverter;
         private readonly IGameAppService _gameService;
         private readonly IMapper _mapper;
 
-        public GamesController(
-            IActionResultConverter actionResultConverter,
+        public GameController(
             INotificationHandler notificationHandler,
             IGameAppService gameService,
             IMapper mapper):base(notificationHandler)
         {
-            _actionResultConverter = actionResultConverter;
             _gameService = gameService;
             _mapper = mapper;
         }
@@ -35,7 +31,7 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(Guid), (int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> Create(CreateGameRequest game)
+        public async Task<IActionResult> Create(CreateGameRequestDto game)
         {
             var gameDto = _mapper.Map<GameDto>(game);
             var result = await _gameService.Create(gameDto);
@@ -47,7 +43,7 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType(typeof(GameDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> Read(Guid id)
+        public async Task<IActionResult> Get(Guid id)
         {
             var result = await _gameService.Get(id);
             return CreateResult(data: result);
@@ -58,9 +54,9 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType(typeof(IEnumerable<GameDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> ReadAll([FromQuery]int offset, int limit)
+        public async Task<IActionResult> Get([FromQuery]int offset, int limit)
         {
-            var result = await _gameService.GetAll(offset, limit);
+            var result = await _gameService.Get(offset, limit);
             return CreateResult(data: result);
         }
 

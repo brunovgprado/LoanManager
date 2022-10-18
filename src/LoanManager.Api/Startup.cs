@@ -33,7 +33,6 @@ namespace LoanManager.Api
             services.AddCors();
             services.AddControllers();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddScoped<IActionResultConverter, ActionResultConverter>();
             services.ConfigureSwagger();
 
             AuthConfig.ConfigureAuthentication(services, this.configuration);

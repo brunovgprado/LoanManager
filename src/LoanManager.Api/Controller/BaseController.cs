@@ -53,7 +53,7 @@ namespace LoanManager.Api.Controller
         {
             var errors = ConvertNotificationsToDictionary(_notificationHandler.GetInstance().Notifications);
 
-            return Conflict(new DefaultResponse(errors: errors, code: "NotFound",
+            return NotFound(new DefaultResponse(errors: errors, code: "NotFound",
                 message: Resources.NotFound));
         }
 
@@ -61,7 +61,7 @@ namespace LoanManager.Api.Controller
         {
             var errors = ConvertNotificationsToDictionary(_notificationHandler.GetInstance().Notifications);
 
-            return Conflict(new DefaultResponse(errors: errors, code: "InputValidation",
+            return BadRequest(new DefaultResponse(errors: errors, code: "InputValidation",
                 message: Resources.InputValidationError));
         }
 

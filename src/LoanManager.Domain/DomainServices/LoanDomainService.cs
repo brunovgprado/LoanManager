@@ -118,7 +118,7 @@ namespace LoanManager.Domain.DomainServices
         {
             var friendExists = await _friendRepository.CheckIfFriendExistsById(loan.FriendId);
             if (!friendExists)
-                notificationHandler.AddNotification(new Notification("NotFound", Resources.CantFounFriendWithGivenId));
+                notificationHandler.AddNotification(new Notification("NotFound", Resources.CantFoundFriendWithGivenId));
 
             var gameExists = await _gameRepository.CheckIfGameExistsById(loan.GameId);
             if (!gameExists)

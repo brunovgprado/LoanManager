@@ -16,18 +16,15 @@ namespace LoanManager.Api.Controller
     [Authorize]
     public class FriendController : BaseController
     {
-        private readonly IActionResultConverter _actionResultConverter;
         private readonly IFriendAppService _friendService;
         private readonly IMapper _mapper;
 
         public FriendController(
-            IActionResultConverter actionResultConverter,
             IFriendAppService friendService,
             INotificationHandler notificationHandler,
             IMapper mapper
             ):base(notificationHandler)
         {
-            _actionResultConverter = actionResultConverter;
             _friendService = friendService;
             _mapper = mapper;
         }
@@ -37,10 +34,10 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType(typeof(Guid), (int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> Create(CreateFriendRequest friend)
+        public async Task<IActionResult> Create(CreateFriendRequestDto friend)
         {
             var friendDto = _mapper.Map<FriendDto>(friend);
-            var result = await _friendService.Create(friendDto);
+            var result = await _friendService.CreateAsync(friendDto);
             return CreateResult(data: result);
         }
 
@@ -49,7 +46,7 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType(typeof(FriendDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> Read(Guid id)
+        public async Task<IActionResult> Get(Guid id)
         {
             var result = await _friendService.Get(id);
             return CreateResult(data: result);
@@ -60,9 +57,9 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType(typeof(IEnumerable<FriendDto>), (int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> ReadAll([FromQuery] int offset, int limit)
+        public async Task<IActionResult> Get([FromQuery] int offset, int limit)
         {
-            var result = await _friendService.GetAll(offset, limit);
+            var result = await _friendService.Get(offset, limit);
             return CreateResult(data: result);
         }
 
@@ -84,7 +81,7 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _friendService.Delete(id);
+            var result = await _friendService.Async(id);
             return CreateResult(data: result);
         }
 

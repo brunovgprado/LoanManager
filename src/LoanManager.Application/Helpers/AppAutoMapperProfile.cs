@@ -4,9 +4,9 @@ using LoanManager.Domain.Entities;
 
 namespace LoanManager.Application.Helpers
 {
-    public class AutoMapperProfile : Profile
+    public class AppAutoMapperProfile : Profile
     {
-        public AutoMapperProfile()
+        public AppAutoMapperProfile()
         {
             CreateMap<GameDto, Game>();
             CreateMap<Game, GameDto>();

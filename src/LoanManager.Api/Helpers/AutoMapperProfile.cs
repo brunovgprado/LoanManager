@@ -8,9 +8,9 @@ namespace LoanManager.Api.Helpers
     {
         public AutoMapperProfile()
         {
-            CreateMap<CreateGameRequest, GameDto>();
-            CreateMap<CreateFriendRequest, FriendDto>();
-            CreateMap<CreateLoanRequest, LoanDto>();
+            CreateMap<CreateGameRequestDto, GameDto>();
+            CreateMap<CreateFriendRequestDto, FriendDto>();
+            CreateMap<CreateLoanRequestDto, LoanDto>();
         }
     }
 }
