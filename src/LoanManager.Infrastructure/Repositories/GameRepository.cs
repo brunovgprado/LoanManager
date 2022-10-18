@@ -22,19 +22,22 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
         }
         
-        public async Task<int> CreateAsync(Game entity)
+        public async Task<bool> CreateAsync(Game entity)
         {
+            entity.Id = Guid.NewGuid();
+            
             const string command = @"INSERT INTO Game (Id, Title, Description, Genre, Platform)
                              VALUES (@Id, @Title, @Description, @Genre, @Platform)";
 
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                return await connection.ExecuteAsync(command, entity);               
+                var affectedRows = await connection.ExecuteAsync(command, entity);
+                return affectedRows > 0;
             }
         }
         
-        public async Task<IEnumerable<Game>> ReadAllAsync(int offset, int limit)
+        public async Task<IEnumerable<Game>> GetAsync(int offset, int limit)
         {
             const string query = @"SELECT Ga.Id, 
                                  Ga.Title, 
@@ -66,7 +69,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             }
         }
 
-        public async Task<Game> ReadAsync(Guid id)
+        public async Task<Game> GetAsync(Guid id)
         {
             const string query = @"SELECT Ga.Id, 
                                  Ga.Title, 
@@ -95,7 +98,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             }
         }
 
-        public async Task<int> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             const string command = @"DELETE FROM Game WHERE Id= @Id";
 
@@ -105,11 +108,12 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                return await connection.ExecuteAsync(command, param);
+                var affectedLines = await connection.ExecuteAsync(command, param);
+                return affectedLines > 0;
             }
         }
 
-        public async Task<int> Update(Game entity)
+        public async Task<bool> UpdateAsync(Game entity)
         {
             const string command = @"UPDATE Game 
                                 SET Title = @Title, 
@@ -121,7 +125,8 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                return await connection.ExecuteAsync(command, entity);
+                var affectedLines = await connection.ExecuteAsync(command, entity);
+                return affectedLines > 0;
             }
         }
 

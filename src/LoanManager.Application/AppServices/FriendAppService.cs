@@ -77,7 +77,7 @@ namespace LoanManager.Application.AppServices
             var response = new Response<FriendDto>();
             try
             {
-                var result = await _friendDomainService.ReadAsync(id);
+                var result = await _friendDomainService.GetAsync(id);
                 return response.SetResult(_mapper.Map<FriendDto>(result));
             }
             catch (EntityNotExistsException)
@@ -96,7 +96,7 @@ namespace LoanManager.Application.AppServices
             var response = new Response<IEnumerable<FriendDto>>();
             try
             {
-                var result = await _friendDomainService.ReadAllAsync(offset, limit);
+                var result = await _friendDomainService.GetAsync(offset, limit);
                 return response.SetResult(_mapper.Map<IEnumerable<FriendDto>>(result));
             }
             catch (Exception ex)
@@ -115,7 +115,7 @@ namespace LoanManager.Application.AppServices
                 var friendEntity = _mapper.Map<Friend>(friend);
 
                 // Persisting and returning result
-                await _friendDomainService.Update(friendEntity);
+                await _friendDomainService.UpdateAsync(friendEntity);
                 return response.SetResult(true);
             }
             catch (EntityNotExistsException)

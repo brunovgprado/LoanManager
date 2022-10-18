@@ -8,12 +8,15 @@ using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LoanManager.Domain.Interfaces.Repositories;
 
 namespace LoanManager.Domain.DomainServices
 {
     public class LoanDomainService : BaseDomainService, ILoanDomainService
     {
-        private readonly IUnitOfWork _unityOfWork;
+        private readonly ILoanRepository _loanRepository;
+        private readonly IGameRepository _gameRepository;
+        private readonly IFriendRepository _friendRepository;
         private readonly CreateLoanValidator _createLoanValidations;
 
         public LoanDomainService(
@@ -24,8 +27,10 @@ namespace LoanManager.Domain.DomainServices
             INotificationHandler notificationHandler)
             : base(notificationHandler)
         {
-            _unityOfWork = unityOfWork;
             _createLoanValidations = createLoanValidations;
+            _loanRepository = loanRepository;
+            _gameRepository = gameRepository;
+            _friendRepository = friendRepository;
         }
 
         public async Task<Guid> CreateAsync(Loan entity)
@@ -53,9 +58,9 @@ namespace LoanManager.Domain.DomainServices
             return entity.Id;
         }
 
-        public async Task<IEnumerable<Loan>> ReadAllAsync(int offset, int limit)
+        public async Task<IEnumerable<Loan>> GetAsync(int offset, int limit)
         {
-            return await _unityOfWork.Loans.ReadAllAsync(offset, limit);
+            return await _loanRepository.GetAsync(offset, limit);
         }
 
         public async Task<Loan> GetAsync(Guid id)
@@ -71,16 +76,16 @@ namespace LoanManager.Domain.DomainServices
             if (!loanExists)
                 return false;
 
-            await _unityOfWork.Loans.Update(entity);
+            return await _loanRepository.UpdateAsync(entity);
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var loanExists = await this.CheckIfLoanExistsById(id);
             if (!loanExists)
                 return false;
 
-            await _unityOfWork.Loans.DeleteAsync(id);
+            return await _loanRepository.DeleteAsync(id);
         }
 
         public async Task<bool> FinishLoanAsync(Guid id)
@@ -89,17 +94,12 @@ namespace LoanManager.Domain.DomainServices
             if (!loanExists)
                 return false;
 
-            await _unityOfWork.Loans.EndLoan(id);
-        }
-
-        public async Task<IEnumerable<Loan>> ReadLoanByFriendNameAsync(string name, int offset, int limit)
-        {            
-            return await _unityOfWork.Loans.ReadLoanByFriendNameAsync(name, offset, limit);
+            return await _loanRepository.FinishLoanAsync(id);
         }
 
         public async Task<IEnumerable<Loan>> ReadLoanHistoryByGameAsync(Guid id, int offset, int limit)
         {
-            return await _unityOfWork.Loans.ReadLoanHistoryByGameAsync(id, offset, limit);
+            return await _loanRepository.ReadLoanHistoryByGameAsync(id, offset, limit);
         }
 
         private async Task<bool> CheckIfLoanExistsById(Guid id)

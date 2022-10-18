@@ -7,12 +7,13 @@ using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LoanManager.Domain.Interfaces.Repositories;
 
 namespace LoanManager.Domain.DomainServices
 {
     public class GameDomainService : BaseDomainService, IGameDomainService
     {
-        private readonly IUnitOfWork _unityOfWork;
+        private readonly IGameRepository _gameRepository;
         private readonly CreateGameValidator _createGameValidator;
 
 
@@ -22,8 +23,8 @@ namespace LoanManager.Domain.DomainServices
             IGameRepository gameRepository)
             : base(notificationHandler)
         {
-            _unityOfWork = unityOfWork;
             _createGameValidator = createGameValidator;
+            _gameRepository = gameRepository;
         }
 
         public async Task<Guid> CreateAsync(Game entity)
@@ -38,21 +39,17 @@ namespace LoanManager.Domain.DomainServices
             return entity.Id;
         }
 
-        public async Task<IEnumerable<Game>> ReadAllAsync(int offset, int limit)
+        public async Task<IEnumerable<Game>> GetAsync(int offset, int limit)
         {
-            return await _unityOfWork.Games.ReadAllAsync(offset, limit);
+            return await _gameRepository.GetAsync(offset, limit);
         }
 
-        public async Task<Game> ReadAsync(Guid id)
+        public async Task<Game> GetAsync(Guid id)
         {
-            var result = await _unityOfWork.Games.ReadAsync(id);
-            if(result == null)
-                throw new EntityNotExistsException();
-
-            return result;
+            return await _gameRepository.GetAsync(id);
         }
 
-        public async Task Update(Game entity)
+        public async Task<bool> UpdateAsync(Game entity)
         {
             GuardClauses.IsNotNull(entity, nameof(entity));
 
@@ -60,7 +57,7 @@ namespace LoanManager.Domain.DomainServices
             if (!gameExists)
                 return false;
 
-            await _unityOfWork.Games.Update(entity);
+            return await _gameRepository.UpdateAsync(entity);
         }
 
         public async Task<bool> DeleteAsync(Guid id)
@@ -69,7 +66,7 @@ namespace LoanManager.Domain.DomainServices
             if (!gameExists)
                 return false;
 
-            await _unityOfWork.Games.DeleteAsync(id);
+            return await _gameRepository.DeleteAsync(id);
         }
 
         private async Task<bool> CheckIfGameExistsById(Guid id)

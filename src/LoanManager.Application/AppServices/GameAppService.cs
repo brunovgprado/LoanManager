@@ -53,7 +53,7 @@ namespace LoanManager.Application.AppServices
             var response = new Response<GameDto>();
             try
             {
-              var result = await  _gameDomainService.ReadAsync(id);
+              var result = await  _gameDomainService.GetAsync(id);
               return response.SetResult( _mapper.Map<GameDto>(result));
             }
             catch (EntityNotExistsException)
@@ -72,7 +72,7 @@ namespace LoanManager.Application.AppServices
             var response = new Response<IEnumerable<GameDto>>();
             try
             {
-                var result = await _gameDomainService.ReadAllAsync(offset, limit);
+                var result = await _gameDomainService.GetAsync(offset, limit);
                 return response.SetResult(_mapper.Map<IEnumerable<GameDto>>(result));
             }
             catch (Exception ex)
@@ -91,7 +91,7 @@ namespace LoanManager.Application.AppServices
                 var gameEntity = _mapper.Map<Game>(game);
 
                 // Persisting entity and returning
-                await _gameDomainService.Update(gameEntity);
+                await _gameDomainService.UpdateAsync(gameEntity);
                 return response.SetResult(true);
             }
             catch(EntityNotExistsException)

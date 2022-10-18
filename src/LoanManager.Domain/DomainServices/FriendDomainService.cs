@@ -8,13 +8,14 @@ using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using LoanManager.Domain.Interfaces.Repositories;
 
 namespace LoanManager.Domain.DomainServices
 {
     public class FriendDomainService : BaseDomainService, IFriendDomainService
     {
-        private readonly IUnitOfWork _unityOfWork;
         private readonly CreateFriendValidator _createFriendValidations;
+        private readonly IFriendRepository _friendRepository;
 
         public FriendDomainService(
             CreateFriendValidator createFriendValidations,
@@ -22,8 +23,8 @@ namespace LoanManager.Domain.DomainServices
             IFriendRepository friendRepository)
             :base(notificationHandler)
         {
-            _unityOfWork = unityOfWork;
             _createFriendValidations = createFriendValidations;
+            _friendRepository = friendRepository;
         }
         
         public async Task<Guid> CreateAsync(Friend entity)
@@ -39,19 +40,17 @@ namespace LoanManager.Domain.DomainServices
             return entity.Id;
         }
 
-        public async Task<IEnumerable<Friend>> ReadAllAsync(int offset, int limit)
+        public async Task<IEnumerable<Friend>> GetAsync(int offset, int limit)
         {
-            return await _unityOfWork.Friends.ReadAllAsync(offset, limit);
+            return await _friendRepository.GetAsync(offset, limit);
         }
 
-        public async Task<Friend> ReadAsync(Guid id)
+        public async Task<Friend> GetAsync(Guid id)
         {
-            await this.CheckIfEntityExistsById(id);
-
-            return await _unityOfWork.Friends.ReadAsync(id);
+            return await _friendRepository.GetAsync(id);
         }
 
-        public async Task Update(Friend entity)
+        public async Task<bool> UpdateAsync(Friend entity)
         {
             GuardClauses.IsNotNull(entity, nameof(entity));
 
@@ -65,16 +64,16 @@ namespace LoanManager.Domain.DomainServices
             return false;
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             await this.CheckIfEntityExistsById(id);
 
-            await _unityOfWork.Friends.DeleteAsync(id);
+            return await _friendRepository.DeleteAsync(id);
         }
 
         private async Task<bool> CheckIfEntityExistsById(Guid id)
         {
-            var entityExists = await _unityOfWork.Friends.CheckIfFriendExistsById(id);
+            var entityExists = await _friendRepository.CheckIfFriendExistsById(id);
 
             if (!entityExists)
             {

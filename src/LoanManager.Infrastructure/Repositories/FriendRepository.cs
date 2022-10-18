@@ -22,7 +22,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
         }
         
-        public async Task<int> CreateAsync(Friend entity)
+        public async Task<bool> CreateAsync(Friend entity)
         {
             const string command = @"INSERT INTO Friend (Id, Name, PhoneNumber)
                              VALUES (@Id, @Name, @PhoneNumber)";
@@ -30,11 +30,12 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                return await connection.ExecuteAsync(command, entity);
+                var affectedRows = await connection.ExecuteAsync(command, entity);
+                return affectedRows > 0;
             }
         }
         
-        public async Task<IEnumerable<Friend>> ReadAllAsync(int offset, int limit)
+        public async Task<IEnumerable<Friend>> GetAsync(int offset, int limit)
         {
             const string query = @"SELECT * FROM Friend 
                                 ORDER BY Name
@@ -54,7 +55,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             }
         }
 
-        public async Task<Friend> ReadAsync(Guid id)
+        public async Task<Friend> GetAsync(Guid id)
         {
             const string query = @"SELECT * FROM Friend WHERE Id= @Id";
 
@@ -69,7 +70,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             }
         }
 
-        public async Task<int> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
             const string command = @"DELETE FROM Friend WHERE Id= @Id";
 
@@ -79,11 +80,12 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                return await connection.ExecuteAsync(command, param);
+                var affectedLines = await connection.ExecuteAsync(command, param);
+                return affectedLines > 0;
             }
         }
 
-        public async Task<int> Update(Friend entity)
+        public async Task<bool> UpdateAsync(Friend entity)
         {
             const string command = @"UPDATE Friend 
                                 SET Name = @Name, 
@@ -93,7 +95,8 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             using (var connection = new NpgsqlConnection(_connectionString))
             {
                 connection.Open();
-                return await connection.ExecuteAsync(command, entity);
+                var affectedLines = await connection.ExecuteAsync(command, entity);
+                return affectedLines > 0;
             }
         }
 
