@@ -10,6 +10,7 @@ using LoanManager.Tests.Builders;
 using Moq;
 using System.Threading.Tasks;
 using LoanManager.Domain.Entities;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using Xunit;
 
 namespace LoanManager.Tests.DomainServices
@@ -20,6 +21,7 @@ namespace LoanManager.Tests.DomainServices
         private readonly Mock<ILoanRepository> _loanRepositoryMock;
         private readonly Mock<IGameRepository> _gameRepositoryMock;
         private readonly Mock<IFriendRepository> _friendRepositoryMock;
+        private readonly INotificationHandler _notificationHandler;
 
         public LoanDomainServiceTest()
         {
@@ -27,13 +29,14 @@ namespace LoanManager.Tests.DomainServices
             _gameRepositoryMock = new Mock<IGameRepository>();
             _friendRepositoryMock = new Mock<IFriendRepository>();
             _loanRepositoryMock = new Mock<ILoanRepository>();
-            
+            _notificationHandler = new NotificationHandler();
 
             _loanDomainService = new LoanDomainService(
                 createLoanValidator,
                 _loanRepositoryMock.Object,
-                _gameRepositoryMock.Object,
-                _friendRepositoryMock.Object);
+                _gameRepositoryMock.Object,                
+                _friendRepositoryMock.Object,
+                _notificationHandler);
         }
 
         [Fact(DisplayName = "Create loan with success")]
@@ -65,9 +68,12 @@ namespace LoanManager.Tests.DomainServices
             
             var entity = LoanMock.GenerateLoan();
 
-            //Act/Assert
-            await Assert.ThrowsAsync<GameIsOnLoanException>(async
-                () => await _loanDomainService.CreateAsync(entity));
+            //Act
+            await _loanDomainService.CreateAsync(entity);
+
+            //Assert
+            Assert.True(_notificationHandler.GetInstance().HasNotifications);
+            Assert.Contains(_notificationHandler.GetInstance().Notifications, n => n.Key.Equals("BusinessRule"));
         }
         
         [Fact(DisplayName = "Create loan with nonexistent game throws exception")]
@@ -77,9 +83,12 @@ namespace LoanManager.Tests.DomainServices
             //Arrange
             var entity = LoanMock.GenerateLoan();
 
-            //Act/Assert
-            await Assert.ThrowsAsync<EntityNotExistsException>(async
-                () => await _loanDomainService.CreateAsync(entity));
+            //Act
+            await _loanDomainService.CreateAsync(entity);
+
+            //Assert
+            Assert.True(_notificationHandler.GetInstance().HasNotifications);
+            Assert.Contains(_notificationHandler.GetInstance().Notifications, n => n.Key.Equals("NotFound"));
         }
 
         [Fact(DisplayName = "Create loan with empty friend id throws exception")]
@@ -89,9 +98,12 @@ namespace LoanManager.Tests.DomainServices
             //Arrange
             var entity = LoanMock.GenerateLoanWithFriendIdEmpty();
 
-            //Act/Assert
-            await Assert.ThrowsAsync<ValidationException>(async
-                () => await _loanDomainService.CreateAsync(entity));
+            //Act
+            await _loanDomainService.CreateAsync(entity);
+
+            //Assert
+            Assert.True(_notificationHandler.GetInstance().HasNotifications);
+            Assert.Contains(_notificationHandler.GetInstance().Notifications, n => n.Key.Equals("InputValidation"));
         }
         
         [Fact(DisplayName = "Create loan with empty game id throws exception")]
@@ -101,9 +113,12 @@ namespace LoanManager.Tests.DomainServices
             //Arrange
             var entity = LoanMock.GenerateLoanWithGameIdEmpty();
 
-            //Act/Assert
-            await Assert.ThrowsAsync<ValidationException>(async
-                () => await _loanDomainService.CreateAsync(entity));
+            //Act
+            await _loanDomainService.CreateAsync(entity);
+
+            //Assert
+            Assert.True(_notificationHandler.GetInstance().HasNotifications);
+            Assert.Contains(_notificationHandler.GetInstance().Notifications, n => n.Key.Equals("InputValidation"));
         }
         
         [Fact(DisplayName = "Get loan with success")]

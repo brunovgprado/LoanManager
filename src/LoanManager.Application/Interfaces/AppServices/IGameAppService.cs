@@ -11,7 +11,7 @@ namespace LoanManager.Application.Interfaces.AppServices
     {
         Task<Response<Guid>> Create(GameDto game);
         Task<Response<GameDto>> Get(Guid id);
-        Task<Response<IEnumerable<GameDto>>> GetAll(int offset, int limit);
+        Task<Response<IEnumerable<GameDto>>> Get(int offset, int limit);
         Task<Response<bool>> Update(GameDto game);
         Task<Response<bool>> Delete(Guid id);
     }

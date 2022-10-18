@@ -9,9 +9,9 @@ namespace LoanManager.IoC
     {
         public static IServiceCollection ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<CreateGameValidator, CreateGameValidator>();
-            services.AddSingleton<CreateFriendValidator, CreateFriendValidator>();
-            services.AddSingleton<CreateLoanValidator, CreateLoanValidator>();           
+            services.AddTransient<CreateGameValidator, CreateGameValidator>();
+            services.AddTransient<CreateFriendValidator, CreateFriendValidator>();
+            services.AddTransient<CreateLoanValidator, CreateLoanValidator>();           
 
             return services;
         }

@@ -1,24 +1,28 @@
-﻿using FluentValidation;
-using LoanManager.Domain.Entities;
+﻿using LoanManager.Domain.Entities;
 using LoanManager.Domain.Exceptions;
-using LoanManager.Domain.Interfaces;
 using LoanManager.Domain.Interfaces.DomainServices;
+using LoanManager.Domain.Interfaces.Repositories;
 using LoanManager.Domain.Validators.FriendValidators;
+using LoanManager.Infrastructure.CrossCutting.Helpers;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using LoanManager.Domain.Interfaces.Repositories;
+using LoanManager.Domain.Properties;
 
 namespace LoanManager.Domain.DomainServices
 {
-    public class FriendDomainService : IFriendDomainService
+    public class FriendDomainService : BaseDomainService, IFriendDomainService
     {
         private readonly CreateFriendValidator _createFriendValidations;
         private readonly IFriendRepository _friendRepository;
 
         public FriendDomainService(
-            CreateFriendValidator createFriendValidations, 
+            CreateFriendValidator createFriendValidations,
+            INotificationHandler notificationHandler,
             IFriendRepository friendRepository)
+            :base(notificationHandler)
         {
             _createFriendValidations = createFriendValidations;
             _friendRepository = friendRepository;
@@ -26,10 +30,14 @@ namespace LoanManager.Domain.DomainServices
         
         public async Task<Guid> CreateAsync(Friend entity)
         {
-            await _createFriendValidations.ValidateAndThrowAsync(entity);
+            GuardClauses.IsNotNull(entity, nameof(entity));
+
+            if(IsValid(entity, _createFriendValidations))
+            {
+                entity.Id = Guid.NewGuid();
+                await _friendRepository.CreateAsync(entity);
+            }
             
-            entity.Id = Guid.NewGuid();
-            await _friendRepository.CreateAsync(entity);
             return entity.Id;
         }
 
@@ -40,14 +48,25 @@ namespace LoanManager.Domain.DomainServices
 
         public async Task<Friend> GetAsync(Guid id)
         {
-            return await _friendRepository.GetAsync(id);
+            var result =await _friendRepository.GetAsync(id);
+            if(result is null)
+                notificationHandler.AddNotification(new Notification("NotFound", Resources.CantFoundFriendWithGivenId));
+            
+            return result;
         }
 
         public async Task<bool> UpdateAsync(Friend entity)
         {
-            await this.CheckIfEntityExistsById(entity.Id);
+            GuardClauses.IsNotNull(entity, nameof(entity));
 
-            return await _friendRepository.UpdateAsync(entity);
+            if(IsValid(entity, _createFriendValidations))
+            {
+                await this.CheckIfEntityExistsById(entity.Id);
+                await _friendRepository.UpdateAsync(entity);
+                return true;
+            }
+
+            return false;
         }
 
         public async Task<bool> DeleteAsync(Guid id)
@@ -62,7 +81,11 @@ namespace LoanManager.Domain.DomainServices
             var entityExists = await _friendRepository.CheckIfFriendExistsById(id);
 
             if (!entityExists)
-                throw new EntityNotExistsException();
+            {
+                notificationHandler
+                    .AddNotification(new Notification("NotFound", $"Friend not found with given id {id}"));
+                return false;
+            }
 
             return true;
         }

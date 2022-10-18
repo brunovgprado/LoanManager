@@ -1,31 +1,34 @@
-﻿using System;
-using System.Linq;
-using FluentAssertions;
-using FluentValidation;
+﻿using FluentAssertions;
 using LoanManager.Domain.DomainServices;
+using LoanManager.Domain.Entities;
 using LoanManager.Domain.Interfaces.DomainServices;
 using LoanManager.Domain.Interfaces.Repositories;
 using LoanManager.Domain.Validators.FriendValidators;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using LoanManager.Tests.Builders;
 using Moq;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
-using LoanManager.Domain.Entities;
 using Xunit;
 
 namespace LoanManager.Tests.DomainServices
 {
     public class FriendDomainServiceTest
     {
-        private readonly IFriendDomainService _friendDomainService;
         private readonly Mock<IFriendRepository> _friendRepositoryMock;
+        private readonly INotificationHandler _notificationHandler;
+        private readonly IFriendDomainService _friendDomainService;
 
         public FriendDomainServiceTest()
         {
             var createFriendValidator = new CreateFriendValidator();
             _friendRepositoryMock = new Mock<IFriendRepository>();
+            _notificationHandler = new NotificationHandler();
 
             _friendDomainService = new FriendDomainService(
                 createFriendValidator,
+                _notificationHandler,
                 _friendRepositoryMock.Object);
             
             _friendRepositoryMock.Setup(x => x.CheckIfFriendExistsById(It.IsAny<Guid>()))
@@ -53,9 +56,12 @@ namespace LoanManager.Tests.DomainServices
             //Arrange
             var entity = FriendMock.GenerateFriendWithEmptyName();
 
-            //Act/Assert
-            await Assert.ThrowsAsync<ValidationException>(async
-                () => await _friendDomainService.CreateAsync(entity));
+            //Act
+            await _friendDomainService.CreateAsync(entity);
+
+            //Assert
+            Assert.True(_notificationHandler.GetInstance().HasNotifications);
+            Assert.Contains(_notificationHandler.GetInstance().Notifications, n => n.Key.Equals("InputValidation"));
 
         }
         
@@ -96,7 +102,7 @@ namespace LoanManager.Tests.DomainServices
             
             //Assert
             Assert.NotNull(result);
-            Assert.Equal(result.Count(), limit);
+            Assert.Equal(limit, result.Count());
         }
         
         [Fact(DisplayName = "Update friend with success")]

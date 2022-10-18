@@ -11,10 +11,10 @@ namespace LoanManager.Application.Configurations
         public static IServiceCollection ConfigureServices(IServiceCollection services)
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddSingleton<IGameAppService, GameAppService>();
-            services.AddSingleton<IFriendAppService, FriendAppService>();
-            services.AddSingleton<ILoanAppService, LoanAppService>();
-            services.AddSingleton<IHealthCheckService, HealthCheckService>();
+            services.AddScoped<IGameAppService, GameAppService>();
+            services.AddScoped<IFriendAppService, FriendAppService>();
+            services.AddScoped<ILoanAppService, LoanAppService>();
+            services.AddScoped<IHealthCheckService, HealthCheckService>();
             return services;
         }
     }

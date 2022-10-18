@@ -1,6 +1,6 @@
 ﻿namespace LoanManager.Api.Models.Request
 {
-    public class CreateGameRequest
+    public class CreateGameRequestDto
     {
         public string Title { get; set; }
         public string Description { get; set; }

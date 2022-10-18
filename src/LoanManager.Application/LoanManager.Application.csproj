@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LoanManager.Domain\LoanManager.Domain.csproj" />
+    <ProjectReference Include="..\LoanManager.Infrastructure.CrossCutting\LoanManager.Infrastructure.CrossCutting.csproj" />
   </ItemGroup>
 
   <ItemGroup>

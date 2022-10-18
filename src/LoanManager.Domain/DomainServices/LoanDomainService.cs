@@ -1,19 +1,18 @@
-﻿using FluentValidation;
-using LoanManager.Domain.Entities;
-using LoanManager.Domain.Exceptions;
-using LoanManager.Domain.Interfaces;
+﻿using LoanManager.Domain.Entities;
 using LoanManager.Domain.Interfaces.DomainServices;
+using LoanManager.Domain.Interfaces.Repositories;
 using LoanManager.Domain.Properties;
 using LoanManager.Domain.Validators.LoanValidators;
+using LoanManager.Infrastructure.CrossCutting.Helpers;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using LoanManager.Domain.Interfaces.Repositories;
 
 namespace LoanManager.Domain.DomainServices
 {
-    public class LoanDomainService : ILoanDomainService
+    public class LoanDomainService : BaseDomainService, ILoanDomainService
     {
         private readonly ILoanRepository _loanRepository;
         private readonly IGameRepository _gameRepository;
@@ -21,30 +20,41 @@ namespace LoanManager.Domain.DomainServices
         private readonly CreateLoanValidator _createLoanValidations;
 
         public LoanDomainService(
-            CreateLoanValidator createLoanValidations, 
-            ILoanRepository loanRepository, 
-            IGameRepository gameRepository, 
-            IFriendRepository friendRepository)
+            CreateLoanValidator createLoanValidations,
+            ILoanRepository loanRepository,
+            IGameRepository gameRepository,
+            IFriendRepository friendRepository,
+            INotificationHandler notificationHandler)
+            : base(notificationHandler)
         {
             _createLoanValidations = createLoanValidations;
             _loanRepository = loanRepository;
             _gameRepository = gameRepository;
             _friendRepository = friendRepository;
         }
-        
+
         public async Task<Guid> CreateAsync(Loan entity)
         {
-            await _createLoanValidations.ValidateAndThrowAsync(entity);
-            
-            await VerifyIfGameAndFriendExists(entity);
-            
-            var gameIsOnLoan = await _loanRepository
-                .CheckIfGameIsOnLoan(entity.GameId);
-            
-            if (gameIsOnLoan)
-                throw new GameIsOnLoanException();
+            GuardClauses.IsNotNull(entity, nameof(entity));
 
-            await _loanRepository.CreateAsync(entity);
+            if (IsValid(entity, _createLoanValidations))
+            {
+                if(!await CheckIfGameAndFriendExists(entity))
+                    return entity.Id;
+
+                var gameIsOnLoan = await _loanRepository
+                    .CheckIfGameIsOnLoan(entity.GameId);
+
+                if (gameIsOnLoan)
+                {
+                    notificationHandler
+                        .AddNotification(new Notification("BusinessRule", "The given Game is already in loan"));
+                    return entity.Id;
+                }
+
+                await _loanRepository.CreateAsync(entity);
+            }
+
             return entity.Id;
         }
 
@@ -52,17 +62,19 @@ namespace LoanManager.Domain.DomainServices
         {
             return await _loanRepository.GetAsync(offset, limit);
         }
-        
+
         public async Task<Loan> GetAsync(Guid id)
         {
             return await _loanRepository.GetAsync(id);
         }
-        
+
         public async Task<bool> UpdateAsync(Loan entity)
         {
+            GuardClauses.IsNotNull(entity, nameof(entity));
+
             var loanExists = await this.CheckIfLoanExistsById(entity.Id);
             if (!loanExists)
-                throw new EntityNotExistsException();
+                return false;
 
             return await _loanRepository.UpdateAsync(entity);
         }
@@ -71,16 +83,16 @@ namespace LoanManager.Domain.DomainServices
         {
             var loanExists = await this.CheckIfLoanExistsById(id);
             if (!loanExists)
-                throw new EntityNotExistsException();
+                return false;
 
             return await _loanRepository.DeleteAsync(id);
         }
-        
+
         public async Task<bool> FinishLoanAsync(Guid id)
         {
             var loanExists = await this.CheckIfLoanExistsById(id);
             if (!loanExists)
-                throw new EntityNotExistsException();
+                return false;
 
             return await _loanRepository.FinishLoanAsync(id);
         }
@@ -92,22 +104,30 @@ namespace LoanManager.Domain.DomainServices
 
         private async Task<bool> CheckIfLoanExistsById(Guid id)
         {
-            return await _loanRepository.CheckIfyIfLoanExistsById(id);
+            var loanExists = await _loanRepository.CheckIfyIfLoanExistsById(id);
+            if (!loanExists)
+            {
+                notificationHandler
+                    .AddNotification("NotFound", $"Loan not found with given id {id}");
+                return false;
+            }
+            return true;
         }
 
-        private async Task VerifyIfGameAndFriendExists(Loan loan)
+        private async Task<bool> CheckIfGameAndFriendExists(Loan loan)
         {
-            var errorMessages = new StringBuilder();
             var friendExists = await _friendRepository.CheckIfFriendExistsById(loan.FriendId);
             if (!friendExists)
-                errorMessages.AppendLine(Resources.CantFounFriendWithGivenId);
-            
+                notificationHandler.AddNotification(new Notification("NotFound", Resources.CantFoundFriendWithGivenId));
+
             var gameExists = await _gameRepository.CheckIfGameExistsById(loan.GameId);
             if (!gameExists)
-                errorMessages.AppendLine(Resources.CantFounGameWithGivenId);
+                notificationHandler.AddNotification(new Notification("NotFound", Resources.CantFounGameWithGivenId));
 
-            if (!friendExists || !gameExists)
-                throw new EntityNotExistsException(errorMessages.ToString());
+            if (friendExists && gameExists)
+                return true;
+
+            return false;
         }
     }
 }

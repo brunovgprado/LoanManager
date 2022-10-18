@@ -117,31 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CantFoundFriendWithGivenId" xml:space="preserve">
-    <value>No friend with the given id was found</value>
+  <data name="BusinessRuleBroken" xml:space="preserve">
+    <value>There are some business rule errors with your request.</value>
   </data>
-  <data name="CantFounGameWithGivenId" xml:space="preserve">
-    <value>No game with the given id was found</value>
+  <data name="InputValidationError" xml:space="preserve">
+    <value>There are some mandatory informations empty or in a invalid state.</value>
   </data>
-  <data name="FriendIsMandatory" xml:space="preserve">
-    <value>Friend can't be empty</value>
-  </data>
-  <data name="FriendNameIsMandatory" xml:space="preserve">
-    <value>Friend name can't be empty</value>
-  </data>
-  <data name="GameIsMandatory" xml:space="preserve">
-    <value>Game id can't be empty</value>
-  </data>
-  <data name="GameNameIsMandatory" xml:space="preserve">
-    <value>Game name can't be empty</value>
-  </data>
-  <data name="GenreAtLeastThreeLettersAndFirstLetterUppercaseIsMandatory" xml:space="preserve">
-    <value>Genre needs to have at least three characters and start with an uppercase letter.</value>
-  </data>
-  <data name="PlatformAtLeastTwoLettersAndFirstLetterUppercaseIsMandatory" xml:space="preserve">
-    <value>Platform needs to have at least twocharacters and start with an uppercase letter.</value>
-  </data>
-  <data name="PlatformNameISMandatory" xml:space="preserve">
-    <value>Platform name can't be empty</value>
+  <data name="NotFound" xml:space="preserve">
+    <value>Resource not found</value>
   </data>
 </root>
