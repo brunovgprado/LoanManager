@@ -1,16 +1,17 @@
-﻿using System;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using LoanManager.Api.Controller;
 using LoanManager.Api.Helpers;
 using LoanManager.Api.Models;
 using LoanManager.Api.Models.Request;
+using LoanManager.Api.Models.Response;
 using LoanManager.Application.Interfaces.AppServices;
 using LoanManager.Application.Models.DTO;
 using LoanManager.Application.Shared;
 using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace LoanManager.Tests.ApiControlers
@@ -19,12 +20,13 @@ namespace LoanManager.Tests.ApiControlers
     {
         private readonly Mock<IActionResultConverter> _actionResultConverterMock;
         private readonly Mock<IFriendAppService> _friendServiceMock;
-        private readonly Mock<INotificationHandler> _notificationHandler;
+        private readonly INotificationHandler _notificationHandler;
         private readonly FriendController _controller;
         private readonly IMapper _mapperMock;
 
         public FriendControllerTest()
         {
+            _notificationHandler = new NotificationHandler();
             _actionResultConverterMock = new Mock<IActionResultConverter>();
             _friendServiceMock = new Mock<IFriendAppService>();
             if (_mapperMock is null)
@@ -37,7 +39,7 @@ namespace LoanManager.Tests.ApiControlers
                 _mapperMock = mapper;
             }
 
-            _controller = new FriendController(_actionResultConverterMock.Object, _friendServiceMock.Object, _notificationHandler.Object, _mapperMock);
+            _controller = new FriendController(_actionResultConverterMock.Object, _friendServiceMock.Object, _notificationHandler, _mapperMock);
         }
 
         [Fact(DisplayName = "Success")]
@@ -52,18 +54,15 @@ namespace LoanManager.Tests.ApiControlers
             };
 
             var response = new Response<Guid>();
-            response.SetResult(Guid.NewGuid());
-            
-            var result = new OkObjectResult(Guid.NewGuid());
+            response.SetResult(Guid.NewGuid());            
 
             _friendServiceMock.Setup(x => x.Create(It.IsAny<FriendDto>())).ReturnsAsync(response);
-            //_actionResultConverterMock.Setup(x => x.Convert(response)).Returns(It.IsAny<OkObjectResult>());
             
             //Act
             var actual = await _controller.Create(request);
             
             //Assert
-            Assert.IsType<CreatedResult>(actual);
+            Assert.IsType<OkObjectResult>(actual);
         }
     }
 }

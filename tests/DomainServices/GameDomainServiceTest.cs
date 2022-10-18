@@ -1,18 +1,15 @@
-﻿using System;
-using System.Linq;
-using FluentAssertions;
-using FluentValidation;
+﻿using FluentAssertions;
 using LoanManager.Domain.DomainServices;
-using LoanManager.Domain.Interfaces;
+using LoanManager.Domain.Entities;
 using LoanManager.Domain.Interfaces.DomainServices;
 using LoanManager.Domain.Interfaces.Repositories;
 using LoanManager.Domain.Validators.GameValidators;
-using LoanManager.Infrastructure.DataAccess.Repositories;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using LoanManager.Tests.Builders;
 using Moq;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
-using LoanManager.Domain.Entities;
-using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using Xunit;
 
 namespace LoanManager.Tests.DomainServices
@@ -21,16 +18,18 @@ namespace LoanManager.Tests.DomainServices
     {
         private readonly CreateGameValidator _createGameValidator;
         private readonly Mock<IGameRepository> _gameRepositoryMock;
-        private readonly Mock<INotificationHandler> _notificationHandler;
-        
+        private readonly INotificationHandler _notificationHandler;
+        private readonly IGameDomainService _gameDomainService;
+
         public GameDomainServiceTest()
         {
             var createGameValidator = new CreateGameValidator();
             _gameRepositoryMock = new Mock<IGameRepository>();
+            _notificationHandler = new NotificationHandler();
 
             _gameDomainService = new GameDomainService(
                 createGameValidator,
-                _notificationHandler.Object,
+                _notificationHandler,
                 _gameRepositoryMock.Object);
         }
 
@@ -55,9 +54,12 @@ namespace LoanManager.Tests.DomainServices
             //Arrange
             var entity = GameMock.GenerateGameWithTitleEmpty();
 
-            //Act/Assert
-            await Assert.ThrowsAsync<ValidationException>(async 
-                () => await _gameDomainService.CreateAsync(entity));
+            //Act
+            await _gameDomainService.CreateAsync(entity);
+
+            //Assert
+            Assert.True(_notificationHandler.GetInstance().HasNotifications);
+            Assert.Contains(_notificationHandler.GetInstance().Notifications, n => n.Key.Equals("InputValidation"));
 
         }
 
@@ -68,9 +70,12 @@ namespace LoanManager.Tests.DomainServices
             //Arrange
             var entity = GameMock.GenerateGameWithPlatformEmpty();
 
-            //Act/Assert
-            await Assert.ThrowsAsync<ValidationException>(async
-                () => await _gameDomainService.CreateAsync(entity));
+            //Act
+            await _gameDomainService.CreateAsync(entity);
+
+            //Assert
+            Assert.True(_notificationHandler.GetInstance().HasNotifications);
+            Assert.Contains(_notificationHandler.GetInstance().Notifications, n => n.Key.Equals("InputValidation"));
 
         }
         
@@ -110,7 +115,7 @@ namespace LoanManager.Tests.DomainServices
             
             //Assert
             Assert.NotNull(result);
-            Assert.Equal(result.Count(), limit);
+            Assert.Equal(limit, result.Count());
         }
         
         [Fact(DisplayName = "Update game with success")]
