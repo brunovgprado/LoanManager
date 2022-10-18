@@ -1,38 +1,41 @@
-﻿using FluentValidation;
-using LoanManager.Domain.Entities;
-using LoanManager.Domain.Exceptions;
-using LoanManager.Domain.Interfaces;
+﻿using LoanManager.Domain.Entities;
 using LoanManager.Domain.Interfaces.DomainServices;
+using LoanManager.Domain.Interfaces.Repositories;
 using LoanManager.Domain.Validators.GameValidators;
+using LoanManager.Infrastructure.CrossCutting.Helpers;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace LoanManager.Domain.DomainServices
 {
-    public class GameDomainService : IGameDomainService
+    public class GameDomainService : BaseDomainService, IGameDomainService
     {
         private readonly IUnitOfWork _unityOfWork;
         private readonly CreateGameValidator _createGameValidator;
 
 
         public GameDomainService(
-            IUnitOfWork unityOfWork,
-            CreateGameValidator createGameValidator
-            )
+            CreateGameValidator createGameValidator,
+            INotificationHandler notificationHandler,
+            IGameRepository gameRepository)
+            : base(notificationHandler)
         {
             _unityOfWork = unityOfWork;
             _createGameValidator = createGameValidator;
         }
-        
-        public async Task<Guid> CreateAsync(Game game)
+
+        public async Task<Guid> CreateAsync(Game entity)
         {
-            await _createGameValidator.ValidateAndThrowAsync(game);
-            
-            game.Id = Guid.NewGuid();
-            
-            await _unityOfWork.Games.CreateAsync(game);
-            return game.Id;
+            GuardClauses.IsNotNull(entity, nameof(entity));
+
+            if (IsValid(entity, _createGameValidator))
+            {
+                await _gameRepository.CreateAsync(entity);
+            }
+
+            return entity.Id;
         }
 
         public async Task<IEnumerable<Game>> ReadAllAsync(int offset, int limit)
@@ -51,24 +54,35 @@ namespace LoanManager.Domain.DomainServices
 
         public async Task Update(Game entity)
         {
+            GuardClauses.IsNotNull(entity, nameof(entity));
+
             var gameExists = await this.CheckIfGameExistsById(entity.Id);
             if (!gameExists)
-                throw new EntityNotExistsException();
+                return false;
 
             await _unityOfWork.Games.Update(entity);
         }
-        public async Task DeleteAsync(Guid id)
+
+        public async Task<bool> DeleteAsync(Guid id)
         {
             var gameExists = await this.CheckIfGameExistsById(id);
             if (!gameExists)
-                throw new EntityNotExistsException();
+                return false;
 
             await _unityOfWork.Games.DeleteAsync(id);
         }
 
         private async Task<bool> CheckIfGameExistsById(Guid id)
         {
-            return await _unityOfWork.Games.CheckIfGameExistsById(id);
+            var gameExists = await _gameRepository.CheckIfGameExistsById(id);
+            if (!gameExists)
+            {
+                notificationHandler
+                    .AddNotification(new Notification("NotFound", $"Game not found with given id {id}"));
+                return false;
+            }
+
+            return true;
         }
     }
 }

@@ -1,47 +1,55 @@
-﻿using FluentValidation;
-using LoanManager.Domain.Entities;
-using LoanManager.Domain.Exceptions;
-using LoanManager.Domain.Interfaces;
+﻿using LoanManager.Domain.Entities;
 using LoanManager.Domain.Interfaces.DomainServices;
+using LoanManager.Domain.Interfaces.Repositories;
 using LoanManager.Domain.Properties;
 using LoanManager.Domain.Validators.LoanValidators;
+using LoanManager.Infrastructure.CrossCutting.Helpers;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LoanManager.Domain.DomainServices
 {
-    public class LoanDomainService : ILoanDomainService
+    public class LoanDomainService : BaseDomainService, ILoanDomainService
     {
         private readonly IUnitOfWork _unityOfWork;
         private readonly CreateLoanValidator _createLoanValidations;
 
         public LoanDomainService(
-            IUnitOfWork unityOfWork,
-            CreateLoanValidator createLoanValidations
-            )
+            CreateLoanValidator createLoanValidations,
+            ILoanRepository loanRepository,
+            IGameRepository gameRepository,
+            IFriendRepository friendRepository,
+            INotificationHandler notificationHandler)
+            : base(notificationHandler)
         {
             _unityOfWork = unityOfWork;
             _createLoanValidations = createLoanValidations;
         }
-        
+
         public async Task<Guid> CreateAsync(Loan entity)
         {
-            await _createLoanValidations.ValidateAndThrowAsync(entity);
-            
-            await VerifyIfGameAndFriendExists(entity);
-            
-            var gameIsOnLoan = await _unityOfWork.Loans
-                .CheckIfGameIsOnLoan(entity.GameId);
-            
-            if (gameIsOnLoan)
-                throw new GameIsOnLoanException();
-            
-            entity.Id = Guid.NewGuid();
-            entity.LoanDate = DateTime.Now;
-            
-            await _unityOfWork.Loans.CreateAsync(entity);
+            GuardClauses.IsNotNull(entity, nameof(entity));
+
+            if (IsValid(entity, _createLoanValidations))
+            {
+                if(!await CheckIfGameAndFriendExists(entity))
+                    return entity.Id;
+
+                var gameIsOnLoan = await _loanRepository
+                    .CheckIfGameIsOnLoan(entity.GameId);
+
+                if (gameIsOnLoan)
+                {
+                    notificationHandler
+                        .AddNotification(new Notification("BusinessRule", "The given Game is already in loan"));
+                    return entity.Id;
+                }
+
+                await _loanRepository.CreateAsync(entity);
+            }
+
             return entity.Id;
         }
 
@@ -49,19 +57,19 @@ namespace LoanManager.Domain.DomainServices
         {
             return await _unityOfWork.Loans.ReadAllAsync(offset, limit);
         }
-        public async Task<Loan> ReadAsync(Guid id)
-        {
-            var result = await _unityOfWork.Loans.ReadAsync(id);
-            if(result == null)
-                throw new EntityNotExistsException();
 
-            return result;
-        }
-        public async Task Update(Loan entity)
+        public async Task<Loan> GetAsync(Guid id)
         {
+            return await _loanRepository.GetAsync(id);
+        }
+
+        public async Task<bool> UpdateAsync(Loan entity)
+        {
+            GuardClauses.IsNotNull(entity, nameof(entity));
+
             var loanExists = await this.CheckIfLoanExistsById(entity.Id);
             if (!loanExists)
-                throw new EntityNotExistsException();
+                return false;
 
             await _unityOfWork.Loans.Update(entity);
         }
@@ -70,16 +78,16 @@ namespace LoanManager.Domain.DomainServices
         {
             var loanExists = await this.CheckIfLoanExistsById(id);
             if (!loanExists)
-                throw new EntityNotExistsException();
+                return false;
 
             await _unityOfWork.Loans.DeleteAsync(id);
         }
-        
-        public async Task EndLoan(Guid id)
+
+        public async Task<bool> FinishLoanAsync(Guid id)
         {
             var loanExists = await this.CheckIfLoanExistsById(id);
             if (!loanExists)
-                throw new EntityNotExistsException();
+                return false;
 
             await _unityOfWork.Loans.EndLoan(id);
         }
@@ -96,22 +104,30 @@ namespace LoanManager.Domain.DomainServices
 
         private async Task<bool> CheckIfLoanExistsById(Guid id)
         {
-            return await _unityOfWork.Loans.CheckIfyIfLoanExistsById(id);
+            var loanExists = await _loanRepository.CheckIfyIfLoanExistsById(id);
+            if (!loanExists)
+            {
+                notificationHandler
+                    .AddNotification("NotFound", $"Loan not found with given id {id}");
+                return false;
+            }
+            return true;
         }
 
-        private async Task VerifyIfGameAndFriendExists(Loan loan)
+        private async Task<bool> CheckIfGameAndFriendExists(Loan loan)
         {
-            StringBuilder errorMessages = new StringBuilder();
-            var friendExists = await _unityOfWork.Friends.CheckIfFriendExistsById(loan.FriendId);
+            var friendExists = await _friendRepository.CheckIfFriendExistsById(loan.FriendId);
             if (!friendExists)
-                errorMessages.AppendLine(Resources.CantFounFriendWithGivenId);
-            
-            var gameExists = await _unityOfWork.Games.CheckIfGameExistsById(loan.GameId);
-            if (!gameExists)
-                errorMessages.AppendLine(Resources.CantFounGameWithGivenId);
+                notificationHandler.AddNotification(new Notification("NotFound", Resources.CantFounFriendWithGivenId));
 
-            if (!friendExists || !gameExists)
-                throw new EntityNotExistsException(errorMessages.ToString());
+            var gameExists = await _gameRepository.CheckIfGameExistsById(loan.GameId);
+            if (!gameExists)
+                notificationHandler.AddNotification(new Notification("NotFound", Resources.CantFounGameWithGivenId));
+
+            if (friendExists && gameExists)
+                return true;
+
+            return false;
         }
     }
 }

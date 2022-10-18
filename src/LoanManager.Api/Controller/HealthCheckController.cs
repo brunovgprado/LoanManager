@@ -1,22 +1,21 @@
 ﻿using LoanManager.Api.Models;
 using LoanManager.Application.Interfaces.AppServices;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace LoanManager.Api.Controller
 {
-
-    [Route("api/[controller]")]
-    [ApiController]
-    public class HealthCheckController : ControllerBase
+    public class HealthCheckController : BaseController
     {
         private readonly IActionResultConverter _actionResultConverter;
         private readonly IHealthCheckService _service;
 
         public HealthCheckController(
             IHealthCheckService service,
+            INotificationHandler notificationHandler,
             IActionResultConverter actionResultConverter
-            )
+            ):base(notificationHandler)
         {
             _service = service;
             _actionResultConverter = actionResultConverter;

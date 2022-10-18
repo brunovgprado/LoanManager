@@ -7,6 +7,8 @@ using LoanManager.Application.Shared;
 using LoanManager.Domain.Entities;
 using LoanManager.Domain.Exceptions;
 using LoanManager.Domain.Interfaces.DomainServices;
+using LoanManager.Infrastructure.CrossCutting.Helpers;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,19 +18,23 @@ namespace LoanManager.Application.AppServices
     public class FriendAppService : IFriendAppService
     {
         private readonly IFriendDomainService _friendDomainService;
+        private readonly INotificationHandler _notificationHandler;
         private readonly IMapper _mapper;
 
         public FriendAppService(
             IFriendDomainService friendDomainService,
-            IMapper mapper
-            )
+            IMapper mapper,
+            INotificationHandler notificationHandler)
         {
             _friendDomainService = friendDomainService;
             _mapper = mapper;
+            _notificationHandler = notificationHandler;
         }
 
         public async Task<Response<Guid>> Create(FriendDto friend)
         {
+            GuardClauses.IsNotNull(friend, nameof(friend));
+
             var response = new Response<Guid>();
             try
             {

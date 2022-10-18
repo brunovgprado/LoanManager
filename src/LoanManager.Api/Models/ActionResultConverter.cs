@@ -3,6 +3,7 @@ using LoanManager.Application.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LoanManager.Api.Models

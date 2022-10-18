@@ -8,6 +8,8 @@ using LoanManager.Infrastructure.DataAccess.Repositories;
 using LoanManager.Tests.Builders;
 using Moq;
 using System.Threading.Tasks;
+using LoanManager.Domain.Entities;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using Xunit;
 
 namespace LoanManager.Tests.DomainServices
@@ -17,9 +19,7 @@ namespace LoanManager.Tests.DomainServices
         private readonly CreateLoanValidator _createLoanValidator;
         private readonly Mock<IGameRepository> _gameRepositoryMock;
         private readonly Mock<IFriendRepository> _friendRepositoryMock;
-        private readonly Mock<ILoanRepository> _loanRepositoryMock;
-        private readonly IUnitOfWork _unityOfWork;
-        private readonly ILoanDomainService _loanDomainService;
+        private readonly Mock<INotificationHandler> _notificationHandler;
 
         public LoanDomainServiceTest()
         {
@@ -34,8 +34,11 @@ namespace LoanManager.Tests.DomainServices
                 _loanRepositoryMock.Object);
 
             _loanDomainService = new LoanDomainService(
-                    _unityOfWork,
-                    _createLoanValidator);
+                createLoanValidator,
+                _loanRepositoryMock.Object,
+                _gameRepositoryMock.Object,
+                _friendRepositoryMock.Object,
+                _notificationHandler.Object);
         }
 
         [Fact]

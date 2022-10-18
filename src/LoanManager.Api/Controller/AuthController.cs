@@ -1,6 +1,7 @@
 ﻿using LoanManager.Api.Models;
 using LoanManager.Auth.Interfaces.Services;
 using LoanManager.Auth.Models;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -8,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace LoanManager.Api.Controller
 {
-    [Route("api/v1/authentication")]
-    [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : BaseController
     {
         private readonly IActionResultConverter _actionResultConverter;
         private readonly IAuthService _service;
 
         public AuthController(
             IActionResultConverter actionResultConverter,
+            INotificationHandler notificationHandler,
             IAuthService service)
+            :base(notificationHandler)
         {
             _actionResultConverter = actionResultConverter;
             _service = service;

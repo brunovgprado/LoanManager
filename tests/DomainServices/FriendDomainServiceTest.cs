@@ -9,6 +9,8 @@ using LoanManager.Infrastructure.DataAccess.Repositories;
 using LoanManager.Tests.Builders;
 using Moq;
 using System.Threading.Tasks;
+using LoanManager.Domain.Entities;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using Xunit;
 
 namespace LoanManager.Tests.DomainServices
@@ -18,9 +20,7 @@ namespace LoanManager.Tests.DomainServices
         private readonly CreateFriendValidator _createFriendValidator;
         private readonly Mock<IGameRepository> _gameRepositoryMock;
         private readonly Mock<IFriendRepository> _friendRepositoryMock;
-        private readonly Mock<ILoanRepository> _loanRepositoryMock;
-        private readonly IUnitOfWork _unityOfWork;
-        private readonly IFriendDomainService _friendDomainService;
+        private readonly Mock<INotificationHandler> _notificationHandler;
 
         public FriendDomainServiceTest()
         {
@@ -29,14 +29,13 @@ namespace LoanManager.Tests.DomainServices
             _friendRepositoryMock = new Mock<IFriendRepository>();
             _loanRepositoryMock = new Mock<ILoanRepository>();
 
-            _unityOfWork = new UnitOfWork(
-                _gameRepositoryMock.Object,
-                _friendRepositoryMock.Object,
-                _loanRepositoryMock.Object);
-
             _friendDomainService = new FriendDomainService(
-                    _unityOfWork,
-                    _createFriendValidator);
+                createFriendValidator,
+                _notificationHandler.Object,
+                _friendRepositoryMock.Object);
+            
+            _friendRepositoryMock.Setup(x => x.CheckIfFriendExistsById(It.IsAny<Guid>()))
+                .ReturnsAsync(true);
         }
 
         [Fact]

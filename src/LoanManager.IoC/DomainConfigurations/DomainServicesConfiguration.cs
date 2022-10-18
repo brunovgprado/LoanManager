@@ -8,9 +8,9 @@ namespace LoanManager.IoC.DomainConfigurations
     {
         public static void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IGameDomainService, GameDomainService>();
-            services.AddSingleton<IFriendDomainService, FriendDomainService>();
-            services.AddSingleton<ILoanDomainService, LoanDomainService>();
+            services.AddScoped<IGameDomainService, GameDomainService>();
+            services.AddScoped<IFriendDomainService, FriendDomainService>();
+            services.AddScoped<ILoanDomainService, LoanDomainService>();
         }
     }
 }

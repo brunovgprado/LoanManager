@@ -3,6 +3,7 @@ using LoanManager.Api.Models;
 using LoanManager.Api.Models.Request;
 using LoanManager.Application.Interfaces.AppServices;
 using LoanManager.Application.Models.DTO;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,20 +13,19 @@ using System.Threading.Tasks;
 
 namespace LoanManager.Api.Controller
 {
-    [Route("api/v1/[controller]")]
-    [ApiController]
     [Authorize]
-    public class FriendsController : ControllerBase
+    public class FriendController : BaseController
     {
         private readonly IActionResultConverter _actionResultConverter;
         private readonly IFriendAppService _friendService;
         private readonly IMapper _mapper;
 
-        public FriendsController(
+        public FriendController(
             IActionResultConverter actionResultConverter,
             IFriendAppService friendService,
+            INotificationHandler notificationHandler,
             IMapper mapper
-            )
+            ):base(notificationHandler)
         {
             _actionResultConverter = actionResultConverter;
             _friendService = friendService;
@@ -39,8 +39,9 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Create(CreateFriendRequest friend)
         {
-            var FriendDto = _mapper.Map<FriendDto>(friend);
-            return _actionResultConverter.Convert(await _friendService.Create(FriendDto));
+            var friendDto = _mapper.Map<FriendDto>(friend);
+            var result = await _friendService.Create(friendDto);
+            return CreateResult(data: result);
         }
 
         [HttpGet("{id}")]
@@ -50,7 +51,8 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Read(Guid id)
         {
-            return _actionResultConverter.Convert(await _friendService.Get(id));
+            var result = await _friendService.Get(id);
+            return CreateResult(data: result);
         }
 
         [HttpGet]
@@ -60,7 +62,8 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> ReadAll([FromQuery] int offset, int limit)
         {
-            return _actionResultConverter.Convert(await _friendService.GetAll(offset, limit));
+            var result = await _friendService.GetAll(offset, limit);
+            return CreateResult(data: result);
         }
 
         [HttpPut]
@@ -70,7 +73,8 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Update(FriendDto friend)
         {
-            return _actionResultConverter.Convert(await _friendService.Update(friend));
+            var result = await _friendService.Update(friend);
+            return CreateResult(data: result);
         }
 
         [HttpDelete]
@@ -80,7 +84,8 @@ namespace LoanManager.Api.Controller
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            return _actionResultConverter.Convert(await _friendService.Delete(id));
+            var result = await _friendService.Delete(id);
+            return CreateResult(data: result);
         }
 
     }

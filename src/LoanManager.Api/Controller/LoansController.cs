@@ -3,6 +3,7 @@ using LoanManager.Api.Models;
 using LoanManager.Api.Models.Request;
 using LoanManager.Application.Interfaces.AppServices;
 using LoanManager.Application.Models.DTO;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,10 +13,8 @@ using System.Threading.Tasks;
 
 namespace LoanManager.Api.Controller
 {
-    [Route("api/v1/[controller]")]
-    [ApiController]
     [Authorize]
-    public class LoansController : ControllerBase
+    public class LoansController : BaseController
     {
         private readonly IActionResultConverter _actionResultConverter;
         private readonly ILoanAppService _loanAppService;
@@ -23,8 +22,9 @@ namespace LoanManager.Api.Controller
 
         public LoansController(
             IActionResultConverter actionResultConverter,
+            INotificationHandler notificationHandler,
             ILoanAppService loanAppService,
-            IMapper mapper)
+            IMapper mapper): base(notificationHandler)
         {
             _actionResultConverter = actionResultConverter;
             _loanAppService = loanAppService;
@@ -40,7 +40,8 @@ namespace LoanManager.Api.Controller
         public async Task<IActionResult> Create(CreateLoanRequest loan)
         {
             var loanDto = _mapper.Map<LoanDto>(loan);
-            return _actionResultConverter.Convert(await _loanAppService.Create(loanDto));
+            var result = await _loanAppService.Create(loanDto);
+            return CreateResult(data: result);
         }
 
         [HttpGet("{id}")]
