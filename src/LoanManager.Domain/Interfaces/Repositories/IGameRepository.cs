@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace LoanManager.Domain.Interfaces.Repositories
 {
-    public interface IGameRepository : IGenericRepository<Guid, Game>
+    public interface IGameRepository : IBaseRepository<Guid, Game>
     {
         Task<bool> CheckIfGameExistsById(Guid id);
     }

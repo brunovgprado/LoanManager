@@ -73,17 +73,6 @@ namespace LoanManager.Api.Controller
             return _actionResultConverter.Convert(await _loanAppService.Delete(id));
         }
 
-        [HttpGet("/friendloans")]
-        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
-        [ProducesResponseType(typeof(IEnumerable<LoanDto>), (int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<IActionResult> GetByFriendName([FromQuery] string friendName, int offset, int limit)
-        {
-            return _actionResultConverter.Convert(
-                await _loanAppService.ReadLoanByFriendNameAsync(friendName, offset, limit));
-        }
-
         [HttpGet("/loansbygameid")]
         [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
         [ProducesResponseType(typeof(IEnumerable<LoanDto>), (int)HttpStatusCode.OK)]
