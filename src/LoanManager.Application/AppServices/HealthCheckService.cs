@@ -2,7 +2,6 @@
 using LoanManager.Application.Properties;
 using LoanManager.Application.Shared;
 using LoanManager.Domain.Interfaces.Repositories;
-using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using System;
 using System.Data.SqlClient;
 using System.Threading.Tasks;

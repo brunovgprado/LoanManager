@@ -1,5 +1,5 @@
 using LoanManager.Api.Configurations;
-using LoanManager.Api.Models;
+using LoanManager.Api.Configurations.Middlewares;
 using LoanManager.Application.Configurations;
 using LoanManager.Auth.Configurations;
 using LoanManager.IoC;
@@ -53,7 +53,7 @@ namespace LoanManager.Api
             }
 
             app.UseSwaggerExtensions();
-
+            app.UseMiddleware<ExceptionHandler>();
             app.UseRouting();
 
             app.UseCors(x => x
