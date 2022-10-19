@@ -3,6 +3,7 @@ using LoanManager.Api.Properties;
 using LoanManager.Infrastructure.CrossCutting.Helpers;
 using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -26,10 +27,13 @@ namespace LoanManager.Api.Controller
             {
                 IEnumerable<Notification> notifications = _notificationHandler.GetInstance().Notifications;
 
+                var unexpectedError = notifications.Any(x => x.Key.Equals("UnexpectedError"));
                 var inputValidation = notifications.Any(x => x.Key.Equals("InputValidation"));
                 var notFound = notifications.Any(x => x.Key.Equals("NotFound"));
                 var businessRule = notifications.Any(x => x.Key.Equals("BusinessRule"));
 
+                if (unexpectedError)
+                    return CreateUnexpectedErrorResult();
                 if (inputValidation) 
                     return CreateInputValidationErrorResult();
                 if (notFound)
@@ -39,6 +43,11 @@ namespace LoanManager.Api.Controller
             }
 
             return Ok(new DefaultResponse(data: data));
+        }
+
+        private IActionResult CreateUnexpectedErrorResult()
+        {
+            return StatusCode(500);
         }
 
         private IActionResult CreateBusinessRuleErroResult()
