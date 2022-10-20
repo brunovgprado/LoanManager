@@ -9,7 +9,6 @@ RUN dotnet restore LoanManager.Api/LoanManager.Api.csproj
 RUN dotnet publish LoanManager.Api/LoanManager.Api.csproj -c Release -o out
 
 FROM pull mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
-WORKDIR /app
 
 COPY --from=build /app/out ./
 ENTRYPOINT ["dotnet", "LoanManager.Api.dll"]
