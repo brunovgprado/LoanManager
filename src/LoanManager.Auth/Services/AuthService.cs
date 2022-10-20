@@ -47,7 +47,7 @@ namespace LoanManager.Auth.Services
                 
                 var userAccount = await _repository.GetUser(userEmail);
                 
-                if (userAccount == null)
+                if (userAccount is null)
                     throw new UserNotFoundException();
                 
                 var passwordMatch =_hasherService.VerifyKey(credentials.Password, userAccount.Password);
