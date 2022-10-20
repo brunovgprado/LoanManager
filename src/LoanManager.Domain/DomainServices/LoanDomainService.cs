@@ -8,7 +8,6 @@ using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using LoanManager.Domain.Interfaces.Repositories;
 
 namespace LoanManager.Domain.DomainServices
 {

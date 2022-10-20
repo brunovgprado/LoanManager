@@ -1,11 +1,7 @@
 ﻿using LoanManager.Api.Models.Response;
 using LoanManager.Api.Properties;
-using LoanManager.Infrastructure.CrossCutting.Helpers;
 using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 
 namespace LoanManager.Api.Controller

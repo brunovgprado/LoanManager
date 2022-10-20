@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+#nullable enable
 namespace LoanManager.Api.Models.Response
 {
     public class DefaultResponse
