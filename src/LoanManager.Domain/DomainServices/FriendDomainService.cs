@@ -1,15 +1,13 @@
 ﻿using LoanManager.Domain.Entities;
-using LoanManager.Domain.Exceptions;
 using LoanManager.Domain.Interfaces.DomainServices;
 using LoanManager.Domain.Interfaces.Repositories;
+using LoanManager.Domain.Properties;
 using LoanManager.Domain.Validators.FriendValidators;
 using LoanManager.Infrastructure.CrossCutting.Helpers;
 using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using LoanManager.Domain.Interfaces.Repositories;
-using LoanManager.Domain.Properties;
 
 namespace LoanManager.Domain.DomainServices
 {
