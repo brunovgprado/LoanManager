@@ -1,23 +1,19 @@
 ﻿using Dapper;
 using LoanManager.Domain.Interfaces.Repositories;
+using LoanManager.Infrastructure.CrossCutting.Contracts;
 using Npgsql;
-using System;
 using System.Threading.Tasks;
 
 namespace LoanManager.Infrastructure.DataAccess.Repositories
 {
-    public class HealthCheckRepository : IHealthCheckRepository
+    public class HealthCheckRepository : BaseRepository, IHealthCheckRepository
     {
-        private readonly string _connectionString;
-
-        public HealthCheckRepository()
-        {
-            _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-        }
+        public HealthCheckRepository(IEnvConfiguration configuration)
+            : base(configuration){}
 
         public async Task<bool> CheckDbConnection()
         {
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
                 return await connection.QueryFirstOrDefaultAsync<bool>("SELECT 1");

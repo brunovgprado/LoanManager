@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using LoanManager.Domain.Entities;
 using LoanManager.Domain.Interfaces.Repositories;
+using LoanManager.Infrastructure.CrossCutting.Contracts;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 using System;
@@ -13,21 +14,15 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
 {
     public class FriendRepository : BaseRepository, IFriendRepository
     {
-        private readonly IConfiguration _configuration;
-        private readonly string _connectionString;
-
-        public FriendRepository(IConfiguration configuration)
-        {
-            _configuration = configuration;
-            _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-        }
+        public FriendRepository(IEnvConfiguration configuration)
+            : base(configuration){}
         
         public async Task<bool> CreateAsync(Friend entity)
         {
             const string command = @"INSERT INTO Friend (Id, Name, PhoneNumber)
                              VALUES (@Id, @Name, @PhoneNumber)";
 
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
                 var affectedRows = await connection.ExecuteAsync(command, entity);
@@ -47,7 +42,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             param.Add("@index", offset, DbType.Int32);
             param.Add("@size", limit == 0 ? 10 : limit, DbType.Int32);
 
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
                 var result = await connection.QueryAsync<Friend>(query.ToString(), param);
@@ -62,7 +57,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             var param = new DynamicParameters();
             param.Add("@Id", id, DbType.Guid);
 
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
                 var result = await connection.QueryAsync<Friend>(query, param);
@@ -77,7 +72,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             var param = new DynamicParameters();
             param.Add("@Id", id, DbType.Guid);
 
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
                 var affectedLines = await connection.ExecuteAsync(command, param);
@@ -92,7 +87,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
                                     PhoneNumber = @PhoneNumber
                                 WHERE Id = @Id";
 
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
                 var affectedLines = await connection.ExecuteAsync(command, entity);
