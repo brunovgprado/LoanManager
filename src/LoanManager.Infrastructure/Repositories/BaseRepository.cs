@@ -4,16 +4,18 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
+using LoanManager.Infrastructure.CrossCutting.Contracts;
 
 namespace LoanManager.Infrastructure.DataAccess.Repositories
 {
     public class BaseRepository
     {
-        private readonly string _connectionString;
+        protected readonly string connectionString;
+        protected readonly IEnvConfiguration configuration;
 
-        protected BaseRepository()
+        protected BaseRepository(IEnvConfiguration configuration)
         {
-            _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+            connectionString = configuration.KV_DB_CONNECTIONSTRING;
         }
         
         protected async Task<bool> CheckIfEntityExistsById(Guid id, string entity)
@@ -27,7 +29,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             var param = new DynamicParameters();
             param.Add("@Id", id, DbType.Guid);
 
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
                 var result = await connection.QueryAsync<bool>(query, param);

@@ -3,7 +3,9 @@ using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Data.SqlClient;
 using System.Net;
+using System.Net.Http;
 using System.Net.Mime;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -27,23 +29,33 @@ namespace LoanManager.Api.Configurations.Middlewares
             {
                 await _next(httpContext);
             }
+            catch (SqlException ex)
+            {
+                await HandleException("An error has occurred with the sql query/command", ex, httpContext, notificationHandler);
+            }
             catch (Exception ex)
             {
-                //TODO: implements application insights Track Exception and refact this handler
-                Console.WriteLine($"An unexpected error occurred: " +
-                    $"Request path: {httpContext.Request.Path} " +
-                    $"Exception message: {ex.Message} " +
-                    $"Exception stackTrace: {ex.StackTrace}");
-
-                notificationHandler.AddNotification(new Notification("UnexpectedError", "An unexpected error occurred"));
-                var defaultReponse = new DefaultResponse(HttpStatusCode.InternalServerError.ToString(), "An unexpected error occurred");
-
-                var status = HttpStatusCode.InternalServerError;
-                if (ex.Message.Contains("TimeoutPolicy"))
-                    status = HttpStatusCode.RequestTimeout;
-
-                await SetReponse(httpContext, status, defaultReponse);
+                await HandleException("An unexpected error occurred", ex, httpContext, notificationHandler);
             }
+        }
+
+        private static async Task HandleException(string message, Exception exception, HttpContext httpContext,
+            INotificationHandler notificationHandler) 
+        {
+            //TODO: implements application insights Track Exception and refact this handler
+            Console.WriteLine($"{message}: " +
+                $"Request path: {httpContext.Request.Path} " +
+                $"Exception message: {exception.Message} " +
+                $"Exception stackTrace: {exception.StackTrace}");
+
+            notificationHandler.AddNotification(new Notification("UnexpectedError", message));
+            var defaultReponse = new DefaultResponse(HttpStatusCode.InternalServerError.ToString(), message);
+
+            var status = HttpStatusCode.InternalServerError;
+            if (exception.Message.Contains("TimeoutPolicy"))
+                status = HttpStatusCode.RequestTimeout;
+
+            await SetReponse(httpContext, status, defaultReponse);
         }
 
         private static async Task<string> SetReponse(HttpContext httpContext, HttpStatusCode statusCode, DefaultResponse response)
