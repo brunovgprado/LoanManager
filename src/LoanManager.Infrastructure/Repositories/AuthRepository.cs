@@ -1,22 +1,19 @@
 ﻿using Dapper;
 using LoanManager.Auth.Interfaces.Repository;
 using LoanManager.Auth.Models;
+using LoanManager.Infrastructure.CrossCutting.Contracts;
 using Npgsql;
-using System;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace LoanManager.Infrastructure.DataAccess.Repositories
 {
-    public class AuthRepository : IAuthRepository
+    public class AuthRepository : BaseRepository, IAuthRepository
     {
-        private readonly string _connectionString;
 
-        public AuthRepository()
-        {
-            _connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-        }
+        public AuthRepository(IEnvConfiguration configuration)
+         :base(configuration){}
 
         public async Task<User> GetUser(User credentials)
         {
@@ -25,7 +22,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             var param = new DynamicParameters();
             param.Add("@Email", credentials.Email, DbType.String);
 
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
                 var result = await connection.QueryAsync<User>(query, param);
@@ -38,7 +35,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             const string command = @"INSERT INTO UserAccount (Id, Email, Password)
                              VALUES (@Id, @Email, @Password)";
 
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
                 var afftectedRows = await connection.ExecuteAsync(command, credentials);
@@ -55,7 +52,7 @@ namespace LoanManager.Infrastructure.DataAccess.Repositories
             var param = new DynamicParameters();
             param.Add("@Email", credentials.Email, DbType.String);
 
-            using (var connection = new NpgsqlConnection(_connectionString))
+            using (var connection = new NpgsqlConnection(connectionString))
             {
                 connection.Open();
                 var result = await connection.QueryAsync<bool>(query, param);
