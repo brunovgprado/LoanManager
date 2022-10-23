@@ -7,7 +7,7 @@ namespace LoanManager.Infrastructure.CrossCutting.Helpers
     public class EnvConfiguration : IEnvConfiguration
     {
         private readonly IConfiguration _configuration;
-        public string KV_DB_CONNECTIONSTRING => GetConfiguration("RdsConnectionStrin", true);
+        public string KV_DB_CONNECTIONSTRING => GetConfiguration("RdsConnectionString", true);
 
         public EnvConfiguration(IConfiguration configuration)
         {
