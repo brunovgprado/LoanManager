@@ -1,14 +1,9 @@
 ﻿using LoanManager.Api.Models.Response;
 using LoanManager.Infrastructure.CrossCutting.NotificationContext;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Data.SqlClient;
 using System.Net;
-using System.Net.Http;
 using System.Net.Mime;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace LoanManager.Api.Configurations.Middlewares
 {
@@ -40,7 +35,7 @@ namespace LoanManager.Api.Configurations.Middlewares
         }
 
         private static async Task HandleException(string message, Exception exception, HttpContext httpContext,
-            INotificationHandler notificationHandler) 
+            INotificationHandler notificationHandler)
         {
             //TODO: implements application insights Track Exception and refact this handler
             Console.WriteLine($"{message}: " +

@@ -1,11 +1,9 @@
-﻿using LoanManager.Api.Models;
-using LoanManager.Auth.Interfaces.Services;
+﻿using LoanManager.Auth.Interfaces.Services;
 using LoanManager.Auth.Models;
 using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace LoanManager.Api.Controller
 {

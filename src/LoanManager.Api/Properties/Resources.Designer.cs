@@ -79,6 +79,15 @@ namespace LoanManager.Api.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Incorrect e-mail or password.
+        /// </summary>
+        internal static string InvalidCredentials {
+            get {
+                return ResourceManager.GetString("InvalidCredentials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Resource not found.
         /// </summary>
         internal static string NotFound {

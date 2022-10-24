@@ -15,9 +15,9 @@ namespace LoanManager.Auth.Configurations
             var keyHasherService = new KeyHasherService(SHA512.Create());
             services.AddSingleton(keyHasherService);
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddSingleton<IAuthService, AuthService>();
-            services.AddSingleton<UserValidator, UserValidator>();
-            services.AddSingleton<TokenService, TokenService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddTransient<UserValidator, UserValidator>();
+            services.AddTransient<TokenService, TokenService>();
             
             return services;
         }

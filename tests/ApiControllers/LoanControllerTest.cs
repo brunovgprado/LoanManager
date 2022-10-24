@@ -45,11 +45,9 @@ namespace LoanManager.Tests.ApiControllers
         {
             //Arrange
             var id = Guid.NewGuid();
-            var loan = LoanDtoMock.GenerateLoanDto();
-            var response = new Response<LoanDto>();
-            response.SetResult(loan);            
+            var loan = LoanDtoMock.GenerateLoanDto();         
 
-            _loanServiceMock.Setup(x => x.Get(It.IsAny<Guid>())).ReturnsAsync(response);
+            _loanServiceMock.Setup(x => x.Get(It.IsAny<Guid>())).ReturnsAsync(loan);
             
             //Act
             var actual = await _controller.Get(id);
@@ -68,13 +66,11 @@ namespace LoanManager.Tests.ApiControllers
             const int mockQuantity = 20;
             
             var id = Guid.NewGuid();
-            var loan = LoanDtoMock.GenerateLoanDto(mockQuantity);
-            var response = new Response<IEnumerable<LoanDto>>();
-            response.SetResult(loan);            
+            var loan = LoanDtoMock.GenerateLoanDto(mockQuantity);        
 
             _loanServiceMock
                 .Setup(x => x.Get(It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(response);
+                .ReturnsAsync(loan);
             
             //Act
             var actual = await _controller.Get(offset, limit);
@@ -103,12 +99,9 @@ namespace LoanManager.Tests.ApiControllers
         public async Task CreateLoan_WithValidData_MustResultOk()
         {
             //Arrange
-            var request = CreateLoanRequestDtoMock.GenerateLoanRequestDto();
+            var request = CreateLoanRequestDtoMock.GenerateLoanRequestDto();       
 
-            var response = new Response<Guid>();
-            response.SetResult(Guid.NewGuid());            
-
-            _loanServiceMock.Setup(x => x.Create(It.IsAny<LoanDto>())).ReturnsAsync(response);
+            _loanServiceMock.Setup(x => x.Create(It.IsAny<LoanDto>())).ReturnsAsync(Guid.NewGuid());
             
             //Act
             var actual = await _controller.Create(request);
@@ -139,10 +132,8 @@ namespace LoanManager.Tests.ApiControllers
         {
             //Arrange
             var loanRequest = Guid.NewGuid();
-            var result = new Response<bool>();
-            result.SetResult(true);
             
-            _loanServiceMock.Setup(l => l.Delete(It.IsAny<Guid>())).ReturnsAsync(result);
+            _loanServiceMock.Setup(l => l.Delete(It.IsAny<Guid>())).ReturnsAsync(true);
             
             //Act
             var actual = await _controller.Delete(loanRequest);

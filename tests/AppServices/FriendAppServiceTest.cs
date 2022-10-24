@@ -50,7 +50,7 @@ namespace LoanManager.Tests.AppServices
             var result = await _appService.CreateAsync(entity);
 
             //Assert
-            Assert.False(Guid.Empty.Equals(result.Result));
+            Assert.False(Guid.Empty.Equals(result));
         }
         
         [Fact(DisplayName = "Update friend with success")]
@@ -66,7 +66,7 @@ namespace LoanManager.Tests.AppServices
             var result = await _appService.Update(entity);
 
             //Assert
-            Assert.True(result.Result);
+            Assert.True(result);
         }
 
         [Fact(DisplayName = "Get friend with success")]
@@ -83,7 +83,7 @@ namespace LoanManager.Tests.AppServices
             var actual = await _appService.Get(id);
 
             //Assert
-            Assert.IsType<FriendDto>(actual.Result);
+            Assert.IsType<FriendDto>(actual);
         } 
         
         [Fact(DisplayName = "Get friend list with success")]
@@ -105,7 +105,7 @@ namespace LoanManager.Tests.AppServices
             var actual = await _appService.Get(offset, limit);
 
             //Assert
-            Assert.IsAssignableFrom<IEnumerable<FriendDto>>(actual.Result);
+            Assert.IsAssignableFrom<IEnumerable<FriendDto>>(actual);
         } 
     }
 }
