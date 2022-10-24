@@ -129,4 +129,13 @@
   <data name="UserPasswordIsMandatory" xml:space="preserve">
     <value>Email can't be empty</value>
   </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>Account not found with given email '{0}'</value>
+  </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>Incorrect e-mail or password</value>
+  </data>
+  <data name="UserAccountAlreadyExists" xml:space="preserve">
+    <value>An user account already exists for the given e-mail address</value>
+  </data>
 </root>

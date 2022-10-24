@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using LoanManager.Application.Interfaces.AppServices;
 using LoanManager.Application.Models.DTO;
-using LoanManager.Application.Shared;
 using LoanManager.Domain.Entities;
 using LoanManager.Domain.Interfaces.DomainServices;
 using System;
@@ -24,53 +23,38 @@ namespace LoanManager.Application.AppServices
             _mapper = mapper;
         }
 
-        public async Task<Response<Guid>> Create(LoanDto loan)
+        public async Task<Guid> Create(LoanDto loan)
         {
-            var response = new Response<Guid>();
-
             var loanEntity = _mapper.Map<Loan>(loan);
-            var result = await _loanDomainService.CreateAsync(loanEntity);
-            return response.SetResult(result);
+            return await _loanDomainService.CreateAsync(loanEntity);
         }
 
-        public async Task<Response<LoanDto>> Get(Guid id)
+        public async Task<LoanDto> Get(Guid id)
         {
-            var response = new Response<LoanDto>();
-
             var result = await _loanDomainService.GetAsync(id);
-            return response.SetResult(_mapper.Map<LoanDto>(result));
+            return _mapper.Map<LoanDto>(result);
         }
 
-        public async Task<Response<IEnumerable<LoanDto>>> Get(int offset, int limit)
+        public async Task<IEnumerable<LoanDto>> Get(int offset, int limit)
         {
-            var response = new Response<IEnumerable<LoanDto>>();
-
             var result = await _loanDomainService.GetAsync(offset, limit);
-            return response.SetResult(_mapper.Map<IEnumerable<LoanDto>>(result));
+            return _mapper.Map<IEnumerable<LoanDto>>(result);
         }
 
-        public async Task<Response<bool>> Delete(Guid id)
+        public async Task<bool> Delete(Guid id)
         {
-            var response = new Response<bool>();
-
-            await _loanDomainService.DeleteAsync(id);
-            return response.SetResult(true);
+            return await _loanDomainService.DeleteAsync(id);
         }
 
-        public async Task<Response<bool>> EndLoan(Guid id)
+        public async Task<bool> EndLoan(Guid id)
         {
-            var response = new Response<bool>();
-
-            await _loanDomainService.FinishLoanAsync(id);
-            return response.SetResult(true);
+            return await _loanDomainService.FinishLoanAsync(id);
         }
 
-        public async Task<Response<IEnumerable<LoanDto>>> ReadLoanHistoryByGameAsync(Guid id, int offset, int limit)
+        public async Task<IEnumerable<LoanDto>> ReadLoanHistoryByGameAsync(Guid id, int offset, int limit)
         {
-            var response = new Response<IEnumerable<LoanDto>>();
-
             var result = await _loanDomainService.ReadLoanHistoryByGameAsync(id, offset, limit);
-            return response.SetResult(_mapper.Map<IEnumerable<LoanDto>>(result));
+            return _mapper.Map<IEnumerable<LoanDto>>(result);
         }
     }
 }

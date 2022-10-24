@@ -1,17 +1,18 @@
 ﻿using AutoMapper;
-using FluentValidation;
-using LoanManager.Application.Shared;
-using LoanManager.Auth.Exceptions;
 using LoanManager.Auth.Interfaces.Repository;
 using LoanManager.Auth.Interfaces.Services;
 using LoanManager.Auth.Models;
+using LoanManager.Auth.Properties;
 using LoanManager.Auth.Validators;
+using LoanManager.Domain.DomainServices;
+using LoanManager.Infrastructure.CrossCutting.Helpers;
+using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using System;
 using System.Threading.Tasks;
 
 namespace LoanManager.Auth.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService : BaseDomainService, IAuthService
     {
         private readonly UserValidator _userValidator;
         private readonly IAuthRepository _repository;
@@ -20,12 +21,14 @@ namespace LoanManager.Auth.Services
         private readonly TokenService _tokenService;
 
         public AuthService(
-            IAuthRepository repository, 
+            IAuthRepository repository,
             IMapper mapper,
             UserValidator userValidator,
             KeyHasherService hasherService,
-            TokenService tokenService
+            TokenService tokenService,
+            INotificationHandler notificationHandler
             )
+            : base(notificationHandler)
         {
             _repository = repository;
             _mapper = mapper;
@@ -34,89 +37,74 @@ namespace LoanManager.Auth.Services
             _tokenService = tokenService;
         }
 
-        public async Task<Response<UserResponse>> Authenticate(UserCredentials credentials)
+        public async Task<UserResponse> Authenticate(UserCredentials credentials)
         {
-            var response = new Response<UserResponse>();
-            try
-            {
-                await _userValidator.ValidateAndThrowAsync(credentials);
-                
-                var userEmail = _mapper.Map<User>(credentials);
-                
-                userEmail.Email = userEmail.Email.ToLower();
-                
-                var userAccount = await _repository.GetUser(userEmail);
-                
-                if (userAccount is null)
-                    throw new UserNotFoundException();
-                
-                var passwordMatch =_hasherService.VerifyKey(credentials.Password, userAccount.Password);
-                
-                if (!passwordMatch)
-                    throw new UserNotFoundException();
-                
-                var userResponse = _mapper.Map<UserResponse>(userAccount);
-                
-                userResponse.Token = _tokenService.GenerateToken(userResponse);
-                return response.SetResult(userResponse);
+            GuardClauses.IsNotNull(credentials, nameof(credentials));
 
-            }
-            catch (ValidationException ex)
+            var userResponse = new UserResponse();
+
+            if (IsValid(credentials, _userValidator))
             {
-                return response.SetRequestValidationError(ex);
+                var userEmail = _mapper.Map<User>(credentials);
+
+                userEmail.Email = userEmail.Email.ToLower();
+
+                var userAccount = await _repository.GetUser(userEmail);
+
+                if (userAccount is null)
+                {
+                    notificationHandler.AddNotification(new Notification("NotFound", string.Format(Resources.UserNotFound, userEmail)));
+                    return userResponse;
+                }
+
+                var passwordMatch = _hasherService.VerifyKey(credentials.Password, userAccount.Password);
+
+                if (!passwordMatch)
+                {
+                    notificationHandler
+                        .AddNotification(new Notification("InvalidCredentials", string.Format(Resources.InvalidCredentials, userEmail)));
+                    return userResponse;
+                }
+
+                userResponse = _mapper.Map<UserResponse>(userAccount);
+
+                userResponse.Token = _tokenService.GenerateToken(userResponse);
             }
-            catch (UserNotFoundException ex)
-            {
-                return response.SetError(ex.Message, ResponseKind.Unauthorized);
-            }
-            catch (Exception ex)
-            {
-                Console.Write(ex.Message);
-                return response.SetInternalServerError(ex.Message);
-            }
+            return userResponse;
         }
 
-        public async Task<Response<UserResponse>> CreateAccount(UserCredentials credentials)
+        public async Task<UserResponse> CreateAccount(UserCredentials credentials)
         {
-            var response = new Response<UserResponse>();
-            try
+            GuardClauses.IsNotNull(credentials, nameof(credentials));
+
+            var userResponse = new UserResponse();
+
+            if (IsValid(credentials, _userValidator))
             {
-                await _userValidator.ValidateAndThrowAsync(credentials);
-                
                 var userAccount = _mapper.Map<User>(credentials);
-                
+
                 var userAlreadyExists = await _repository.CheckIfUserAlreadyExistis(userAccount);
 
                 if (userAlreadyExists)
-                    throw new EmailAdressAlreadyRegistredException();
-                
-                userAccount.Id = Guid.NewGuid();
-                
-                userAccount.Email = userAccount.Email.ToLower();
-                
-                userAccount.Password = _hasherService.EncriptKey(userAccount.Password);
-                
-                await _repository.CreateAccount(userAccount);
-                
-                var userResponse = new UserResponse { Email = credentials.Email };
-                
-                userResponse.Token = _tokenService.GenerateToken(userResponse);
-                return response.SetResult(userResponse);
+                {
+                    notificationHandler
+                        .AddNotification(new Notification("BusinessRule", string.Format(Resources.UserAccountAlreadyExists, credentials.Email)));
+                    return userResponse;
+                }
 
+                userAccount.Id = Guid.NewGuid();
+
+                userAccount.Email = userAccount.Email.ToLower();
+
+                userAccount.Password = _hasherService.EncriptKey(userAccount.Password);
+
+                await _repository.CreateAccount(userAccount);
+
+                userResponse = new UserResponse { Email = credentials.Email };
+
+                userResponse.Token = _tokenService.GenerateToken(userResponse);
             }
-            catch (ValidationException ex)
-            {
-                return response.SetRequestValidationError(ex);
-            }
-            catch (EmailAdressAlreadyRegistredException ex)
-            {
-                return response.SetBadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                Console.Write(ex.Message);
-                return response.SetInternalServerError(ex.Message);
-            }
+            return userResponse;
         }
     }
 }

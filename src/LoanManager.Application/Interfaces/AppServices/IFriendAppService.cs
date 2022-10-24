@@ -8,10 +8,10 @@ namespace LoanManager.Application.Interfaces.AppServices
 {
     public interface IFriendAppService
     {
-        Task<Response<Guid>> CreateAsync(FriendDto friend);
-        Task<Response<FriendDto>> Get(Guid id);
-        Task<Response<IEnumerable<FriendDto>>> Get(int offset, int limit);
-        Task<Response<bool>> Update(FriendDto friend);
-        Task<Response<bool>> Async(Guid id);
+        Task<Guid> CreateAsync(FriendDto friend);
+        Task<FriendDto> Get(Guid id);
+        Task<IEnumerable<FriendDto>> Get(int offset, int limit);
+        Task<bool> Update(FriendDto friend);
+        Task<bool> Async(Guid id);
     }
 }

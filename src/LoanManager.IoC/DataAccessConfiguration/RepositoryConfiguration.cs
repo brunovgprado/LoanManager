@@ -1,5 +1,4 @@
 ﻿using LoanManager.Auth.Interfaces.Repository;
-using LoanManager.Domain.Interfaces;
 using LoanManager.Domain.Interfaces.Repositories;
 using LoanManager.Infrastructure.DataAccess.Repositories;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +13,6 @@ namespace LoanManager.IoC.DataAccessConfiguration
             services.AddSingleton<IFriendRepository, FriendRepository>();
             services.AddSingleton<ILoanRepository, LoanRepository>();
             services.AddSingleton<IAuthRepository, AuthRepository>();
-            services.AddSingleton<IHealthCheckRepository, HealthCheckRepository>();
         }
     }
 }

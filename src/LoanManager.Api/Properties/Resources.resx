@@ -123,6 +123,9 @@
   <data name="InputValidationError" xml:space="preserve">
     <value>There are some mandatory informations empty or in a invalid state.</value>
   </data>
+  <data name="InvalidCredentials" xml:space="preserve">
+    <value>Incorrect e-mail or password</value>
+  </data>
   <data name="NotFound" xml:space="preserve">
     <value>Resource not found</value>
   </data>

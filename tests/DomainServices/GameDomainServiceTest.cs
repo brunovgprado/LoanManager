@@ -7,16 +7,12 @@ using LoanManager.Domain.Validators.GameValidators;
 using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using LoanManager.Tests.Builders;
 using Moq;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace LoanManager.Tests.DomainServices
 {
     public class GameDomainServiceTest
     {
-        private readonly CreateGameValidator _createGameValidator;
         private readonly Mock<IGameRepository> _gameRepositoryMock;
         private readonly INotificationHandler _notificationHandler;
         private readonly IGameDomainService _gameDomainService;

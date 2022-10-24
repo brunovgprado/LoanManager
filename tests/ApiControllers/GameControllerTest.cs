@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using LoanManager.Api.Controller;
 using LoanManager.Api.Helpers;
 using LoanManager.Application.Interfaces.AppServices;
 using LoanManager.Application.Models.DTO;
-using LoanManager.Application.Shared;
 using LoanManager.Infrastructure.CrossCutting.NotificationContext;
 using LoanManager.Tests.Builders;
 using Microsoft.AspNetCore.Mvc;
@@ -45,11 +41,9 @@ namespace LoanManager.Tests.ApiControllers
         {
             //Arrange
             var id = Guid.NewGuid();
-            var game = GameDtoMock.GenerateGameDto();
-            var response = new Response<GameDto>();
-            response.SetResult(game);            
+            var game = GameDtoMock.GenerateGameDto();      
 
-            _gameServiceMock.Setup(x => x.Get(It.IsAny<Guid>())).ReturnsAsync(response);
+            _gameServiceMock.Setup(x => x.Get(It.IsAny<Guid>())).ReturnsAsync(game);
             
             //Act
             var actual = await _controller.Get(id);
@@ -68,13 +62,11 @@ namespace LoanManager.Tests.ApiControllers
             const int mockQuantity = 20;
             
             var id = Guid.NewGuid();
-            var game = GameDtoMock.GenerateGameDto(mockQuantity);
-            var response = new Response<IEnumerable<GameDto>>();
-            response.SetResult(game);            
+            var game = GameDtoMock.GenerateGameDto(mockQuantity);       
 
             _gameServiceMock
                 .Setup(x => x.Get(It.IsAny<int>(), It.IsAny<int>()))
-                .ReturnsAsync(response);
+                .ReturnsAsync(game);
             
             //Act
             var actual = await _controller.Get(offset, limit);
@@ -103,12 +95,9 @@ namespace LoanManager.Tests.ApiControllers
         public async Task CreateGame_WithValidData_MustResultOk()
         {
             //Arrange
-            var request = CreateGameRequestDtoMock.GenerateCreateGameRequestDto();
+            var request = CreateGameRequestDtoMock.GenerateCreateGameRequestDto();     
 
-            var response = new Response<Guid>();
-            response.SetResult(Guid.NewGuid());            
-
-            _gameServiceMock.Setup(x => x.Create(It.IsAny<GameDto>())).ReturnsAsync(response);
+            _gameServiceMock.Setup(x => x.Create(It.IsAny<GameDto>())).ReturnsAsync(Guid.NewGuid());
             
             //Act
             var actual = await _controller.Create(request);
@@ -138,12 +127,9 @@ namespace LoanManager.Tests.ApiControllers
         public async Task UpdateGame_WithValidData_MustResultOk()
         {
             //Arrange
-            var request = GameDtoMock.GenerateGameDto();
+            var request = GameDtoMock.GenerateGameDto();         
 
-            var response = new Response<bool>();
-            response.SetResult(true);            
-
-            _gameServiceMock.Setup(x => x.Update(It.IsAny<GameDto>())).ReturnsAsync(response);
+            _gameServiceMock.Setup(x => x.Update(It.IsAny<GameDto>())).ReturnsAsync(true);
             
             //Act
             var actual = await _controller.Update(request);
