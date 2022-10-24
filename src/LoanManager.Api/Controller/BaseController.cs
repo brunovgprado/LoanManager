@@ -25,15 +25,22 @@ namespace LoanManager.Api.Controller
 
                 var unexpectedError = notifications.Any(x => x.Key.Equals("UnexpectedError"));
                 var inputValidation = notifications.Any(x => x.Key.Equals("InputValidation"));
+                var invalidCredentials = notifications.Any(x => x.Key.Equals("InvalidCredentials"));
                 var notFound = notifications.Any(x => x.Key.Equals("NotFound"));
                 var businessRule = notifications.Any(x => x.Key.Equals("BusinessRule"));
 
                 if (unexpectedError)
                     return CreateUnexpectedErrorResult();
+
                 if (inputValidation) 
                     return CreateInputValidationErrorResult();
+
+                if (invalidCredentials)
+                    return CreateInvalidCredentialsErrorResult();
+
                 if (notFound)
                     return CreateNotFoundErrorResult();
+
                 if (businessRule)
                     return CreateBusinessRuleErroResult();
             }
@@ -68,6 +75,14 @@ namespace LoanManager.Api.Controller
 
             return BadRequest(new DefaultResponse(errors: errors, code: "InputValidation",
                 message: Resources.InputValidationError));
+        }
+
+        private IActionResult CreateInvalidCredentialsErrorResult()
+        {
+            var errors = ConvertNotificationsToDictionary(_notificationHandler.GetInstance().Notifications);
+
+            return Unauthorized(new DefaultResponse(errors: errors, code: "InvalidCredentials",
+                message: Resources.InvalidCredentials));
         }
 
         private IEnumerable<KeyValuePair<string, string>> ConvertNotificationsToDictionary(IEnumerable<Notification> notifications)

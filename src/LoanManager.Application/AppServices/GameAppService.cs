@@ -24,45 +24,34 @@ namespace LoanManager.Application.AppServices
             _mapper = mapper;
         }
 
-        public async Task<Response<Guid>> Create(GameDto game)
+        public async Task<Guid> Create(GameDto game)
         {
-            var response = new Response<Guid>();
             var gameEntity = _mapper.Map<Game>(game);
-            var result = await _gameDomainService.CreateAsync(gameEntity);
-            return response.SetResult(result);
+            return await _gameDomainService.CreateAsync(gameEntity);
         }
 
-        public async Task<Response<GameDto>> Get(Guid id)
+        public async Task<GameDto> Get(Guid id)
         {
-            var response = new Response<GameDto>();
             var result = await _gameDomainService.GetAsync(id);
-            return response.SetResult(_mapper.Map<GameDto>(result));
+            return _mapper.Map<GameDto>(result);
         }
 
-        public async Task<Response<IEnumerable<GameDto>>> Get(int offset, int limit)
+        public async Task<IEnumerable<GameDto>> Get(int offset, int limit)
         {
-            var response = new Response<IEnumerable<GameDto>>();
-
             var result = await _gameDomainService.GetAsync(offset, limit);
-            return response.SetResult(_mapper.Map<IEnumerable<GameDto>>(result));
+            return _mapper.Map<IEnumerable<GameDto>>(result);
         }
 
-        public async Task<Response<bool>> Update(GameDto game)
+        public async Task<bool> Update(GameDto game)
         {
-            var response = new Response<bool>();
-
             var gameEntity = _mapper.Map<Game>(game);
 
-            await _gameDomainService.UpdateAsync(gameEntity);
-            return response.SetResult(true);
+            return await _gameDomainService.UpdateAsync(gameEntity);
         }
 
-        public async Task<Response<bool>> Delete(Guid id)
+        public async Task<bool> Delete(Guid id)
         {
-            var response = new Response<bool>();
-
-            await _gameDomainService.DeleteAsync(id);
-            return response.SetResult(true);
+            return await _gameDomainService.DeleteAsync(id);
         }
     }
 }

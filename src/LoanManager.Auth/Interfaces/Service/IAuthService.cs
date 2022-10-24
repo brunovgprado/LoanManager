@@ -6,7 +6,7 @@ namespace LoanManager.Auth.Interfaces.Services
 {
     public interface IAuthService
     {
-        Task<Response<UserResponse>> Authenticate(UserCredentials credentials);
-        Task<Response<UserResponse>> CreateAccount(UserCredentials credentials);
+        Task<UserResponse> Authenticate(UserCredentials credentials);
+        Task<UserResponse> CreateAccount(UserCredentials credentials);
     }
 }

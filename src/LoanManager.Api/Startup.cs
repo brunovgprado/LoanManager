@@ -35,6 +35,7 @@ namespace LoanManager.Api
             RepositoryConfiguration.ConfigureServices(services);
             AuthConfigurations.ConfigureServices(services);
             CrossCuttingConfiguration.ConfigureServices(services, configuration);
+            HealthCheckConfig.Configure(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,6 +60,7 @@ namespace LoanManager.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
             });
         }
     }

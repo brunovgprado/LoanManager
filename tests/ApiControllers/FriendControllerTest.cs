@@ -1,19 +1,12 @@
 ﻿using AutoMapper;
 using LoanManager.Api.Controller;
 using LoanManager.Api.Helpers;
-using LoanManager.Api.Models;
-using LoanManager.Api.Models.Request;
-using LoanManager.Api.Models.Response;
 using LoanManager.Application.Interfaces.AppServices;
 using LoanManager.Application.Models.DTO;
-using LoanManager.Application.Shared;
 using LoanManager.Infrastructure.CrossCutting.NotificationContext;
+using LoanManager.Tests.Builders;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using LoanManager.Tests.Builders;
 using Xunit;
 
 namespace LoanManager.Tests.ApiControllers
@@ -49,10 +42,8 @@ namespace LoanManager.Tests.ApiControllers
             //Arrange
             var id = Guid.NewGuid();
             var friend = FriendDtoMock.GenerateFriend();
-            var response = new Response<FriendDto>();
-            response.SetResult(friend);            
 
-            _friendServiceMock.Setup(x => x.Get(It.IsAny<Guid>())).ReturnsAsync(response);
+            _friendServiceMock.Setup(x => x.Get(It.IsAny<Guid>())).ReturnsAsync(friend);
             
             //Act
             var actual = await _controller.Get(id);
@@ -71,11 +62,9 @@ namespace LoanManager.Tests.ApiControllers
             const int mockQuantity = 20;
             
             var id = Guid.NewGuid();
-            var friend = FriendDtoMock.GenerateFriend(mockQuantity);
-            var response = new Response<IEnumerable<FriendDto>>();
-            response.SetResult(friend);            
+            var friend = FriendDtoMock.GenerateFriend(mockQuantity);          
 
-            _friendServiceMock.Setup(x => x.Get(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(response);
+            _friendServiceMock.Setup(x => x.Get(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(friend);
             
             //Act
             var actual = await _controller.Get(offset, limit);
@@ -104,12 +93,9 @@ namespace LoanManager.Tests.ApiControllers
         public async Task CreateFriend_WithValidData_MustResultOk()
         {
             //Arrange
-            var request = CreateFriendRequestDtoMock.GenerateFriend();
+            var request = CreateFriendRequestDtoMock.GenerateFriend();       
 
-            var response = new Response<Guid>();
-            response.SetResult(Guid.NewGuid());            
-
-            _friendServiceMock.Setup(x => x.CreateAsync(It.IsAny<FriendDto>())).ReturnsAsync(response);
+            _friendServiceMock.Setup(x => x.CreateAsync(It.IsAny<FriendDto>())).ReturnsAsync(Guid.NewGuid());
             
             //Act
             var actual = await _controller.Create(request);
@@ -139,12 +125,9 @@ namespace LoanManager.Tests.ApiControllers
         public async Task UpdateFriend_WithValidData_MustResultOk()
         {
             //Arrange
-            var request = FriendDtoMock.GenerateFriend();
+            var request = FriendDtoMock.GenerateFriend();         
 
-            var response = new Response<bool>();
-            response.SetResult(true);            
-
-            _friendServiceMock.Setup(x => x.Update(It.IsAny<FriendDto>())).ReturnsAsync(response);
+            _friendServiceMock.Setup(x => x.Update(It.IsAny<FriendDto>())).ReturnsAsync(true);
             
             //Act
             var actual = await _controller.Update(request);
