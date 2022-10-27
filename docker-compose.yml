@@ -15,7 +15,7 @@ services:
     ports:
       - "8000:80"     
     environment:      
-      DB_CONNECTION_STRING: "host=postgres_image;port=5432;database=loandb;username=loanuser;password=loanuser"
+      RdsConnectionString: "host=postgres_image;port=5432;database=loandb;username=loanuser;password=loanuser"
       ASPNETCORE_ENVIRONMENT: "Development"
     networks:
       - loan_manager-dev  
