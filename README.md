@@ -63,4 +63,4 @@ You can contribute if you want :grin:
 
 ## :rocket: Demo   
 
-[DEMO](https://loan-manager-api.azurewebsites.net/docs) 
+[DEMO](https://loanmanager-api-sandbox.azurewebsites.net/docs) 
