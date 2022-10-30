@@ -15,7 +15,7 @@ services:
     ports:
       - "8000:80"     
     environment:      
-      RdsConnectionString: "host=postgres_image;port=5432;database=loandb;username=loanuser;password=loanuser"
+      POSTGRE_CONNECTIONSTRING: "host=postgres_image;port=5432;database=loandb;username=loanuser;password=loanuser"
       ASPNETCORE_ENVIRONMENT: "Development"
     networks:
       - loan_manager-dev  
@@ -26,8 +26,8 @@ services:
       - "5432"
     restart: always
     volumes:
-      - db_volume:/var/lib/postgresql/data
-      - ./dbscripts/seed.sql :/docker-entrypoint-initdb.d/seed.sql
+     - db_volume:/var/lib/postgresql/data
+     - ./dbscripts/seed.sql :/docker-entrypoint-initdb.d/seed.sql
     environment:
       POSTGRES_USER: "loanuser"
       POSTGRES_PASSWORD: "loanuser"
