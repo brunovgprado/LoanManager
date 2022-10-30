@@ -39,6 +39,17 @@ $ docker-compose build
 ```
 $ docker-compose up
 ```
+
+You also can run and test this application without docker-compose, just with docker/podman.  
+For that you will need a connectionstring from postgresql database, so inside the project folder you can run the following command line in your terminal:
+
+```
+$ docker build -t loanmanager-api .
+```
+```
+$ docker run -p 8000:80 -e ASPNETCORE_ENVIRONMENT="Development" -e POSTGRE_CONNECTIONSTRING="[YOUR-POSTGRE-CONNETCIONSTRING]" loanmanager-api --name loanmanager-api
+```
+
 So voilà! docker will up the API and the PostgreSql server, create the database, create and populate the tables and make the Loan manager API accessible at localhost:8000.  
 You can look at http://localhost:8000/docs for endpoints description and do tests with swagger.  
 You can check application health at http://localhost:8000/health.
@@ -54,7 +65,7 @@ You can check application health at http://localhost:8000/health.
 You can contribute if you want :grin:
 
 - Features must be segregated in use cases;
-- keys mus be placed on secrets;
+- keys must be placed on secrets;
 - Coupling must be reduced to minimum;
 - Some project structural issues must be fixed;
 - Unit tests coverage must be increased;
